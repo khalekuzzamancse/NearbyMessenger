@@ -26,7 +26,9 @@ import com.khalekuzzanman.cse.just.peertopeer.data_layer.WifiAndBroadcastHandler
 @Composable
 fun ScanDevice() {
     val context = LocalContext.current
-    val wifiManager = WifiAndBroadcastHandler(context)
+    val wifiManager = remember {
+        WifiAndBroadcastHandler(context)
+    }
 
 
 
