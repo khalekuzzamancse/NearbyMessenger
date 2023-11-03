@@ -96,7 +96,6 @@ fun NearByDevices(
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
         shadowElevation = 1.dp
 
     ) {
