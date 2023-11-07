@@ -5,13 +5,13 @@ import android.content.Context
 import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pDeviceList
+import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -24,8 +24,23 @@ class MyWifiManager(
     private var channel: WifiP2pManager.Channel? =
         manager?.initialize(context, context.mainLooper, null)
 
-    private val _scannedDevice = MutableStateFlow(emptyList<String>())
+    private val _scannedDevice = MutableStateFlow(emptyList<WifiP2pDevice>())
     val scannedDevice = _scannedDevice.asStateFlow()
+    private val _connectionInfo = MutableStateFlow<WifiP2pInfo?>(null)
+    val connectionInfo = _connectionInfo.asStateFlow()
+    private val _connectedClients = MutableStateFlow<List<WifiP2pDevice>>(emptyList())
+    val connectedClients = _connectedClients.asStateFlow()
+
+
+
+    fun refreshClients() {
+        manager?.requestGroupInfo(channel) {
+            it?.let { info ->
+                _connectedClients.value = info.clientList.toList()
+            }
+        }
+    }
+
 
 
     fun scanDevice() {
@@ -40,10 +55,22 @@ class MyWifiManager(
         })
     }
 
-   private fun requestScannedDevice() {
+    init {
+        manager?.requestConnectionInfo(
+            channel
+        ) {info ->
+            _connectionInfo.value = info
+        }
+
+
+    }
+
+    private fun requestScannedDevice() {
         manager?.requestPeers(channel) { peers: WifiP2pDeviceList? ->
             if (peers != null) {
-                _scannedDevice.value = peers.deviceList.toList().map { it.deviceName }
+                val devices = peers.deviceList.toList()
+                _scannedDevice.value = devices
+
 
             }
         }
@@ -58,11 +85,13 @@ class MyWifiManager(
                 config,
                 object : WifiP2pManager.ActionListener {
                     override fun onSuccess() {
+
                         Log.d(tag, "Connected:${device.deviceName}")
                     }
 
                     override fun onFailure(reason: Int) {
                         Log.d(tag, "Connected:Fail")
+
                     }
                 }
             )

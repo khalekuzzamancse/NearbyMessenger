@@ -81,6 +81,10 @@ fun DeviceListPreview3() {
 
 }
 
+data class NearByDevice(
+    val name:String,
+    val isConnected:Boolean = false
+)
 
 @Composable
 fun NearByDevices(
@@ -126,6 +130,69 @@ fun NearByDevices(
                     IconButton(onClick = {
                         showDialog = true
                         connected = isConnected
+                    }) {
+                        Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                    }
+                }
+
+            }
+
+        }
+        if (showDialog) {
+            ConnectedDeviceInfo(
+                onClose = { showDialog = false },
+                onDisconnectRequest = { showDialog = false },
+                isConnected = connected
+            )
+        }
+
+
+    }
+
+
+}
+@Composable
+fun NearByDevices(
+    devices: List<NearByDevice>,
+) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    var connected by remember {
+        mutableStateOf(false)
+    }
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shadowElevation = 1.dp
+
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            devices.forEach {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (it.isConnected) {
+                        Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                    } else {
+                        Icon(imageVector = Icons.Filled.Wifi, contentDescription = null)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = it.name, style = MaterialTheme.typography.titleMedium)
+                        if (it.isConnected) {
+                            Text(text = "Connected", style = MaterialTheme.typography.labelSmall)
+                        }
+
+                    }
+                    IconButton(onClick = {
+                        showDialog = true
+                        connected = it.isConnected
                     }) {
                         Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
                     }
