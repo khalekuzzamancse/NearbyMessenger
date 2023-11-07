@@ -37,7 +37,9 @@ class MyWifiManager(
         manager?.requestGroupInfo(channel) {
             it?.let { info ->
                 _connectedClients.value = info.clientList.toList()
+                requestScannedDevice()
             }
+
         }
     }
 
@@ -65,7 +67,7 @@ class MyWifiManager(
 
     }
 
-    private fun requestScannedDevice() {
+     fun requestScannedDevice() {
         manager?.requestPeers(channel) { peers: WifiP2pDeviceList? ->
             if (peers != null) {
                 val devices = peers.deviceList.toList()
