@@ -17,7 +17,6 @@
             <option value="$PROJECT_DIR$/Level_1/clinet_server_concept/serverapp" />
             <option value="$PROJECT_DIR$/Level_1/wifi" />
             <option value="$PROJECT_DIR$/Level_1/wifi/peertopeer" />
-            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
       </GradleProjectSettings>
