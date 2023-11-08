@@ -12,9 +12,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Level_1" />
-            <option value="$PROJECT_DIR$/Level_1/clinet_server_concept" />
-            <option value="$PROJECT_DIR$/Level_1/clinet_server_concept/clinetapp" />
-            <option value="$PROJECT_DIR$/Level_1/clinet_server_concept/serverapp" />
             <option value="$PROJECT_DIR$/Level_1/wifi" />
             <option value="$PROJECT_DIR$/Level_1/wifi/peertopeer" />
           </set>
