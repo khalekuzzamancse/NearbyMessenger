@@ -1,6 +1,5 @@
 package com.khalekuzzanman.cse.just.peertopeer
 
-import PermissionManage
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,17 +20,17 @@ class MainActivity : ComponentActivity() {
             ConnectivitySamplesNetworkingTheme {
                 PermissionManage(
                     listOf(
-                        "android.permission.ACCESS_WIFI_STATE",
-                        "android.permission.CHANGE_WIFI_STATE",
-                        "android.permission.CHANGE_NETWORK_STATE",
-                        "android.permission.INTERNET",
-                        "android.permission.ACCESS_NETWORK_STATE",
-                        "android.permission.NEARBY_WIFI_DEVICES",
-                        "android.permission.ACCESS_COARSE_LOCATION",
-                        "android.permission.ACCESS_FINE_LOCATION"
+                        android.Manifest.permission.ACCESS_WIFI_STATE,
+                        android.Manifest.permission.CHANGE_WIFI_STATE,
+                        android.Manifest.permission.CHANGE_NETWORK_STATE,
+                        android.Manifest.permission.INTERNET,
+                        android.Manifest.permission.ACCESS_NETWORK_STATE,
+                        android.Manifest.permission.NEARBY_WIFI_DEVICES,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
                     )
                 )
-              NearByDeviceScreen()
+                NearByDeviceScreen()
 
             }
 
