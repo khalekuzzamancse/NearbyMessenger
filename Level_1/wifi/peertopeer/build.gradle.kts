@@ -50,6 +50,8 @@ android {
 }
 
 dependencies {
+    //permission library
+    implementation ("com.google.accompanist:accompanist-permissions:0.29.2-rc")
 
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("com.google.firebase:firebase-auth:22.2.0")
