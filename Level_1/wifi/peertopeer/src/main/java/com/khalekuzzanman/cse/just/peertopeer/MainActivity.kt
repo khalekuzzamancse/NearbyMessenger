@@ -12,7 +12,6 @@ import com.khalekuzzanman.cse.just.peertopeer.ui.ui.NearByDeviceScreen
 class MainActivity : ComponentActivity() {
 
 
-    @OptIn(ExperimentalPermissionsApi::class)
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

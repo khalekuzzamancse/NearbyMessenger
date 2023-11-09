@@ -1,9 +1,12 @@
 package com.khalekuzzanman.cse.just.peertopeer.ui.ui
 
+import CommunicationManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -30,6 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.khalekuzzanman.cse.just.peertopeer.Client
+import com.khalekuzzanman.cse.just.peertopeer.Server
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.WifiAndBroadcastHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +85,7 @@ class NearByDeviceScreenModel(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
@@ -90,6 +95,7 @@ fun NearByDeviceScreen() {
     val wifiManager = remember {
         WifiAndBroadcastHandler(context)
     }
+
     val state = remember {
         NearByDeviceScreenModel(wifiManager)
     }
@@ -100,11 +106,16 @@ fun NearByDeviceScreen() {
         mutableStateOf(emptyList<NearByDevice>())
     }
 
+    var communicationManager: CommunicationManager? = remember {
+        null
+    }
+
 
 
     connectedClients.forEach {
         Log.i("ScannedDevice", it.toString())
     }
+
 
     LaunchedEffect(Unit) {
         wifiManager.registerBroadcast()
@@ -171,12 +182,28 @@ fun NearByDeviceScreen() {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = {
-                //  wifiManager.connectTo(device[0])
-            }) {
-                Text(text = "Connect")
+
+            FlowRow {
+                Button(onClick = {
+                    val info = wifiManager.connectionInfo.value
+                    if (info != null) {
+                        communicationManager = CommunicationManager(info)
+                        communicationManager?.listenReceived()
+
+                    }
+
+                }) {
+                    Text(text = CommunicationManager.connectionType.collectAsState().value.toString())
+                }
+                Button(onClick = {
+                    communicationManager?.sendData()
+
+                }) {
+                    Text(text = "Send Data")
+                }
 
             }
+
             wifiManager.connectionInfo.collectAsState().value?.let { connectionInfo ->
                 val isHost = connectionInfo.groupFormed && connectionInfo.isGroupOwner
 

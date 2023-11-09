@@ -17,6 +17,7 @@ class WifiAndBroadcastHandler(
     val connectionInfo=myWifiManager.connectionInfo
     val connectedClients=myWifiManager.connectedClients
 
+
     private val broadcastManager = WifiDirectBroadcastManager(
         context = context,
         onStateChangeAction = {
