@@ -1,8 +1,10 @@
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming
+
 import android.net.wifi.p2p.WifiP2pInfo
 import android.util.Log
-import com.khalekuzzanman.cse.just.peertopeer.Client
-import com.khalekuzzanman.cse.just.peertopeer.Peer
-import com.khalekuzzanman.cse.just.peertopeer.Server
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Client
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Peer
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server.Server
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,25 +33,30 @@ class CommunicationManager(
         private const val TAG = "CommunicationManagerClass: "
 
     }
-    private fun dummyMessage():String{
-       return "Hello Bro, I'm ${connectionType.value} !."+"This is msg:${Random.nextInt()}"
+
+    private fun dummyMessage(): String {
+        return "Hello Bro, I'm ${connectionType.value} !." + "This is msg:${Random.nextInt()}"
     }
 
 
-    fun sendData(data: ByteArray="".toByteArray()  ) {
-        peer?.sendData(dummyMessage().toByteArray())
+    fun sendData(data: ByteArray = "".toByteArray()) {
+              Log.d(TAG, "sendData():$data")
+//        peer?.sendData(dummyMessage().toByteArray())
+        peer?.sendData(data)
     }
 
-    fun listenReceived() {
-//        Log.d(TAG, "listenReceived()")
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            peer?.readReceivedData()?.collect { data ->
-                Log.d(TAG, "receivedData() as ${connectionType.value.name}: $data")
-            }
+//    fun listenReceived() {
+////        Log.d(TAG, "listenReceived()")
+//        val scope = CoroutineScope(Dispatchers.IO)
+//        scope.launch {
+//            peer?.readReceivedData()?.collect { data ->
+//                Log.d(TAG, "receivedData() as ${connectionType.value.name}: $data")
+//            }
+//
+//        }
+//    }
+fun listenReceived()= peer?.readReceivedData()
 
-        }
-    }
 
 
     init {
@@ -68,6 +75,7 @@ class CommunicationManager(
 
 }
 
+
 class DataCommunicator(private val socket: Socket) {
 
     companion object {
@@ -81,10 +89,10 @@ class DataCommunicator(private val socket: Socket) {
                 withContext(Dispatchers.IO) {
                     val out = DataOutputStream(socket.getOutputStream())
                     out.write(data)
-                   // Log.d(TAG, "DataSend() Successfully")
+                    // Log.d(TAG, "DataSend() Successfully")
                 }
             } catch (e: Exception) {
-              //  Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
+                //  Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
             }
         }
 
@@ -97,7 +105,7 @@ class DataCommunicator(private val socket: Socket) {
             val receivedBytes = ByteArray(1024)
             val count = input.read(receivedBytes)
             val receivedData = String(receivedBytes, 0, count, Charsets.UTF_8)
-           // Log.d(TAG, "ReceivedData(): $receivedData")
+            // Log.d(TAG, "ReceivedData(): $receivedData")
             if (count > 0)
                 receivedData
             else null

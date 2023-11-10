@@ -1,7 +1,8 @@
-package com.khalekuzzanman.cse.just.peertopeer
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server
 
-import DataCommunicator
 import android.util.Log
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.DataCommunicator
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Peer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.DataOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 

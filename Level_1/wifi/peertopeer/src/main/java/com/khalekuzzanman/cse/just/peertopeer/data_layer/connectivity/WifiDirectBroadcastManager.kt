@@ -1,4 +1,4 @@
-package com.khalekuzzanman.cse.just.peertopeer.data_layer
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -8,7 +8,11 @@ import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
-
+/*
+Through out the whole application we need to the manage it,
+but all application may not observe it such as all the screens may not want to listen the boroadcast,
+so do not make it directly singleton but you can less reference of it
+ */
 
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

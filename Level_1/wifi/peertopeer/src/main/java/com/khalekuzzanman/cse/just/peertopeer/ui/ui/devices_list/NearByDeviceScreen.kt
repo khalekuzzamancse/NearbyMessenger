@@ -1,6 +1,6 @@
-package com.khalekuzzanman.cse.just.peertopeer.ui.ui
+package com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list
 
-import CommunicationManager
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.CommunicationManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -33,9 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.khalekuzzanman.cse.just.peertopeer.Client
-import com.khalekuzzanman.cse.just.peertopeer.Server
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.WifiAndBroadcastHandler
+import com.khalekuzzanman.cse.just.peertopeer.WifiAndBroadcastHandlerInstance
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +43,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NearByDeviceScreenModel(
-    wifiManager: WifiAndBroadcastHandler
+    val wifiManager: WifiAndBroadcastHandler
 ) {
     private val _wifiEnabled = MutableStateFlow(false)
     val wifiEnabled = _wifiEnabled.asStateFlow()
@@ -82,8 +81,20 @@ class NearByDeviceScreenModel(
         }
     }
 
+    var communicationManager: CommunicationManager? = null
+    fun onConnectionRequest() {
+        val info = wifiManager.connectionInfo.value
+        if (info != null) {
+            communicationManager = CommunicationManager(info)
+            communicationManager?.listenReceived()
+
+        }
+
+    }
+
 
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -93,12 +104,16 @@ fun NearByDeviceScreen() {
     //
     val context = LocalContext.current
     val wifiManager = remember {
-        WifiAndBroadcastHandler(context)
+      // WifiAndBroadcastHandler(context)
+        WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
+
     }
 
     val state = remember {
         NearByDeviceScreenModel(wifiManager)
     }
+
+
     val wifiEnabled = state.wifiEnabled.collectAsState().value
 
     val connectedClients = wifiManager.connectedClients.collectAsState().value
@@ -106,9 +121,11 @@ fun NearByDeviceScreen() {
         mutableStateOf(emptyList<NearByDevice>())
     }
 
-    var communicationManager: CommunicationManager? = remember {
-        null
+
+    LaunchedEffect(Unit){
+       Log.d("JJJJJJJJ","${ WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler}")
     }
+
 
 
 
@@ -184,20 +201,11 @@ fun NearByDeviceScreen() {
         ) {
 
             FlowRow {
-                Button(onClick = {
-                    val info = wifiManager.connectionInfo.value
-                    if (info != null) {
-                        communicationManager = CommunicationManager(info)
-                        communicationManager?.listenReceived()
-
-                    }
-
-                }) {
+                Button(onClick = state::onConnectionRequest) {
                     Text(text = CommunicationManager.connectionType.collectAsState().value.toString())
                 }
                 Button(onClick = {
-                    communicationManager?.sendData()
-
+                    state.communicationManager?.sendData()
                 }) {
                     Text(text = "Send Data")
                 }

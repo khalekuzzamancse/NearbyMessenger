@@ -1,7 +1,7 @@
-package com.khalekuzzanman.cse.just.peertopeer
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client
 
-import DataCommunicator
 import android.util.Log
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.DataCommunicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

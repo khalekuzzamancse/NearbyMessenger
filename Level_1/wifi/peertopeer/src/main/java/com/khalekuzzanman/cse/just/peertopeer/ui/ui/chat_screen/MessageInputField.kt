@@ -1,8 +1,7 @@
-package com.khalekuzzanman.cse.just.peertopeer.ui.ui
+package com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -26,12 +25,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 
-
 class MessageInputFieldState {
     private val _message = MutableStateFlow("")
     val message = _message.asStateFlow()
     fun onTextInput(text: String) {
         _message.value = text
+    }
+    fun clear() {
+        _message.value = ""
     }
 }
 
@@ -39,17 +40,21 @@ class MessageInputFieldState {
 @Preview
 @Composable
 fun MessageInputFieldPreview() {
+    val state = remember {
+        MessageInputFieldState()
+    }
     Column(modifier = Modifier.fillMaxWidth()) {
-        MessageInputField()
+        MessageInputField(state) {}
     }
 
 }
 
 @Composable
-fun MessageInputField() {
-    val state = remember {
-        MessageInputFieldState()
-    }
+fun MessageInputField(
+    state: MessageInputFieldState,
+    onSendButtonClick: () -> Unit
+) {
+
     val emptyMessage = state.message.collectAsState().value.trim().isEmpty()
 
     Box(
@@ -89,10 +94,9 @@ fun MessageInputField() {
                     )
                 }
             }
-        }
-        else{
+        } else {
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = onSendButtonClick,
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Icon(

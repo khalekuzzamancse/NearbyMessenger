@@ -1,4 +1,4 @@
-package com.khalekuzzanman.cse.just.peertopeer.data_layer
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity
 
 import android.annotation.SuppressLint
 import android.content.Context

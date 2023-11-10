@@ -1,9 +1,12 @@
-package com.khalekuzzanman.cse.just.peertopeer.data_layer
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 
+/*
+This is re usable
+ */
 
 class WifiDirectBroadcastReceiver(
     private val interestedActions: List<BroadcastReceiverAction>
