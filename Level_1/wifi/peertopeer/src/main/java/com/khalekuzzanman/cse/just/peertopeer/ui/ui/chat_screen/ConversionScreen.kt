@@ -30,11 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.CommunicationManager
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.ConnectionType
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list.NearByDevice
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list.NearByDeviceScreenModel
 
@@ -89,7 +91,7 @@ fun ConversionScreenPreview() {
     val viewModel = remember {
         ConversionScreenViewModel()
     }
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.onConnectionRequest()
     }
 
@@ -111,20 +113,31 @@ fun ConversionScreen(
     inputFieldState: MessageInputFieldState,
     onSendButtonClick: () -> Unit,
 ) {
+    val isConnected =
+        CommunicationManager.connectionType.collectAsState().value != ConnectionType.None
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Nearby Devices", style = MaterialTheme.typography.titleLarge)
+                    Text(text = "Conversion", style = MaterialTheme.typography.titleLarge)
                 },
+
                 navigationIcon = {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
                     }
                 },
+                actions = {
+                    Text(
+                        text = if (isConnected) "Connected" else "Disconnected",
+                        style = MaterialTheme.typography.titleSmall,
+                        color =if (isConnected) Color.Blue else Color.Red
+                    )
 
-                )
+                }
+
+            )
         }
     ) { scaffoldPadding ->
         Column(

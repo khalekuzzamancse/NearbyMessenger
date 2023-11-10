@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +39,7 @@ fun MessagePreview() {
                 topStart = 8.dp,
                 topEnd = 8.dp,
                 bottomStart = 8.dp,
-                bottomEnd = 32.dp
+                bottomEnd = 16.dp
             ),
             alignment = Alignment.End,
             backgroundColor = MaterialTheme.colorScheme.tertiary
@@ -49,9 +50,9 @@ fun MessagePreview() {
             timeStamp = "11:20 AM",
             shape = RoundedCornerShape(
                 topStart = 8.dp,
-                topEnd = 32.dp,
-                bottomStart = 32.dp,
-                bottomEnd = 32.dp
+                topEnd = 16.dp,
+                bottomStart = 16.dp,
+                bottomEnd = 16.dp
             ),
             alignment = Alignment.Start,
             backgroundColor = MaterialTheme.colorScheme.secondaryContainer
@@ -78,12 +79,13 @@ fun ColumnScope.Message(
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
             )
+
             Text(
                 text = timeStamp,
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier.align(Alignment.End).alpha(0.5f) // Set the alpha value (0.5f for 50% transparency)
             )
         }
 
