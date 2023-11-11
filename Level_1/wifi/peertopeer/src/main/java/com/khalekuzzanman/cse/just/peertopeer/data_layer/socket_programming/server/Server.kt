@@ -19,7 +19,7 @@ class Server : Peer {
 
     companion object {
         private const val TAG = "ServerClass: "
-         val availablePort=45555
+         const val availablePort=45555
     }
 
 
@@ -32,6 +32,7 @@ class Server : Peer {
     private val _lastMessage = MutableStateFlow<String?>(null)
 
     init {
+
         val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
 

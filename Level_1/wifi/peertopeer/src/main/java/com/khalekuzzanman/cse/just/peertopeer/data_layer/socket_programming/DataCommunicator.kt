@@ -40,12 +40,12 @@ class CommunicationManager(
 
 
     fun sendData(data: ByteArray = "".toByteArray()) {
-              Log.d(TAG, "sendData():$data")
+        Log.d(TAG, "sendData():$data")
 //        peer?.sendData(dummyMessage().toByteArray())
         peer?.sendData(data)
     }
 
-//    fun listenReceived() {
+    //    fun listenReceived() {
 ////        Log.d(TAG, "listenReceived()")
 //        val scope = CoroutineScope(Dispatchers.IO)
 //        scope.launch {
@@ -55,8 +55,7 @@ class CommunicationManager(
 //
 //        }
 //    }
-fun listenReceived()= peer?.readReceivedData()
-
+    fun listenReceived() = peer?.readReceivedData()
 
 
     init {
@@ -65,8 +64,12 @@ fun listenReceived()= peer?.readReceivedData()
             _connectionType.value = ConnectionType.Server
 
         } else if (info.groupFormed) {
-            peer = Client(info.groupOwnerAddress)
-            _connectionType.value = ConnectionType.Client
+
+            CoroutineScope(Dispatchers.IO).launch {
+                peer = Client(info.groupOwnerAddress)
+                _connectionType.value = ConnectionType.Client
+            }
+
         } else {
             _connectionType.value = ConnectionType.None
         }
@@ -89,11 +92,11 @@ class DataCommunicator(private val socket: Socket) {
                 withContext(Dispatchers.IO) {
                     val out = DataOutputStream(socket.getOutputStream())
                     out.write(data)
-                     Log.d(TAG, "DataSend(): Successfully")
+                    Log.d(TAG, "DataSend(): Successfully")
 
                 }
             } catch (e: Exception) {
-                  Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
+                Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
             }
         }
 
@@ -106,13 +109,13 @@ class DataCommunicator(private val socket: Socket) {
             val receivedBytes = ByteArray(1024)
             val count = input.read(receivedBytes)
             val receivedData = String(receivedBytes, 0, count, Charsets.UTF_8)
-             Log.d(TAG, "ReceivedData(): $receivedData")
+            Log.d(TAG, "ReceivedData(): $receivedData")
 
             if (count > 0)
                 receivedData
             else null
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.d(TAG,"ReceivedData():${e.printStackTrace()}")
             null
         }
     }
