@@ -14,13 +14,20 @@ import java.net.ServerSocket
 import java.net.Socket
 
 class Server : Peer {
-    private val server = ServerSocket(8888)
-    private var socket: Socket? = null
-    private var dataCommunicator: DataCommunicator? = null
+    //select port 0 as a result OS will give a available port
+    //which is a better solution,to overcome same port used by multiple processes
 
     companion object {
         private const val TAG = "ServerClass: "
+         val availablePort=45555
     }
+
+
+    private val server = ServerSocket(availablePort)
+    private var socket: Socket? = null
+    private var dataCommunicator: DataCommunicator? = null
+
+
 
     private val _lastMessage = MutableStateFlow<String?>(null)
 

@@ -86,15 +86,11 @@ fun createDummyConversation(): List<ConversationScreenMessage> {
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Preview
 @Composable
 fun ConversionScreenPreview(
-onBackArrowClick:()->Unit ={}
+    viewModel: ConversionScreenViewModel,
+    onBackArrowClick: () -> Unit = {}
 ) {
-
-    val viewModel = remember {
-        ConversionScreenViewModel()
-    }
     LaunchedEffect(Unit) {
         viewModel.onConnectionRequest()
     }
@@ -104,7 +100,7 @@ onBackArrowClick:()->Unit ={}
             messages = viewModel.messages.collectAsState().value,
             inputFieldState = viewModel.messageInputFieldState,
             onSendButtonClick = viewModel::onSendRequest,
-            onBackArrowClick=onBackArrowClick
+            onBackArrowClick = onBackArrowClick
         )
     }
 
@@ -117,7 +113,7 @@ fun ConversionScreen(
     messages: List<ConversationScreenMessage>,
     inputFieldState: MessageInputFieldState,
     onSendButtonClick: () -> Unit,
-    onBackArrowClick: () -> Unit={}
+    onBackArrowClick: () -> Unit = {}
 ) {
     val isConnected =
         CommunicationManager.connectionType.collectAsState().value != ConnectionType.None
@@ -131,14 +127,17 @@ fun ConversionScreen(
 
                 navigationIcon = {
                     IconButton(onClick = onBackArrowClick) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null
+                        )
                     }
                 },
                 actions = {
                     Text(
                         text = if (isConnected) "Connected" else "Disconnected",
                         style = MaterialTheme.typography.titleSmall,
-                        color =if (isConnected) Color.Blue else Color.Red
+                        color = if (isConnected) Color.Blue else Color.Red
                     )
 
                 }

@@ -16,6 +16,7 @@ import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBro
 import com.khalekuzzanman.cse.just.peertopeer.ui.WifiDialog
 import com.khalekuzzanman.cse.just.peertopeer.ui.theme.ConnectivitySamplesNetworkingTheme
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen.ConversionScreenPreview
+import com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen.ConversionScreenViewModel
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list.NearByDeviceScreen
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.navigation.NavGraph
 
@@ -44,7 +45,10 @@ class MainActivity : ComponentActivity() {
 
                 WifiDialog(WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler.isWifiEnabled.collectAsState().value) {
                 }
-              NavGraph()
+             NavGraph()
+//               ConversionScreenPreview(
+//                   viewModel = ConversionScreenViewModel()
+//               )
 
             }
 

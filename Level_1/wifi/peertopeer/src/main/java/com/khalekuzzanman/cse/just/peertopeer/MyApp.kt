@@ -12,6 +12,7 @@ class MyApp : Application() {
     override fun onCreate() {
         super.onCreate()
         WifiAndBroadcastHandlerInstance.create(this)
+        WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler.updateConnectedDeviceInfo()
     }
 
     override fun onTerminate() {

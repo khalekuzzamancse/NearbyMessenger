@@ -58,6 +58,7 @@ class ConversionScreenViewModel(
     }
 
     fun onSendRequest() {
+        Log.d(TAG, "onSendRequest(): CommMangr=$communicationManager")
         val message = messageInputFieldState.message.value
         communicationManager?.sendData(message.toByteArray())
         _messages.value = messages.value + ConversationScreenMessage(

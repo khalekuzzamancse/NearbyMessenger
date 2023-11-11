@@ -47,6 +47,8 @@ class WifiAndBroadcastHandler(
     private val _isWifiEnabled=MutableStateFlow(wifiManager.isWifiEnabled)
     val isWifiEnabled=_isWifiEnabled.asStateFlow()
 
+    fun updateConnectedDeviceInfo()=myWifiManager.updateConnectedDeviceInfo()
+
 
     companion object {
         private const val TAG = "WifiAndBroadcastHandlerClass: "

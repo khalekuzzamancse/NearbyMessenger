@@ -3,12 +3,14 @@ package com.khalekuzzanman.cse.just.peertopeer.ui.ui.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen.ConversionScreenPreview
+import com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen.ConversionScreenViewModel
 import com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list.NearByDeviceScreen
 
 
@@ -19,7 +21,9 @@ fun NavGraph(
 ) {
     val navController: NavHostController = rememberNavController()
     val navigationAction = NavigationActions(navController)
-
+    val viewModel = remember {
+        ConversionScreenViewModel()
+    }
     NavHost(
         navController = navController,
         route = "MainGraph",
@@ -41,8 +45,8 @@ fun NavGraph(
                 onBackArrowClick = {
                     navController.popBackStack()
                     navController.navigate("DeviceScreen")
-
-                }
+                },
+                viewModel = viewModel
             )
 
         }

@@ -89,10 +89,11 @@ class DataCommunicator(private val socket: Socket) {
                 withContext(Dispatchers.IO) {
                     val out = DataOutputStream(socket.getOutputStream())
                     out.write(data)
-                    // Log.d(TAG, "DataSend() Successfully")
+                     Log.d(TAG, "DataSend(): Successfully")
+
                 }
             } catch (e: Exception) {
-                //  Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
+                  Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
             }
         }
 
@@ -105,7 +106,8 @@ class DataCommunicator(private val socket: Socket) {
             val receivedBytes = ByteArray(1024)
             val count = input.read(receivedBytes)
             val receivedData = String(receivedBytes, 0, count, Charsets.UTF_8)
-            // Log.d(TAG, "ReceivedData(): $receivedData")
+             Log.d(TAG, "ReceivedData(): $receivedData")
+
             if (count > 0)
                 receivedData
             else null

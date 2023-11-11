@@ -2,6 +2,7 @@ package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.cli
 
 import android.util.Log
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.DataCommunicator
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server.Server
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ class Client(
             withContext(Dispatchers.IO) {
                 try {
                     while (true) {
-                        socket.connect(InetSocketAddress(hostAddress.hostAddress, 8888), 2000)
+                        socket.connect(InetSocketAddress(hostAddress.hostAddress, Server.availablePort), 2000)
                         //listing continuously
                         if (socket.isConnected){
                             listenContinuously()
