@@ -45,10 +45,10 @@ class MainActivity : ComponentActivity() {
 
                 WifiDialog(WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler.isWifiEnabled.collectAsState().value) {
                 }
-         //    NavGraph()
-               ConversionScreenPreview(
-                   viewModel = ConversionScreenViewModel()
-               )
+             NavGraph()
+//               ConversionScreenPreview(
+//                   viewModel = ConversionScreenViewModel()
+//               )
 
             }
 

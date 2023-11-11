@@ -64,11 +64,8 @@ class CommunicationManager(
             _connectionType.value = ConnectionType.Server
 
         } else if (info.groupFormed) {
-
-            CoroutineScope(Dispatchers.IO).launch {
                 peer = Client(info.groupOwnerAddress)
                 _connectionType.value = ConnectionType.Client
-            }
 
         } else {
             _connectionType.value = ConnectionType.None

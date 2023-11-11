@@ -42,33 +42,74 @@ class Client(
         private const val TAG = "ClientClass"
     }
 
+//    init {
+//        val scope = CoroutineScope(Dispatchers.Default)
+//        scope.launch {
+//
+//            withContext(Dispatchers.IO) {
+//                try {
+//                    while (true) {
+//                        socket.connect(
+//                            InetSocketAddress(
+//                                hostAddress.hostAddress,
+//                                Server.availablePort
+//                            )
+//                        )
+//                        //listing continuously
+//                        if (socket.isConnected) {
+//                            listenContinuously()
+//                        }
+//                    }
+//
+//                } catch (e: Exception) {
+//                    Log.d(TAG, e.stackTraceToString())
+//
+//                }
+//
+//            }
+//        }
+//    }
     init {
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+    val scope = CoroutineScope(Dispatchers.Default)
+    val maxRetries = 300 // retry unto 300 seconds=5 min
+    var retries = 0
 
-            withContext(Dispatchers.IO) {
-                try {
-                    while (true) {
-                        socket.connect(
-                            InetSocketAddress(
-                                hostAddress.hostAddress,
-                                Server.availablePort
-                            )
+    scope.launch {
+        while (retries < maxRetries) {
+            try {
+                val newSocket = Socket()
+                withContext(Dispatchers.IO) {
+                    newSocket.connect(
+                        InetSocketAddress(
+                            hostAddress.hostAddress,
+                            Server.availablePort
                         )
-                        //listing continuously
-                        if (socket.isConnected) {
-                            listenContinuously()
-                        }
-                    }
-
-                } catch (e: Exception) {
-                    Log.d(TAG, e.stackTraceToString())
-
+                    )
                 }
-
+                // If the connection is successful, exit the loop
+                if (newSocket.isConnected) {
+                    socket = newSocket // Update the socket reference
+                    Log.d(TAG, "Connection established")
+                    dataCommunicator=DataCommunicator(socket)
+                    listenContinuously()
+                    break
+                }
+            } catch (e: Exception) {
+               // Log.d(TAG, e.stackTraceToString())
+                Log.d(TAG, "Connection failed:Retrying")
+            } finally {
+                retries++
+                delay(1000) // Adjust the delay duration as needed
             }
         }
+
+        if (retries >= maxRetries) {
+            // Handle the case where the maximum number of retries is reached
+            Log.d(TAG, "Connection failed after $maxRetries retries")
+        }
     }
+
+}
 
     private fun tryConnectUntil() {
 
