@@ -2,6 +2,7 @@ package com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list
 
 import android.net.wifi.p2p.WifiP2pDevice
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -37,7 +39,7 @@ import androidx.compose.ui.unit.dp
 fun DeviceListPreview() {
     Column {
         NearByDevices(
-            devices = listOf("Md Abdul Kala", "Mr Bean", "Galaxy Tab", "Sumsung A5"),
+            devices = listOf("Md Abdul Kala", "Mr Bean", "Galaxy Tab", "Samsung A5"),
             connectedDeviceIndex = 0
         )
     }
@@ -50,7 +52,7 @@ fun DeviceListPreview() {
 fun DeviceListPreview2() {
     Column {
         NearByDevices(
-            devices = listOf("Md Abul Kalam", "Mr Bean", "Galaxy Tab", "Sumsung A5"),
+            devices = listOf("Md Abdul Kala", "Mr Bean", "Galaxy Tab", "Samsung A5"),
             connectedDeviceIndex = 0
         )
         ConnectedDeviceInfo(
@@ -70,7 +72,7 @@ fun DeviceListPreview2() {
 fun DeviceListPreview3() {
     Column {
         NearByDevices(
-            devices = listOf("Md Abul Kalam", "Mr Bean", "Galaxy Tab", "Sumsung A5"),
+            devices = listOf("Md Abdul Kala", "Mr Bean", "Galaxy Tab", "Samsung A5"),
             connectedDeviceIndex = 0
         )
         ConnectedDeviceInfo(
@@ -156,18 +158,17 @@ fun NearByDevices(
 
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NearByDevices(
     devices: List<NearByDevice>,
-    onDeviceClick: (WifiP2pDevice) -> Unit
+    onConnectionRequest: (WifiP2pDevice) -> Unit,
+    onDisconnectRequest: (WifiP2pDevice) -> Unit,
+    onConversionScreenRequest:  (WifiP2pDevice) -> Unit={},
 ) {
     var showDialog by remember {
         mutableStateOf(false)
     }
-    var connected by remember {
-        mutableStateOf(false)
-    }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
@@ -179,37 +180,21 @@ fun NearByDevices(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-
-
             devices.forEach {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onDeviceClick(it.device)
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (it.isConnected) {
-                        Icon(imageVector = Icons.Filled.Check, contentDescription = null)
-                    } else {
-                        Icon(imageVector = Icons.Filled.Wifi, contentDescription = null)
+                EachDevice(
+                    it = it,
+                    onConnectClick = {
+                        onConnectionRequest(it.device)
+                    },
+                    onDeviceInfoClick = { showDialog = true },
+                    onDisconnectRequest = {
+                        onDisconnectRequest(it.device)
+                    },
+                    onClick = {
+                        onConversionScreenRequest(it.device)
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = it.name, style = MaterialTheme.typography.titleMedium)
-                        if (it.isConnected) {
-                            Text(text = "Connected", style = MaterialTheme.typography.labelSmall)
-                        }
+                )
 
-                    }
-                    IconButton(onClick = {
-                        showDialog = true
-                        connected = it.isConnected
-                    }) {
-                        Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
-                    }
-                }
 
             }
 
@@ -218,13 +203,88 @@ fun NearByDevices(
             ConnectedDeviceInfo(
                 onClose = { showDialog = false },
                 onDisconnectRequest = { showDialog = false },
-                isConnected = connected
+                isConnected = false
             )
         }
 
 
     }
 
+
+}
+
+@Composable
+fun EachDevice(
+    it: NearByDevice,
+    onConnectClick: () -> Unit = {},
+    onDeviceInfoClick: () -> Unit = {},
+    onDisconnectRequest: () -> Unit = {},
+    onClick: () -> Unit = {},
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (it.isConnected) {
+            Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+        } else {
+            Icon(imageVector = Icons.Filled.Wifi, contentDescription = null)
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = it.name, style = MaterialTheme.typography.titleMedium)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                ConnectionStatus(
+                    isConnected = it.isConnected,
+                    onDisconnectRequest =onDisconnectRequest,
+                    onConnectClick = onConnectClick
+                )
+
+            }
+        }
+
+        IconButton(onClick = onDeviceInfoClick) {
+            Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+        }
+
+    }
+}
+
+@Composable
+fun ConnectionStatus(
+    modifier: Modifier = Modifier,
+    isConnected: Boolean,
+    onDisconnectRequest: () -> Unit = {},
+    onConnectClick: () -> Unit = {}
+) {
+    Row(
+        modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = if (isConnected) "Connected" else "Not Connected",
+            style = MaterialTheme.typography.labelSmall
+        )
+        Spacer(modifier = Modifier.width(3.dp))
+        Text(
+            text = if (isConnected) "Disconnect?" else "Connect?",
+            style = MaterialTheme.typography.labelSmall.copy(
+                if(isConnected) Color.Blue else Color.Red
+            ),
+            modifier = Modifier.clickable {
+                if (isConnected) onDisconnectRequest()
+                else onConnectClick()
+            }
+        )
+
+    }
 
 }
 

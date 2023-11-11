@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -87,7 +89,7 @@ fun createDummyConversation(): List<ConversationScreenMessage> {
 @Preview
 @Composable
 fun ConversionScreenPreview(
-
+onBackArrowClick:()->Unit ={}
 ) {
 
     val viewModel = remember {
@@ -101,7 +103,8 @@ fun ConversionScreenPreview(
         ConversionScreen(
             messages = viewModel.messages.collectAsState().value,
             inputFieldState = viewModel.messageInputFieldState,
-            onSendButtonClick = viewModel::onSendRequest
+            onSendButtonClick = viewModel::onSendRequest,
+            onBackArrowClick=onBackArrowClick
         )
     }
 
@@ -114,6 +117,7 @@ fun ConversionScreen(
     messages: List<ConversationScreenMessage>,
     inputFieldState: MessageInputFieldState,
     onSendButtonClick: () -> Unit,
+    onBackArrowClick: () -> Unit={}
 ) {
     val isConnected =
         CommunicationManager.connectionType.collectAsState().value != ConnectionType.None
@@ -126,8 +130,8 @@ fun ConversionScreen(
                 },
 
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+                    IconButton(onClick = onBackArrowClick) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
                 actions = {

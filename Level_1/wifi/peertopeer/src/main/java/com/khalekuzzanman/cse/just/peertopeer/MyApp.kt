@@ -11,7 +11,12 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val wifiAndBroadcastHandlerInstance = WifiAndBroadcastHandlerInstance.create(this)
+        WifiAndBroadcastHandlerInstance.create(this)
+    }
+
+    override fun onTerminate() {
+        WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler.disconnectAll()
+        super.onTerminate()
     }
 
 }
