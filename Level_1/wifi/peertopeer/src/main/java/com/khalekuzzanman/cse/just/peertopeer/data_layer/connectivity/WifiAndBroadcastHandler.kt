@@ -1,10 +1,26 @@
 package com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity
 
 import android.content.Context
+import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pDevice
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+/*
+we need to know the wifi status thought the whole    application at any given time,
+that is why we keep a single instance
+ */
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+object WifiAndBroadcastHandlerInstance {
+    lateinit var wifiAndBroadcastHandler: WifiAndBroadcastHandler
+    fun create(context: Context) {
+        wifiAndBroadcastHandler = WifiAndBroadcastHandler(context)
+    }
+
+}
 
 /*
 /*
@@ -23,23 +39,49 @@ class WifiAndBroadcastHandler(
     private val myWifiManager = MyWifiManager(context)
     val scannedDevice = myWifiManager.scannedDevice
     val connectionInfo = myWifiManager.connectionInfo
-    val connectedClients = myWifiManager.connectedClients
+    val connectedClients = myWifiManager.connectedDevices
 
-    init {
-        Log.d("MainActivity:Wifi", "$myWifiManager")
+    //WifiManager is used to enable or disable the wifi
+    private val wifiManager=context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+    private val _isWifiEnabled=MutableStateFlow(wifiManager.isWifiEnabled)
+    val isWifiEnabled=_isWifiEnabled.asStateFlow()
+
+
+    companion object {
+        private const val TAG = "WifiAndBroadcastHandlerClass: "
     }
 
 
     private val broadcastManager = WifiDirectBroadcastManager(
         context = context,
         onStateChangeAction = {
-
+            Log.d(TAG, "onStateChange")
         },
         onConnectionChangeAction = {
-            myWifiManager.refreshClients()
+            Log.d(TAG, "onConnectionChange")
+           myWifiManager.updateConnectedDeviceInfo()
+        },
+        onPeersChangeAction = {
+          //  Log.d(TAG, " onPeersChange")
+        },
+        onThisDeviceChangeAction = {
+            Log.d(TAG, "  onThisDeviceChange")
+        },
+        onWifiStateChangedAction = {wifiState->
 
+            when (wifiState) {
+                WifiManager.WIFI_STATE_ENABLED -> {
+                   _isWifiEnabled.value=true
+                }
+                WifiManager.WIFI_STATE_DISABLED -> {
+                    _isWifiEnabled.value=false
+                }
+            }
         }
-    )
+
+        )
+    fun disconnectAll()=myWifiManager.disconnectDevice()
 
     fun registerBroadcast() {
         broadcastManager.register()

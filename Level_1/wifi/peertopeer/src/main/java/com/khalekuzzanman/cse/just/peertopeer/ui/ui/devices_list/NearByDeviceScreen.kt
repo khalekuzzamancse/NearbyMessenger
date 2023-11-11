@@ -4,12 +4,15 @@ import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.Comm
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.SavedSearch
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
@@ -33,8 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.khalekuzzanman.cse.just.peertopeer.WifiAndBroadcastHandlerInstance
+import com.khalekuzzanman.cse.just.peertopeer.CircularProgressBar
+
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandlerInstance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,7 +69,8 @@ class NearByDeviceScreenModel(
                 devices.value = it.map { device ->
                     NearByDevice(
                         name = device.deviceName,
-                        isConnected = connectedClients.value.contains(device)
+                        isConnected = connectedClients.value.contains(device),
+                        device = device
                     )
                 }
             }
@@ -74,7 +80,8 @@ class NearByDeviceScreenModel(
                 devices.value = scannedDevice.value.map { device ->
                     NearByDevice(
                         name = device.deviceName,
-                        isConnected = it.contains(device)
+                        isConnected = it.contains(device),
+                        device = device
                     )
                 }
             }
@@ -101,33 +108,24 @@ class NearByDeviceScreenModel(
 @Preview
 @Composable
 fun NearByDeviceScreen() {
-    //
-    val context = LocalContext.current
     val wifiManager = remember {
-      // WifiAndBroadcastHandler(context)
         WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
 
     }
+    val showProgressbar = wifiManager.scannedDevice.collectAsState().value.isEmpty()
 
-    val state = remember {
+
+    val viewModel = remember {
         NearByDeviceScreenModel(wifiManager)
     }
 
 
-    val wifiEnabled = state.wifiEnabled.collectAsState().value
+    val wifiEnabled = viewModel.wifiEnabled.collectAsState().value
 
     val connectedClients = wifiManager.connectedClients.collectAsState().value
     var devices by remember {
         mutableStateOf(emptyList<NearByDevice>())
     }
-
-
-    LaunchedEffect(Unit){
-       Log.d("JJJJJJJJ","${ WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler}")
-    }
-
-
-
 
     connectedClients.forEach {
         Log.i("ScannedDevice", it.toString())
@@ -140,7 +138,11 @@ fun NearByDeviceScreen() {
 
         wifiManager.connectedClients.collect {
             devices = wifiManager.scannedDevice.value.map { device ->
-                NearByDevice(name = device.deviceName, isConnected = it.contains(device))
+                NearByDevice(
+                    name = device.deviceName,
+                    isConnected = it.contains(device),
+                    device = device
+                )
             }
         }
     }
@@ -149,7 +151,8 @@ fun NearByDeviceScreen() {
             devices = it.map { device ->
                 NearByDevice(
                     name = device.deviceName,
-                    isConnected = connectedClients.contains(device)
+                    isConnected = connectedClients.contains(device),
+                    device = device
                 )
             }
         }
@@ -168,7 +171,17 @@ fun NearByDeviceScreen() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = state::onWifiStatusChangeRequest) {
+                    IconButton(onClick = {
+                        wifiManager.scanDevice()
+                    }) {
+                        Icon(
+                            imageVector =
+                            Icons.Filled.SavedSearch,
+                            contentDescription = null,
+                            tint = Color.Red
+                        )
+                    }
+                    IconButton(onClick = viewModel::onWifiStatusChangeRequest) {
                         if (wifiEnabled) {
                             Icon(
                                 imageVector =
@@ -201,13 +214,11 @@ fun NearByDeviceScreen() {
         ) {
 
             FlowRow {
-                Button(onClick = state::onConnectionRequest) {
-                    Text(text = CommunicationManager.connectionType.collectAsState().value.toString())
-                }
+
                 Button(onClick = {
-                    state.communicationManager?.sendData()
+                    wifiManager.disconnectAll()
                 }) {
-                    Text(text = "Send Data")
+                    Text(text = "Disconnect")
                 }
 
             }
@@ -230,9 +241,25 @@ fun NearByDeviceScreen() {
 
             }
 
-            NearByDevices(
-                devices = state.devices.collectAsState().value,
-            )
+            if (showProgressbar) {
+                Box(
+                    modifier = Modifier
+                        .padding(scaffoldPadding)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                )
+                {
+                    CircularProgressBar()
+                }
+
+            } else {
+                NearByDevices(
+                    devices = viewModel.devices.collectAsState().value,
+                    onDeviceClick = {
+                        wifiManager.connectTo(it)
+                    }
+                )
+            }
 
 
         }

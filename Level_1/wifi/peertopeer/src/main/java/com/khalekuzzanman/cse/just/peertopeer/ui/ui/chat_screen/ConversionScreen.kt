@@ -86,7 +86,9 @@ fun createDummyConversation(): List<ConversationScreenMessage> {
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
-fun ConversionScreenPreview() {
+fun ConversionScreenPreview(
+
+) {
 
     val viewModel = remember {
         ConversionScreenViewModel()

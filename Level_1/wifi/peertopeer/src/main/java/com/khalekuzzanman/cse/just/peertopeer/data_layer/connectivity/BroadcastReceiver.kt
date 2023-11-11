@@ -14,14 +14,14 @@ class WifiDirectBroadcastReceiver(
     override fun onReceive(context: Context, intent: Intent) {
         val receivedAction = intent.action
         if (receivedAction != null) {
-            notifyActionOccurred(receivedAction)
+            notifyActionOccurred(receivedAction,intent)
         }
     }
 
-    private fun notifyActionOccurred(occurredAction: String) {
+    private fun notifyActionOccurred(occurredAction: String,intent: Intent) {
         interestedActions.forEach { interestedAction ->
             if (interestedAction.action == occurredAction) {
-                interestedAction.handler()
+                interestedAction.handler(intent)
             }
         }
     }
@@ -29,5 +29,5 @@ class WifiDirectBroadcastReceiver(
 
 class BroadcastReceiverAction(
     val action: String,
-    val handler: () -> Unit = {}
+    val handler: (Intent) -> Unit = {}
 )

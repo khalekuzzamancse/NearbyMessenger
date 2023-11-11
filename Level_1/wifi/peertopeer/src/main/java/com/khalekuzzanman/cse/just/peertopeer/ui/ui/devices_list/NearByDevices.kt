@@ -1,5 +1,7 @@
 package com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list
 
+import android.net.wifi.p2p.WifiP2pDevice
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
@@ -83,8 +85,9 @@ fun DeviceListPreview3() {
 }
 
 data class NearByDevice(
-    val name:String,
-    val isConnected:Boolean = false
+    val name: String,
+    val isConnected: Boolean = false,
+    val device: WifiP2pDevice
 )
 
 @Composable
@@ -152,10 +155,12 @@ fun NearByDevices(
 
 
 }
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NearByDevices(
     devices: List<NearByDevice>,
+    onDeviceClick: (WifiP2pDevice) -> Unit
 ) {
     var showDialog by remember {
         mutableStateOf(false)
@@ -176,10 +181,13 @@ fun NearByDevices(
         ) {
 
 
-
             devices.forEach {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onDeviceClick(it.device)
+                        },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (it.isConnected) {

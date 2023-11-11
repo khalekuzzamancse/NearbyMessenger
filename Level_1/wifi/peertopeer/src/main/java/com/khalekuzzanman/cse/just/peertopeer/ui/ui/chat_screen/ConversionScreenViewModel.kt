@@ -3,8 +3,8 @@ package com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.khalekuzzanman.cse.just.peertopeer.WifiAndBroadcastHandlerInstance
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandlerInstance
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.CommunicationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +27,11 @@ class ConversionScreenViewModel(
     private val _messages = MutableStateFlow<List<ConversationScreenMessage>>(emptyList())
     val messages = _messages.asStateFlow()
     val messageInputFieldState = MessageInputFieldState()
+
     val wifiManager = WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
 
     var communicationManager: CommunicationManager? = null
+
 
     fun onConnectionRequest() {
         val info = wifiManager.connectionInfo.value
