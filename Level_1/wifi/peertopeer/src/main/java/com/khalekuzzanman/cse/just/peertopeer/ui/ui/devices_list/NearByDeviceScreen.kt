@@ -28,18 +28,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.khalekuzzanman.cse.just.peertopeer.CircularProgressBar
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandlerInstance
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.SocketManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class NearByDeviceScreenModel(
-    private val wifiManager: WifiAndBroadcastHandler
-) {
+    private val wifiManager: WifiAndBroadcastHandler =
+        WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
+) : ViewModel() {
     companion object {
         private const val TAG = "NearByDeviceScreenLog: "
     }
@@ -50,18 +53,23 @@ class NearByDeviceScreenModel(
         _wifiEnabled.update { !it }
     }
 
-    var devices = wifiManager.nearByDevices
+    private val _showProgressbar = MutableStateFlow(true)
+    val showProgressbar = _showProgressbar.asStateFlow()
 
-
-
-    private var socketManager: SocketManager? = null
-
-    fun onConnectionRequest() {
-        val info = wifiManager.connectionInfo.value
-        socketManager = SocketManager(info)
-        socketManager?.listenReceived()
-
+    val devices = wifiManager.nearByDevices
+    init {
+        viewModelScope.launch {
+            devices.collect {
+                _showProgressbar.value = it.isEmpty()
+            }
+        }
     }
+
+    fun scanDevices() = wifiManager.scanDevice()
+
+    fun connectTo(device: WifiP2pDevice) = wifiManager.connectTo(device)
+    fun disconnectFrom(device: WifiP2pDevice) = wifiManager.disconnectAll()
+
 
 
 }
@@ -74,22 +82,15 @@ class NearByDeviceScreenModel(
 fun NearByDeviceScreen(
     onConversionScreenOpen: (WifiP2pDevice) -> Unit = {}
 ) {
-    val wifiManager = remember {
-        WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
-
-    }
-
     val viewModel = remember {
-        NearByDeviceScreenModel(wifiManager)
+        NearByDeviceScreenModel()
     }
-    val showProgressbar = viewModel.devices.collectAsState().value.isEmpty()
+
     val wifiEnabled = viewModel.wifiEnabled.collectAsState().value
 
 
     LaunchedEffect(Unit) {
-        wifiManager.registerBroadcast()
-        wifiManager.scanDevice()
-
+        viewModel.scanDevices()
     }
 
     Scaffold(
@@ -105,7 +106,7 @@ fun NearByDeviceScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        wifiManager.scanDevice()
+                        viewModel.scanDevices()
                     }) {
                         Icon(
                             imageVector =
@@ -145,9 +146,7 @@ fun NearByDeviceScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-
-            if (showProgressbar) {
+            if (viewModel.showProgressbar.collectAsState().value) {
                 Box(
                     modifier = Modifier
                         .padding(scaffoldPadding)
@@ -162,10 +161,10 @@ fun NearByDeviceScreen(
                 NearByDevices(
                     devices = viewModel.devices.collectAsState().value,
                     onConnectionRequest = {
-                        wifiManager.connectTo(it)
+                        viewModel.connectTo(it)
                     },
                     onDisconnectRequest = {
-                        wifiManager.disconnectAll()
+                        viewModel.disconnectFrom(it)
                     },
                     onConversionScreenRequest = onConversionScreenOpen
                 )
