@@ -3,9 +3,8 @@ package com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandlerInstance
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.CommunicationManager
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.SocketManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class ConversionScreenViewModel(
@@ -30,16 +28,16 @@ class ConversionScreenViewModel(
 
     val wifiManager = WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
 
-    var communicationManager: CommunicationManager? = null
+    var socketManager: SocketManager? = null
 
 
     fun onConnectionRequest() {
         val info = wifiManager.connectionInfo.value
         if (info != null) {
-            communicationManager = CommunicationManager(info)
+            socketManager = SocketManager(info)
             val scope = CoroutineScope(Dispatchers.IO)
             scope.launch {
-                communicationManager?.listenReceived()?.collect { data ->
+                socketManager?.listenReceived()?.collect { data ->
                     if (data != null) {
                         Log.d(TAG, "Recived: $data")
                         _messages.value = messages.value + ConversationScreenMessage(
@@ -58,9 +56,9 @@ class ConversionScreenViewModel(
     }
 
     fun onSendRequest() {
-        Log.d(TAG, "onSendRequest(): CommMangr=$communicationManager")
+        Log.d(TAG, "onSendRequest(): CommMangr=$socketManager")
         val message = messageInputFieldState.message.value
-        communicationManager?.sendData(message.toByteArray())
+        socketManager?.sendData(message.toByteArray())
         _messages.value = messages.value + ConversationScreenMessage(
             message = message,
             isSender = true,

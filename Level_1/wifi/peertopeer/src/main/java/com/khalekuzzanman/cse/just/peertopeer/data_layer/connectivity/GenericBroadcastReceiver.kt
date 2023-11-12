@@ -8,7 +8,7 @@ import android.content.Intent
 This is re usable
  */
 
-class WifiDirectBroadcastReceiver(
+class GenericBroadcastReceiver(
     private val interestedActions: List<BroadcastReceiverAction>
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

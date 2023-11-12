@@ -77,7 +77,7 @@ class WifiDirectBroadcastManager(
     )
 
     init {
-        actionReceiver = WifiDirectBroadcastReceiver(broadcastActions)
+        actionReceiver = GenericBroadcastReceiver(broadcastActions)
     }
 
     fun register() {

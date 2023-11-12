@@ -1,13 +1,10 @@
 package com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list
 
 import android.net.wifi.p2p.WifiP2pDevice
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.CommunicationManager
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -25,75 +22,44 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khalekuzzanman.cse.just.peertopeer.CircularProgressBar
-
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandler
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.WifiAndBroadcastHandlerInstance
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.SocketManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class NearByDeviceScreenModel(
-    val wifiManager: WifiAndBroadcastHandler
+    private val wifiManager: WifiAndBroadcastHandler
 ) {
+    companion object {
+        private const val TAG = "NearByDeviceScreenLog: "
+    }
+
     private val _wifiEnabled = MutableStateFlow(false)
     val wifiEnabled = _wifiEnabled.asStateFlow()
     fun onWifiStatusChangeRequest() {
         _wifiEnabled.update { !it }
     }
 
-    private var connectedClients = wifiManager.connectedClients
+    var devices = wifiManager.nearByDevices
 
-    private var scannedDevice = wifiManager.scannedDevice
 
-    var devices = MutableStateFlow<List<NearByDevice>>(emptyList())
 
-    init {
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
-            scannedDevice.collect {
-                devices.value = it.map { device ->
-                    NearByDevice(
-                        name = device.deviceName,
-                        isConnected = connectedClients.value.contains(device),
-                        device = device
-                    )
-                }
-            }
-        }
-        scope.launch {
-            connectedClients.collect {
-                devices.value = scannedDevice.value.map { device ->
-                    NearByDevice(
-                        name = device.deviceName,
-                        isConnected = it.contains(device),
-                        device = device
-                    )
-                }
-            }
-        }
-    }
+    private var socketManager: SocketManager? = null
 
-    var communicationManager: CommunicationManager? = null
     fun onConnectionRequest() {
         val info = wifiManager.connectionInfo.value
-        if (info != null) {
-            communicationManager = CommunicationManager(info)
-            communicationManager?.listenReceived()
-
-        }
+        socketManager = SocketManager(info)
+        socketManager?.listenReceived()
 
     }
 
@@ -101,63 +67,30 @@ class NearByDeviceScreenModel(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 fun NearByDeviceScreen(
-    onConversionScreenOpen: (WifiP2pDevice)->Unit={}
+    onConversionScreenOpen: (WifiP2pDevice) -> Unit = {}
 ) {
     val wifiManager = remember {
         WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
 
     }
-    val showProgressbar = wifiManager.scannedDevice.collectAsState().value.isEmpty()
-
 
     val viewModel = remember {
         NearByDeviceScreenModel(wifiManager)
     }
-
-
+    val showProgressbar = viewModel.devices.collectAsState().value.isEmpty()
     val wifiEnabled = viewModel.wifiEnabled.collectAsState().value
-
-    val connectedClients = wifiManager.connectedClients.collectAsState().value
-    var devices by remember {
-        mutableStateOf(emptyList<NearByDevice>())
-    }
-
-    connectedClients.forEach {
-        Log.i("ScannedDevice", it.toString())
-    }
 
 
     LaunchedEffect(Unit) {
         wifiManager.registerBroadcast()
         wifiManager.scanDevice()
 
-        wifiManager.connectedClients.collect {
-            devices = wifiManager.scannedDevice.value.map { device ->
-                NearByDevice(
-                    name = device.deviceName,
-                    isConnected = it.contains(device),
-                    device = device
-                )
-            }
-        }
     }
-    LaunchedEffect(Unit) {
-        wifiManager.scannedDevice.collect {
-            devices = it.map { device ->
-                NearByDevice(
-                    name = device.deviceName,
-                    isConnected = connectedClients.contains(device),
-                    device = device
-                )
-            }
-        }
-    }
-
 
     Scaffold(
         topBar = {
@@ -213,24 +146,6 @@ fun NearByDeviceScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
-            wifiManager.connectionInfo.collectAsState().value?.let { connectionInfo ->
-                val isHost = connectionInfo.groupFormed && connectionInfo.isGroupOwner
-
-                if (isHost) {
-                    Log.i("ConnectionInfo: ", "Host")
-                    Log.i("ConnectionInfo: ", connectionInfo.groupOwnerAddress.toString())
-
-                } else {
-                    Log.i("ConnectionInfo: ", "Client")
-                    connectionInfo.groupOwnerAddress?.let {
-                        it.hostAddress?.let { it1 -> Log.i("ConnectionInfo: ", it1) }
-                    }
-
-
-                }
-
-            }
 
             if (showProgressbar) {
                 Box(

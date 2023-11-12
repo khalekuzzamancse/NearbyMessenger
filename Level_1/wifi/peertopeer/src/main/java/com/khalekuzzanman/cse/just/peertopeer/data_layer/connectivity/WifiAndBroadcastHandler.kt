@@ -36,18 +36,18 @@ class WifiAndBroadcastHandler(
     context: Context,
 ) {
 
-    private val myWifiManager = MyWifiManager(context)
-    val scannedDevice = myWifiManager.scannedDevice
-    val connectionInfo = myWifiManager.connectionInfo
-    val connectedClients = myWifiManager.connectedDevices
+    private val appWifiManager = AppWifiManager(context)
+    val connectionInfo = appWifiManager.connectionInfo
+
 
     //WifiManager is used to enable or disable the wifi
     private val wifiManager=context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     private val _isWifiEnabled=MutableStateFlow(wifiManager.isWifiEnabled)
     val isWifiEnabled=_isWifiEnabled.asStateFlow()
+    val nearByDevices=appWifiManager.nearbyDevices
 
-    fun updateConnectedDeviceInfo()=myWifiManager.updateConnectedDeviceInfo()
+    fun updateConnectedDeviceInfo()=appWifiManager.updateConnectedDeviceInfo()
 
 
     companion object {
@@ -62,7 +62,7 @@ class WifiAndBroadcastHandler(
         },
         onConnectionChangeAction = {
             Log.d(TAG, "onConnectionChange")
-           myWifiManager.updateConnectedDeviceInfo()
+           appWifiManager.updateConnectedDeviceInfo()
         },
         onPeersChangeAction = {
           //  Log.d(TAG, " onPeersChange")
@@ -83,7 +83,7 @@ class WifiAndBroadcastHandler(
         }
 
         )
-    fun disconnectAll()=myWifiManager.disconnectDevice()
+    fun disconnectAll()=appWifiManager.disconnect()
 
     fun registerBroadcast() {
         broadcastManager.register()
@@ -94,12 +94,12 @@ class WifiAndBroadcastHandler(
     }
 
     fun scanDevice() {
-        myWifiManager.scanDevice()
+        appWifiManager.startScanning()
 
     }
 
     fun connectTo(device: WifiP2pDevice) {
-        myWifiManager.connectWith(device)
+        appWifiManager.connectWith(device)
     }
 
 
