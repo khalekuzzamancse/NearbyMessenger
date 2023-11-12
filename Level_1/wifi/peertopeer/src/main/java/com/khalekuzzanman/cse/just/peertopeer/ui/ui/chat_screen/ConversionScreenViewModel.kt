@@ -26,32 +26,29 @@ class ConversionScreenViewModel(
     val messages = _messages.asStateFlow()
     val messageInputFieldState = MessageInputFieldState()
 
-    val wifiManager = WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
+    private val wifiManager = WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
 
-    var socketManager: SocketManager? = null
+    private var socketManager: SocketManager? = null
 
 
     fun onConnectionRequest() {
         val info = wifiManager.connectionInfo.value
-        if (info != null) {
-            socketManager = SocketManager(info)
-            val scope = CoroutineScope(Dispatchers.IO)
-            scope.launch {
-                socketManager?.listenReceived()?.collect { data ->
-                    if (data != null) {
-                        Log.d(TAG, "Recived: $data")
-                        _messages.value = messages.value + ConversationScreenMessage(
-                            message = data,
-                            isSender = false,
-                            timestamp = getCurrentTimeAsString()
-                        )
-                    }
+        socketManager = SocketManager(info)
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            socketManager?.listenReceived()?.collect { data ->
+                if (data != null) {
+                    Log.d(TAG, "Recived: $data")
+                    _messages.value = messages.value + ConversationScreenMessage(
+                        message = data,
+                        isSender = false,
+                        timestamp = getCurrentTimeAsString()
+                    )
                 }
             }
-
-            Log.d(TAG, "$info")
-
         }
+
+        Log.d(TAG, "$info")
 
     }
 
@@ -66,7 +63,7 @@ class ConversionScreenViewModel(
         )
         messageInputFieldState.clear()
     }
-    fun getCurrentTimeAsString(): String {
+    private fun getCurrentTimeAsString(): String {
         val formatter = SimpleDateFormat("hh:mm:ss a")
         val currentTime = formatter.format(Date())
         return currentTime

@@ -43,50 +43,45 @@ class Client(
     }
 
     init {
-    val scope = CoroutineScope(Dispatchers.Default)
-    val maxRetries = 300 // retry unto 300 seconds=5 min
-    var retries = 0
+        val fiveMin = 300
+        tryConnectUntil(fiveMin)
+    }
 
-    scope.launch {
-        while (retries < maxRetries) {
-            try {
-                val newSocket = Socket()
-                withContext(Dispatchers.IO) {
-                    newSocket.connect(
-                        InetSocketAddress(
-                            hostAddress.hostAddress,
-                            Server.availablePort
+
+    private fun tryConnectUntil(second: Int) {
+        val scope = CoroutineScope(Dispatchers.Default)
+        var elapsedSecond = 0
+        scope.launch {
+            while (elapsedSecond < second) {
+                try {
+                    val socket = Socket()
+                    withContext(Dispatchers.IO) {
+                        socket.connect(
+                            InetSocketAddress(
+                                hostAddress.hostAddress,
+                                Server.availablePort
+                            )
                         )
-                    )
+                    }
+                    if (socket.isConnected) {
+                        Log.d(TAG, "Connection established")
+                        dataCommunicator = DataCommunicator(socket)
+                        listenContinuously()
+                        break
+                    }
+                } catch (e: Exception) {
+                    // Log.d(TAG, e.stackTraceToString())
+                    Log.d(TAG, "Connection failed:Retrying")
+                } finally {
+                    elapsedSecond++
+                    delay(1000)
                 }
-                // If the connection is successful, exit the loop
-                if (newSocket.isConnected) {
-                    socket = newSocket // Update the socket reference
-                    Log.d(TAG, "Connection established")
-                    dataCommunicator=DataCommunicator(socket)
-                    listenContinuously()
-                    break
-                }
-            } catch (e: Exception) {
-               // Log.d(TAG, e.stackTraceToString())
-                Log.d(TAG, "Connection failed:Retrying")
-            } finally {
-                retries++
-                delay(1000) // Adjust the delay duration as needed
             }
+
         }
 
-        if (retries >= maxRetries) {
-            // Handle the case where the maximum number of retries is reached
-            Log.d(TAG, "Connection failed after $maxRetries retries")
-        }
     }
 
-}
-
-    private fun tryConnectUntil() {
-
-    }
 
     override fun sendData(data: ByteArray) {
         Log.d(TAG, "sendData()")
