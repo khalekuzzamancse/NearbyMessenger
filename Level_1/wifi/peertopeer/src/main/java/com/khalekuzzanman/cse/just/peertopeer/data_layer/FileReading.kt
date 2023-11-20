@@ -2,7 +2,6 @@ package com.khalekuzzanman.cse.just.peertopeer.data_layer
 
 import android.net.Uri
 import android.util.Log
-import android.webkit.MimeTypeMap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -21,8 +20,9 @@ import java.io.InputStream
 @Composable
 fun FetchFileBytesDemo() {
     FetchFileStream(
-        onFileExtensionExtracted = {
-            Log.i("ContentPicked:Ext ", it)
+        onFileSelected = {
+            val extension = FileExtensions.getFileExtension(it)
+            Log.i("ContentPicked:Ext ", extension.toString())
         },
         onReading = {
             Log.i("ContentPicked:Bytes ", it.size.toString())
@@ -38,7 +38,7 @@ fun FetchFileBytesDemo() {
 
 @Composable
 fun FetchFileStream(
-    onFileExtensionExtracted: (String) -> Unit = {},
+    onFileSelected: (mimeType: String) -> Unit = {},
     onReading: suspend (bytes: ByteArray) -> Unit = {},
     onReadingFinished: suspend () -> Unit = {}
 ) {
@@ -48,9 +48,8 @@ fun FetchFileStream(
 
     FilePicker { contentUri ->
         val mimeType = contentResolver.getType(contentUri)
-        val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-        if (fileExtension != null) {
-            onFileExtensionExtracted(fileExtension)
+        if (mimeType != null) {
+            onFileSelected(mimeType)
         }
         scope.launch {
             val inputStream = contentResolver.openInputStream(contentUri)
