@@ -1,6 +1,7 @@
 package com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,9 +23,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.FetchFileStream
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.FileExtensions
 
 data class ConversationScreenMessage(
     val message: String,
@@ -79,12 +86,41 @@ fun ConversionScreenPreview(
         viewModel.onConnectionRequest()
     }
 
+//
+    var showFilePicker by remember {
+        mutableStateOf(false)
+    }
     Column {
         ConversionScreen(
             messages = viewModel.messages.collectAsState().value,
             inputFieldState = viewModel.messageInputFieldState,
             onSendButtonClick = viewModel::onSendRequest,
-            onBackArrowClick = onBackArrowClick
+            onBackArrowClick = onBackArrowClick,
+            onAttachmentClick = {
+                showFilePicker = true
+            }
+        )
+    }
+
+    if (showFilePicker) {
+        FetchFileStream(
+            onFileSelected = {
+                val extension = FileExtensions.getFileExtension(it)
+                if (extension != null) {
+                    viewModel.sendBytes(byteArrayOf(extension.encodingByte))
+                    Log.i("ContentPicked:Ext ", extension.toString())
+                }
+
+            },
+            onReading = {
+                viewModel.sendBytes(it)
+                Log.i("ContentPicked:Bytes ", it.size.toString())
+            },
+            onReadingFinished = {
+                viewModel.stopSend()
+                Log.i("ContentPicked: ", "Completed")
+            }
+
         )
     }
 
@@ -97,7 +133,8 @@ fun ConversionScreen(
     messages: List<ConversationScreenMessage>,
     inputFieldState: MessageInputFieldState,
     onSendButtonClick: () -> Unit,
-    onBackArrowClick: () -> Unit = {}
+    onBackArrowClick: () -> Unit = {},
+    onAttachmentClick: () -> Unit = {},
 ) {
 
 
@@ -178,7 +215,8 @@ fun ConversionScreen(
             }
             MessageInputField(
                 state = inputFieldState,
-                onSendButtonClick = onSendButtonClick
+                onSendButtonClick = onSendButtonClick,
+                onAttachmentClick = onAttachmentClick
             )
         }
     }

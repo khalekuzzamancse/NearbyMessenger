@@ -52,6 +52,7 @@ fun MessageInputFieldPreview() {
 @Composable
 fun MessageInputField(
     state: MessageInputFieldState,
+    onAttachmentClick:()->Unit ={},
     onSendButtonClick: () -> Unit
 ) {
 
@@ -81,7 +82,7 @@ fun MessageInputField(
             Row(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = onAttachmentClick) {
                     Icon(
                         imageVector = Icons.Filled.Attachment,
                         contentDescription = null,

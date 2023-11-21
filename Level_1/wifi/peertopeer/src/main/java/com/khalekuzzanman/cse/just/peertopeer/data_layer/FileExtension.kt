@@ -61,4 +61,15 @@ object FileExtensions {
             else -> null
         }
     }
+    fun getMimeType(byte: Byte): String? {
+        return when (byte) {
+            TXT.encodingByte -> TXT.mimeType
+            JPEG.encodingByte -> JPEG.mimeType
+            PNG.encodingByte -> PNG.mimeType
+            MP4.encodingByte -> MP4.mimeType
+            PDF.encodingByte -> PDF.mimeType
+            else -> null
+        }
+    }
+
 }

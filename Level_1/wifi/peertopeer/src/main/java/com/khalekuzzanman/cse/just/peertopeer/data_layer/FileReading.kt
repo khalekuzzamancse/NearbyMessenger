@@ -66,13 +66,13 @@ fun FetchFileStream(
 
 }
 
-private suspend fun fileRead(
+ suspend fun fileRead(
     fileInputStream: InputStream,
     onReading: suspend (bytes: ByteArray) -> Unit = {},
     onReadingFinished: suspend () -> Unit = {}
 ) {
     try {
-        val maxByteToRead = 1024 * 16 //16KB,use power of 2
+        val maxByteToRead = 1024 * 1//1 KB,use power of 2
         val buffer = ByteArray(maxByteToRead)
         var readingNotFinished = true
         while (readingNotFinished) {

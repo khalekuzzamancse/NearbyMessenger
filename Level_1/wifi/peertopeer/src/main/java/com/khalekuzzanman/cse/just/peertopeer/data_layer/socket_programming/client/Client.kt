@@ -16,7 +16,8 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 interface Peer {
-    fun sendData(data: ByteArray)
+    suspend fun sendData(data: ByteArray)
+    suspend fun stopSend()
     fun readReceivedData(): StateFlow<String?>
 }
 
@@ -59,7 +60,7 @@ class Client(
                         socket.connect(
                             InetSocketAddress(
                                 hostAddress.hostAddress,
-                                Server.availablePort
+                                Server.SERVER_PORT
                             )
                         )
                     }
@@ -83,9 +84,13 @@ class Client(
     }
 
 
-    override fun sendData(data: ByteArray) {
+    override suspend fun sendData(data: ByteArray) {
         Log.d(TAG, "sendData()")
         dataCommunicator.sendData(data)
+    }
+
+    override suspend fun stopSend() {
+        TODO("Not yet implemented")
     }
 
     private fun listenContinuously() {

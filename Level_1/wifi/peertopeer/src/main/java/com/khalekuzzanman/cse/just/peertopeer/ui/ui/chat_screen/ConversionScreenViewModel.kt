@@ -52,10 +52,30 @@ class ConversionScreenViewModel(
 
     }
 
+    fun sendBytes(byteArray: ByteArray) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            socketManager?.sendData(byteArray)
+        }
+    }
+    fun stopSend(){
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            socketManager?.stopSend()
+        }
+    }
+
+
     fun onSendRequest() {
+        val scope = CoroutineScope(Dispatchers.IO)
+
+
         Log.d(TAG, "onSendRequest(): CommMangr=$socketManager")
         val message = messageInputFieldState.message.value
-        socketManager?.sendData(message.toByteArray())
+        scope.launch {
+            socketManager?.sendData(message.toByteArray())
+        }
+
         _messages.value = messages.value + ConversationScreenMessage(
             message = message,
             isSender = true,
@@ -63,6 +83,7 @@ class ConversionScreenViewModel(
         )
         messageInputFieldState.clear()
     }
+
     private fun getCurrentTimeAsString(): String {
         val formatter = SimpleDateFormat("hh:mm:ss a")
         val currentTime = formatter.format(Date())
