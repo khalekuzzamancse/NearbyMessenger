@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -60,6 +61,13 @@ class PacketToFileWriter(
     extension: FileExtension
 ) {
 
+    init {
+        log("Writer created")
+    }
+
+    companion object{
+        private const val TAG = "PacketToFileWriterLog: "
+    }
     private val values = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
         put(MediaStore.MediaColumns.MIME_TYPE, extension.mimeType)
@@ -68,14 +76,25 @@ class PacketToFileWriter(
     private val uri = resolver.insert(MediaStore.Files.getContentUri("external"), values)
     private val outputStream = uri?.let { it1 -> resolver.openOutputStream(it1) }
 
+    private var totalPacketsWritten = 0
+
 
     suspend fun write(packet: ByteArray) {
         try {
             withContext(Dispatchers.IO) {
-                outputStream?.write(packet)
+                if (outputStream != null){
+                    outputStream.write(packet)
+                    totalPacketsWritten+=packet.size
+                    log("write():${packet.size}size packed written:success")
+                }
+                else {
+                    log("write():${packet.size}size packed written:failure,OutputStream=NULL")
+                }
+
             }
 
         } catch (e: Exception) {
+            log("write():${packet.size}size packed written:Causes Exception")
             e.printStackTrace()
         }
     }
@@ -84,9 +103,15 @@ class PacketToFileWriter(
         try {
             withContext(Dispatchers.IO) {
                 outputStream?.close()
+                log("OutputStream Close:Successfully")
             }
         } catch (e: Exception) {
+            log("OutputStream Close:Failed")
             e.printStackTrace()
         }
+        log("total bytes written $totalPacketsWritten")
+    }
+    private fun log(message: String){
+        Log.d(TAG,message)
     }
 }

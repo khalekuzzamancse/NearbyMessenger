@@ -85,10 +85,12 @@ fun ConversionScreenPreview(
     LaunchedEffect(Unit) {
         viewModel.onConnectionRequest()
     }
+    val tag="ConversionScreenPreview->FetchFileStream :"
+    var totalReads= remember { 0 }
 
 //
     var showFilePicker by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     Column {
         ConversionScreen(
@@ -108,17 +110,19 @@ fun ConversionScreenPreview(
                 val extension = FileExtensions.getFileExtension(it)
                 if (extension != null) {
                     viewModel.sendBytes(byteArrayOf(extension.encodingByte))
-                    Log.i("ContentPicked:Ext ", extension.toString())
+                    Log.i(tag,"onFileSelected():$extension")
                 }
 
             },
             onReading = {
                 viewModel.sendBytes(it)
-                Log.i("ContentPicked:Bytes ", it.size.toString())
+                totalReads+=it.size
+                Log.i(tag, "onReading():${it.size}")
             },
             onReadingFinished = {
+                Log.i(tag, "totalReads=$totalReads")
                 viewModel.stopSend()
-                Log.i("ContentPicked: ", "Completed")
+
             }
 
         )

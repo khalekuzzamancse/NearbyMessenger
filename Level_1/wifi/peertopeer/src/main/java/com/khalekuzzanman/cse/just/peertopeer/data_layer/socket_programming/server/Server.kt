@@ -82,6 +82,7 @@ class Server(
                     inputStream = socket.getInputStream()
                 )
                 packetManager.listen()
+                Log.d(TAG, "ListenPacket()")
 
 //                val reader = DataPacketReader(
 //                    inputStream = socket.getInputStream(),
