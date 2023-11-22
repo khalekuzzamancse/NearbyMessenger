@@ -92,7 +92,7 @@ class Client2(
 
     override suspend fun stopSend() {
         closeConnection()
-        connect()//reconnect for if server wants reply back
+       // connect()//reconnect for if server wants reply back
     }
 
     private fun listenContinuously() {

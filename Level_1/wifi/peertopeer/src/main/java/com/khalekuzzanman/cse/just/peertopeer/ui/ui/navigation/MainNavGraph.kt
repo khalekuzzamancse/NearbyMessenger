@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,10 +20,13 @@ import com.khalekuzzanman.cse.just.peertopeer.ui.ui.devices_list.NearByDeviceScr
 fun NavGraph(
 
 ) {
+    val resolver = LocalContext.current.contentResolver
     val navController: NavHostController = rememberNavController()
     val navigationAction = NavigationActions(navController)
     val viewModel = remember {
-        ConversionScreenViewModel()
+        ConversionScreenViewModel(
+            resolver = resolver
+        )
     }
     NavHost(
         navController = navController,

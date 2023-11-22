@@ -1,5 +1,6 @@
 package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming
 
+import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.ConnectionInfo
@@ -21,7 +22,8 @@ import java.net.URI
 
 
 class SocketManager(
-    connectionInfo: ConnectionInfo
+    connectionInfo: ConnectionInfo,
+    resolver: ContentResolver
 ) {
     private var peer: Peer? = null
 
@@ -51,7 +53,7 @@ class SocketManager(
 
     init {
         if (connectionInfo.type == ConnectionType.Server) {
-            peer = Server()
+            peer = Server(resolver)
             Log.d(TAG, "ConnectionType:Server")
         } else if (connectionInfo.isConnected) {
 //            peer = connectionInfo.groupOwnerAddress?.let { Client(it) }

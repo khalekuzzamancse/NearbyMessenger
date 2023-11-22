@@ -1,5 +1,6 @@
 package com.khalekuzzanman.cse.just.peertopeer.ui.ui.chat_screen
 
+import android.content.ContentResolver
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -15,6 +16,7 @@ import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class ConversionScreenViewModel(
+    val resolver: ContentResolver
 ) {
     companion object {
         private const val TAG = "ConversionScreenViewModelClass: "
@@ -33,7 +35,10 @@ class ConversionScreenViewModel(
 
     fun onConnectionRequest() {
         val info = wifiManager.connectionInfo.value
-        socketManager = SocketManager(info)
+        socketManager = SocketManager(
+            connectionInfo = info,
+            resolver = resolver
+        )
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             socketManager?.listenReceived()?.collect { data ->
