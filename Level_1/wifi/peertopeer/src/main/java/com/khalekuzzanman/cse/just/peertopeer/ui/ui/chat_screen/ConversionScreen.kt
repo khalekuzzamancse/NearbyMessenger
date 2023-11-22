@@ -122,6 +122,7 @@ fun ConversionScreenPreview(
             onReadingFinished = {
                 Log.i(tag, "totalReads=$totalReads")
                 viewModel.stopSend()
+                //
 
             }
 
