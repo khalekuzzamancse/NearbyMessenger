@@ -30,8 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.FetchFileStream
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.FileExtensions
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.FetchFileStream
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.FileExtensions
 
 data class ConversationScreenMessage(
     val message: String,

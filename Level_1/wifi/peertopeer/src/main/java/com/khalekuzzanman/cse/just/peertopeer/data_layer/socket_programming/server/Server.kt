@@ -1,9 +1,8 @@
 package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server
 
-import android.app.Application
 import android.content.ContentResolver
 import android.util.Log
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.FileExtensions
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.DataPacketReader
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.DataCommunicator
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Peer
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
-import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
 
@@ -79,7 +76,7 @@ class Server(
             connectedClientSocket?.let { socket ->
                 val packetManager = PacketManager(
                     resolver = resolver,
-                    inputStream = socket.getInputStream()
+                    reader =DataPacketReader(inputStream = socket.getInputStream())
                 )
                 packetManager.listen()
                 Log.d(TAG, "ListenPacket()")

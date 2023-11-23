@@ -1,4 +1,4 @@
-package com.khalekuzzanman.cse.just.peertopeer.data_layer
+package com.khalekuzzanman.cse.just.peertopeer.data_layer.io
 
 import android.net.Uri
 import android.util.Log
@@ -6,7 +6,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.CoroutineScope

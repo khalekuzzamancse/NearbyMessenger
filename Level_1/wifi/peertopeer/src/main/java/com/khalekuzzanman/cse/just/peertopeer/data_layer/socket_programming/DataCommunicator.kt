@@ -1,12 +1,9 @@
 package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming
 
 import android.content.ContentResolver
-import android.net.Uri
 import android.util.Log
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.ConnectionInfo
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.ConnectionType
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.fileRead
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Client
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Client2
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Peer
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server.Server
@@ -16,9 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.DataInputStream
 import java.io.DataOutputStream
-import java.io.InputStream
 import java.net.Socket
-import java.net.URI
 
 
 class SocketManager(
