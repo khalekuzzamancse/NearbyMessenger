@@ -34,17 +34,16 @@ fun TextFileWriteDemo() {
     val scope = CoroutineScope(Dispatchers.IO)
 
     val writeTextFileDemo: () -> Unit = {
-        val textWriter = PacketToFileWriter(
-            resolver = resolver,
-            fileName = "newText3",
-            extension = FileExtensions.TXT
-        )
-        val packet = "Hello world!".toByteArray()
-        val packet2 = "\nnew world!".toByteArray()
+        val writer: FileWriter = PacketWriter(resolver)
+        writer.setFileName(System.currentTimeMillis().toString())
+        writer.setExtension(FileExtensions.TXT)
+        writer.makeReadyForWrite()
         scope.launch {
-            textWriter.write(packet)
-            textWriter.write(packet2)
-            textWriter.writeFinished()
+            for (i in 1..10) {
+                val packet = "Hello world!: $i\n".toByteArray()
+                writer.write(packet)
+            }
+            writer.stopWriting()
         }
 
     }
@@ -61,18 +60,20 @@ interface FileWriter {
     fun setExtension(extension: FileExtension)
     fun makeReadyForWrite()
     suspend fun write(packet: ByteArray)
-    suspend fun  stopWriting()
+    suspend fun stopWriting()
 
 }
 
 class PacketWriter(private val resolver: ContentResolver) : FileWriter {
-    private var bytesWritten = 0
+    private var bytesWritten = 0L
     private var fileName: String? = null
     private var extension: FileExtension? = null
     private var outputStream: OutputStream? = null
 
+
+
     companion object {
-        private const val TAG = "PacketToFileWriterLog: "
+        private const val TAG = "PacketWriterLog: "
     }
 
     private fun log(message: String) {
@@ -81,16 +82,19 @@ class PacketWriter(private val resolver: ContentResolver) : FileWriter {
 
     override fun setFileName(fileName: String) {
         this.fileName = fileName
+        log("setFileName():$fileName")
     }
 
     override fun setExtension(extension: FileExtension) {
         this.extension = extension
+        log("setExtension():${extension.ext}")
     }
 
     override fun makeReadyForWrite() {
         val values = createContentValue()
         if (values != null) {
             createOutputStream(values)
+            log("makeReadyForWrite():Success")
         } else {
             log("makeReadyForWrite():Failed")
         }
@@ -120,41 +124,43 @@ class PacketWriter(private val resolver: ContentResolver) : FileWriter {
     override suspend fun write(packet: ByteArray) {
         val outputStream = this.outputStream
         if (outputStream != null) {
-            writePacket(packet,outputStream)
+            writePacket(packet, outputStream)
         } else {
             log("write():outputStream is NULL")
         }
 
     }
 
-    private suspend fun writePacket(packet: ByteArray, outputStream: OutputStream) {
+
+    private fun writePacket(packet: ByteArray, outputStream: OutputStream) {
+     //   log("writePacket():Called")
         try {
-            withContext(Dispatchers.IO) {
-                outputStream.write(packet)
-                bytesWritten += packet.size
-                log("write():${packet.size}size packed written:success")
-
-            }
-
+            outputStream.write(packet)
+            bytesWritten += packet.size
+            log("write():Success ;${packet.size} sized packed written")
         } catch (e: Exception) {
-            log("write():${packet.size}size packed written:Causes Exception")
+            log("write():Failed ${packet.size} sized packed")
             e.printStackTrace()
         }
+
     }
+
 
     override suspend fun stopWriting() {
         closeOutputStream() //after close output stream then make it null,order is important
         log("total bytes written $bytesWritten")
         resetFileInfo()
-
+        log("stopWriting():writingCompleted")
     }
-    private fun resetFileInfo(){
+
+    private fun resetFileInfo() {
         bytesWritten = 0
         fileName = null
         extension = null
         outputStream = null
     }
-    private suspend fun closeOutputStream(){
+
+    private suspend fun closeOutputStream() {
         try {
             withContext(Dispatchers.IO) {
                 outputStream?.close()
