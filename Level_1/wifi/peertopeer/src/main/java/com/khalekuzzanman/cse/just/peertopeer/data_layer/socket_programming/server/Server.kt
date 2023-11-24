@@ -3,6 +3,7 @@ package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.ser
 import android.content.ContentResolver
 import android.util.Log
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.DataPacketReader
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.PacketWriter
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.DataCommunicator
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Peer
 import kotlinx.coroutines.CoroutineScope
@@ -17,10 +18,8 @@ import java.net.ServerSocket
 import java.net.Socket
 
 class Server(
-    private val resolver: ContentResolver
+    private val resolver: ContentResolver,
 ) : Peer {
-    //select port 0 as a result OS will give a available port
-    //which is a better solution,to overcome same port used by multiple processes
 
     companion object {
         private const val TAG = "ServerLog: "
@@ -31,6 +30,11 @@ class Server(
     private val server = ServerSocket(SERVER_PORT)
     private var connectedClientSocket: Socket? = null
     private var dataCommunicator: DataCommunicator? = null
+
+
+
+
+
 
 
     private val _lastMessage = MutableStateFlow<String?>(null)
@@ -70,31 +74,15 @@ class Server(
         TODO("Not yet implemented")
     }
 
-    private fun listenPackets() {
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
+    private suspend fun listenPackets() {
             connectedClientSocket?.let { socket ->
                 val packetManager = PacketManager(
-                    resolver = resolver,
-                    reader =DataPacketReader(inputStream = socket.getInputStream())
+                    packetWriter = PacketWriter(resolver = resolver),
+                    packetReader =DataPacketReader(inputStream = socket.getInputStream())
                 )
                 packetManager.listen()
-                Log.d(TAG, "ListenPacket()")
 
-//                val reader = DataPacketReader(
-//                    inputStream = socket.getInputStream(),
-//                    onMimeTypeRead = {
-//                        Log.d(TAG, "mimeType:$it")
-//                    },
-//                    onPacketReceived = {
-//                        Log.d(TAG, "packet received:${it.size}")
-//                    },
-//                    onCompleted = {
-//                        Log.d(TAG, "all packets received")
-//                    }
-//                )
-                // reader.listen()
-            }
+
         }
     }
 

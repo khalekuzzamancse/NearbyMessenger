@@ -55,6 +55,11 @@ fun TextFileWriteDemo() {
 }
 
 
+//
+//Used suspend functions make sure that it is thread safe.
+//make sure that two threads does not write the multiple bytes in the same file at a time
+//otherwise file make be corrupted
+
 interface FileWriter {
     fun setFileName(fileName: String)
     fun setExtension(extension: FileExtension)
@@ -69,8 +74,7 @@ class PacketWriter(private val resolver: ContentResolver) : FileWriter {
     private var fileName: String? = null
     private var extension: FileExtension? = null
     private var outputStream: OutputStream? = null
-
-
+    private val lock=Unit
 
     companion object {
         private const val TAG = "PacketWriterLog: "
@@ -122,18 +126,24 @@ class PacketWriter(private val resolver: ContentResolver) : FileWriter {
     }
 
     override suspend fun write(packet: ByteArray) {
-        val outputStream = this.outputStream
-        if (outputStream != null) {
-            writePacket(packet, outputStream)
-        } else {
-            log("write():outputStream is NULL")
-        }
+//            val outputStream = this.outputStream
+//            if (outputStream != null) {
+//                writePacket(packet, outputStream)
+//            } else {
+//                log("write():outputStream is NULL")
+//            }
+            val outputStream = this.outputStream
+            if (outputStream != null) {
+                writePacket(packet, outputStream)
+            } else {
+                log("write():outputStream is NULL")
+            }
 
     }
 
 
     private fun writePacket(packet: ByteArray, outputStream: OutputStream) {
-     //   log("writePacket():Called")
+        //   log("writePacket():Called")
         try {
             outputStream.write(packet)
             bytesWritten += packet.size
@@ -175,66 +185,3 @@ class PacketWriter(private val resolver: ContentResolver) : FileWriter {
 }
 
 
-class PacketToFileWriter(
-    resolver: ContentResolver,
-    fileName: String,
-    extension: FileExtension
-) {
-
-    init {
-        log("Writer created")
-
-    }
-
-
-    companion object {
-        private const val TAG = "PacketToFileWriterLog: "
-    }
-
-    private val values = ContentValues().apply {
-        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-        put(MediaStore.MediaColumns.MIME_TYPE, extension.mimeType)
-        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-    }
-    private val uri = resolver.insert(MediaStore.Files.getContentUri("external"), values)
-    private val outputStream = uri?.let { it1 -> resolver.openOutputStream(it1) }
-
-    private var totalPacketsWritten = 0
-
-
-    suspend fun write(packet: ByteArray) {
-        try {
-            withContext(Dispatchers.IO) {
-                if (outputStream != null) {
-                    outputStream.write(packet)
-                    totalPacketsWritten += packet.size
-                    log("write():${packet.size}size packed written:success")
-                } else {
-                    log("write():${packet.size}size packed written:failure,OutputStream=NULL")
-                }
-
-            }
-
-        } catch (e: Exception) {
-            log("write():${packet.size}size packed written:Causes Exception")
-            e.printStackTrace()
-        }
-    }
-
-    suspend fun writeFinished() {
-        try {
-            withContext(Dispatchers.IO) {
-                outputStream?.close()
-                log("OutputStream Close:Successfully")
-            }
-        } catch (e: Exception) {
-            log("OutputStream Close:Failed")
-            e.printStackTrace()
-        }
-        log("total bytes written $totalPacketsWritten")
-    }
-
-    private fun log(message: String) {
-        Log.d(TAG, message)
-    }
-}

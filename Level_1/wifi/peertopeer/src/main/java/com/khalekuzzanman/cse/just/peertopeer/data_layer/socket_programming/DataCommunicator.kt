@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.util.Log
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.ConnectionInfo
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.connectivity.ConnectionType
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Client2
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Client
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client.Peer
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server.Server
 import kotlinx.coroutines.CoroutineScope
@@ -22,22 +22,23 @@ class SocketManager(
 ) {
     private var peer: Peer? = null
 
+
     companion object {
         private const val TAG = "SocketManagerLog: "
     }
 
     suspend fun sendData(data: ByteArray = "".toByteArray()) {
         Log.d(TAG, "sendData():$data")
-        if (peer != null && peer is Client2) {
-            val client = peer as Client2
+        if (peer != null && peer is Client) {
+            val client = peer as Client
             client.sendData(data)
-           // client.stopSend()
+
 
         }
     }
     suspend fun stopSend(){
-        if (peer != null && peer is Client2) {
-            val client = peer as Client2
+        if (peer != null && peer is Client) {
+            val client = peer as Client
             client.stopSend()
         }
     }
@@ -49,10 +50,10 @@ class SocketManager(
     init {
         if (connectionInfo.type == ConnectionType.Server) {
             peer = Server(resolver)
+
             Log.d(TAG, "ConnectionType:Server")
         } else if (connectionInfo.isConnected) {
-//            peer = connectionInfo.groupOwnerAddress?.let { Client(it) }
-            peer = connectionInfo.groupOwnerAddress?.let { Client2(it) }
+            peer = connectionInfo.groupOwnerAddress?.let { Client(it) }
             Log.d(TAG, "ConnectionType:Client")
         }
 

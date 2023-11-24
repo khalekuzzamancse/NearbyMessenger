@@ -16,6 +16,7 @@ import java.io.IOException
 import java.io.InputStream
 
 
+
 @Preview
 @Composable
 fun FetchFileBytesDemo() {
@@ -112,7 +113,7 @@ class FileReaderImp(
 ) : FileReader {
     companion object {
         private const val TAG = "FileReaderImpLog: "
-        private const val MAX_BYTE_TO_READ = 1024 * 16 // 16 KB, use power of 2
+        private const val MAX_BYTE_TO_READ = 1024 * 64 // 16 KB, use power of 2
     }
 
     private fun log(message: String) {
@@ -179,45 +180,3 @@ class FileReaderImp(
 }
 
 
-suspend fun fileRead(
-    fileInputStream: InputStream,
-    onReading: suspend (bytes: ByteArray) -> Unit,
-    onReadingFinished: suspend () -> Unit
-) {
-    val tag = "fileReadFun: "
-    try {
-        val maxByteToRead = 1024 * 16 // 16 KB, use power of 2
-        val buffer = ByteArray(maxByteToRead)
-        var readingNotFinished = true
-        while (readingNotFinished) {
-            withContext(Dispatchers.IO) {
-                val numberOfByteWasRead = fileInputStream.read(buffer)
-                val noMoreByteToRead = numberOfByteWasRead <= 0
-                Log.d(tag, "Read:$numberOfByteWasRead")
-                if (noMoreByteToRead) {
-                    readingNotFinished = false
-                }
-                if (!noMoreByteToRead) {
-                    val actualReadBytes = buffer.copyOf(numberOfByteWasRead)
-                    onReading(actualReadBytes)
-                    // Avoid sharing the same array that is why
-                    // returning a new array
-                }
-            }
-        }
-        Log.d(tag, "Read:Finished")
-        // Moved outside the withContext block
-        onReadingFinished()
-
-        try {
-            withContext(Dispatchers.IO) {
-                fileInputStream.close()
-            }
-        } catch (_: IOException) {
-            // Handle the closing exception if needed
-        }
-
-    } catch (e: IOException) {
-        e.printStackTrace()
-    }
-}

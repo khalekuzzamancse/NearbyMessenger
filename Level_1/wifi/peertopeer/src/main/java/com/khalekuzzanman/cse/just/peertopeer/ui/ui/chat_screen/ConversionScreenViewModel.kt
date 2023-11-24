@@ -33,14 +33,14 @@ class ConversionScreenViewModel(
     private var socketManager: SocketManager? = null
 
 
-    fun onConnectionRequest() {
+
+
+   suspend fun onConnectionRequest() {
         val info = wifiManager.connectionInfo.value
         socketManager = SocketManager(
             connectionInfo = info,
             resolver = resolver
         )
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
             socketManager?.listenReceived()?.collect { data ->
                 if (data != null) {
                     Log.d(TAG, "Recived: $data")
@@ -51,23 +51,18 @@ class ConversionScreenViewModel(
                     )
                 }
             }
-        }
-
         Log.d(TAG, "$info")
 
     }
 
-    fun sendBytes(byteArray: ByteArray) {
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            socketManager?.sendData(byteArray)
-        }
+    suspend fun sendBytes(byteArray: ByteArray) {
+        socketManager?.sendData(byteArray)
+
     }
-    fun stopSend(){
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            socketManager?.stopSend()
-        }
+
+    suspend fun stopSend() {
+        socketManager?.stopSend()
+
     }
 
 
@@ -91,8 +86,7 @@ class ConversionScreenViewModel(
 
     private fun getCurrentTimeAsString(): String {
         val formatter = SimpleDateFormat("hh:mm:ss a")
-        val currentTime = formatter.format(Date())
-        return currentTime
+        return formatter.format(Date())
     }
 
 

@@ -7,7 +7,6 @@ import java.io.IOException
 import java.io.InputStream
 
 interface PacketReceiver {
-    val inputStream: InputStream
     var onMimeTypeRead: suspend (Byte) -> Unit
     var onFileSizeArrived: suspend (Byte) -> Unit
     var onPacketReceived: suspend (ByteArray) -> Unit
@@ -17,12 +16,11 @@ interface PacketReceiver {
 
 
 class DataPacketReader(
-    override val inputStream: InputStream,
-
+     val inputStream: InputStream,
 ):PacketReceiver{
     companion object {
         private const val TAG = "DataPacketReaderLog:"
-        private const val MAX_BYTES_TO_READ = 1024 * 16//1 KB
+        private const val MAX_BYTES_TO_READ = 1024 * 64//1 KB
         private const val CLOSE_SIGNAL = -1
     }
 
@@ -33,8 +31,8 @@ class DataPacketReader(
 
     ///
 
-    private var totalBytesRead = 0
-
+    private var dataBytesRead = 0L
+    private var extensionBytesRead = 0L
     override suspend fun listen() {
         readExtensionBytes()
         readPackets()
@@ -48,18 +46,20 @@ class DataPacketReader(
                 while (readingNotFinished) {
                     val numberOfByteWasRead = inputStream.read(buffer)
                     if (numberOfByteWasRead != CLOSE_SIGNAL) {
-                        val packet = buffer.copyOf(numberOfByteWasRead)
-                        //returning copy to avoid shared mutability
-                        onPacketReceived(packet)
-                        totalBytesRead += numberOfByteWasRead
+                        if (numberOfByteWasRead>0){
+                            //avoiding index  be -ve
+                            val packet = buffer.copyOf(numberOfByteWasRead)
+                            //returning copy to avoid shared mutability
+                            onPacketReceived(packet)
+                            dataBytesRead += numberOfByteWasRead
 
-                        Log.d(TAG, "Read:$numberOfByteWasRead")
+                            Log.d(TAG, "Read:$numberOfByteWasRead")
+                        }
+
                     }
                     if (numberOfByteWasRead == CLOSE_SIGNAL) {
                         readingNotFinished = false
-                        onCompleted()
-                        log("Total read:$totalBytesRead")
-                        Log.d(TAG, "ReadingFinished")
+                        complete()
                     }
                 }
                 inputStream.close()
@@ -73,13 +73,19 @@ class DataPacketReader(
         }
 
     }
+    private suspend fun complete(){
+        onCompleted()
+        log("onCompleted(): data bytes read:$dataBytesRead\n" +
+                "extensionBytes read:$extensionBytesRead\n" +
+                "total bytes read:${dataBytesRead+extensionBytesRead}\n")
+    }
 
     private suspend fun readExtensionBytes() {
         var extensionByte: Int
         try {
             withContext(Dispatchers.IO) {
                 extensionByte = inputStream.read()
-                totalBytesRead += 1
+                extensionBytesRead += 1
             }
             val extensionReceived = extensionByte != CLOSE_SIGNAL && extensionByte > 0
             if (extensionReceived) {

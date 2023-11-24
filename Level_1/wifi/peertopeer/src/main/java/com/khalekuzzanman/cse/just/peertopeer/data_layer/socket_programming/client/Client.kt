@@ -1,7 +1,6 @@
 package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.client
 
 import android.util.Log
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.DataCommunicator
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server.Server
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,15 +10,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 
 interface Peer {
+
     suspend fun sendData(data: ByteArray)
     suspend fun stopSend()
     fun readReceivedData(): StateFlow<String?>
 }
+
 
 /*
 Important:
@@ -35,8 +37,7 @@ because this class hold the reference of client and server so this may need to u
 class Client(
     private val hostAddress: InetAddress,
 ) : Peer {
-    private var socket = Socket()
-    private var dataCommunicator = DataCommunicator(socket)
+    private var serverSocket: Socket? = null
     private val _lastMessage = MutableStateFlow<String?>(null)
 
     companion object {
@@ -44,64 +45,97 @@ class Client(
     }
 
     init {
-        val fiveMin = 300
-        tryConnectUntil(fiveMin)
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            connect()
+        }
+
     }
 
 
-    private fun tryConnectUntil(second: Int) {
-        val scope = CoroutineScope(Dispatchers.Default)
-        var elapsedSecond = 0
-        scope.launch {
-            while (elapsedSecond < second) {
-                try {
-                    val socket = Socket()
-                    withContext(Dispatchers.IO) {
-                        socket.connect(
-                            InetSocketAddress(
-                                hostAddress.hostAddress,
-                                Server.SERVER_PORT
-                            )
-                        )
-                    }
-                    if (socket.isConnected) {
-                        Log.d(TAG, "Connection established")
-                        dataCommunicator = DataCommunicator(socket)
-                        listenContinuously()
-                        break
-                    }
-                } catch (e: Exception) {
-                    // Log.d(TAG, e.stackTraceToString())
-                    Log.d(TAG, "Connection failed:Retrying")
-                } finally {
-                    elapsedSecond++
-                    delay(1000)
-                }
-            }
+    private fun isNotConnected(): Boolean {
+        serverSocket ?: return true
+        return false
+    }
 
+    private fun isConnected() = !isNotConnected()
+
+    private suspend fun closeConnection() {
+        serverSocket?.let { socket ->
+            withContext(Dispatchers.IO) {
+                socket.getOutputStream().close()
+            }
         }
+        serverSocket = null
+        Log.d(TAG, "Disconnected")
 
     }
 
 
     override suspend fun sendData(data: ByteArray) {
         Log.d(TAG, "sendData()")
-        dataCommunicator.sendData(data)
+        if (isNotConnected())
+            connect()
+        send(data)
+//        closeConnection()
+//        connect()
     }
 
-    override suspend fun stopSend() {
-        TODO("Not yet implemented")
-    }
-
-    private fun listenContinuously() {
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            while (true) {
-                _lastMessage.value = dataCommunicator.readReceivedData()
+    private suspend fun send(data: ByteArray) {
+        serverSocket?.let { socket ->
+            try {
+                withContext(Dispatchers.IO) {
+                    val out = socket.getOutputStream()
+                    out.write(data)
+                    Log.d(TAG, "DataSend(): Successfully")
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, "DataSend() Failed:${e.stackTraceToString()}")
             }
-
         }
     }
+
+
+    override suspend fun stopSend() {
+        closeConnection()
+        connect()//reconnect for if server wants reply back
+    }
+
+    private suspend fun connect() {
+        if (isConnected())
+            return
+        while (true) {
+            try {
+                val socket = withContext(Dispatchers.IO) {
+                    val newSocket = Socket()
+                    newSocket.connect(
+                        InetSocketAddress(
+                            hostAddress.hostAddress,
+                            Server.SERVER_PORT
+                        )
+                    )
+                    newSocket
+
+                }
+                serverSocket = socket
+                if (socket.isConnected) {
+                    Log.d(TAG, "Connected Successfully")
+                    return
+                } else {
+                    withContext(Dispatchers.IO) {
+                        socket.close()
+                    }
+                    return
+                }
+            } catch (ex: IOException) {
+                // Delay before the next retry
+                Log.d(TAG, "Connection Failed:Retrying")
+                delay(1000)
+            }
+        }
+
+    }
+
 
     override fun readReceivedData(): StateFlow<String?> {
         return _lastMessage.asStateFlow()

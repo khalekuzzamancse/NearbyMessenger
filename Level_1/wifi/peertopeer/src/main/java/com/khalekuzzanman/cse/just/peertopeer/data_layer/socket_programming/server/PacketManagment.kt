@@ -1,15 +1,11 @@
 package com.khalekuzzanman.cse.just.peertopeer.data_layer.socket_programming.server
 
-import android.content.ContentResolver
 import android.util.Log
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.DataPacketReader
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.FileExtensions
+import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.FileWriter
 import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.PacketReceiver
-import com.khalekuzzanman.cse.just.peertopeer.data_layer.io.PacketToFileWriter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.IOException
-import java.io.InputStream
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 /*
@@ -17,54 +13,59 @@ Following Open close principle for this class
 Following Dependency injection so that for different implementations of
 Reader and writer we do  not have to modify the source code of it.
 reducing the coupling
+
  */
 
+
 class PacketManager(
-    private val resolver: ContentResolver,
-    private val reader: PacketReceiver
+    private val packetWriter: FileWriter,
+    private val packetReader: PacketReceiver
 ) {
+    private var packetReceived=0L
+    private var packetWritten=0L
     companion object {
         private const val TAG = "PacketManagerLog:: "
     }
-
-    private var writer: PacketToFileWriter? = null
+    private val _receivingData= MutableStateFlow(false)
+    val receivingData =_receivingData.asStateFlow()
 
     private fun listenerPacketCompleted() {
-        reader.onCompleted = {
+        packetReader.onCompleted = {
             log("onCompleted():all packets received")
-            if (writer != null) {
-                writer?.writeFinished()
-            } else {
-                log("onCompleted():writer=NULL")
-            }
+            log("onCompleted():read=$packetReceived ,write=$packetWritten")
+            this.packetWriter.stopWriting()
+            _receivingData.value=false
         }
     }
 
-    private fun listenPacket() {
-        reader.onPacketReceived = { packet ->
-            if (writer != null) {
-                writer?.write(packet)
-                log("onPacketReceived():${packet.size}")
-            } else {
-                log("onPacketReceived():writer==NULL")
-            }
 
+    private fun listenPacket() {
+        packetReader.onPacketReceived = { packet ->
+            packetReceived+=packet.size
+            packetWritten+=packet.size
+            this.packetWriter.write(packet)
+            log("onPacketReceived():${packet.size}")
+            _receivingData.value=true
         }
     }
 
     private fun listenMimeType() {
-        reader.onMimeTypeRead = {
+        packetReader.onMimeTypeRead = {
+            _receivingData.value=true
+            //
+            packetReceived+=1
             log("mimeType:$it")
             val mimeType = FileExtensions.getMimeType(it)
             if (mimeType != null) {
                 val ext = FileExtensions.getFileExtension(mimeType)
                 if (ext != null) {
                     log("onMimeTypeRead(): Ext=${ext.ext}")
-                    writer = PacketToFileWriter(
-                        resolver = resolver,
-                        fileName = ext.ext + generateTimestamp(),
-                        extension = ext
-                    )
+                    packetWriter.apply {
+                        setFileName(generateTimestamp())
+                        setExtension(ext)
+                        makeReadyForWrite()
+                    }
+                    //   fileName = ext.ext + generateTimestamp(),
                 } else {
                     log("onMimeTypeRead(): Ext=NULL")
                 }
@@ -76,7 +77,7 @@ class PacketManager(
         listenMimeType()
         listenPacket()
         listenerPacketCompleted()
-        reader.listen()
+        packetReader.listen()
     }
 
     private fun log(message: String) {
