@@ -63,6 +63,7 @@ class ConversationScreenTest {
         setUI()
         //When text is empty the Mic or Add Attachment button will be visible
         msgTypeFieldBox.assertExists(); assertTrue(msgTypeFieldBox.isDisplayed())
+        screenTitle.assertExists(); assertTrue(screenTitle.isDisplayed())
         attachmentButton.assertExists(); assertTrue(attachmentButton.isDisplayed())
         speechToTextButton.assertExists();assertTrue(speechToTextButton.isDisplayed())
         sendButton.assertDoesNotExist()
