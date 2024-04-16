@@ -1,4 +1,4 @@
-package kzcse.wifidirect.ui.ui.chat_screen
+package chatui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -17,10 +17,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-
-@Composable
-fun ChatScreen() {
-}
 
 
 
@@ -63,6 +59,7 @@ fun MessagePreview() {
 
 @Composable
 fun ColumnScope.Message(
+    modifier: Modifier=Modifier,
     message: String,
     timeStamp: String,
     shape: Shape,
@@ -71,7 +68,7 @@ fun ColumnScope.Message(
 ) {
     Surface(
         shape = shape,
-        modifier = Modifier.align(alignment),
+        modifier = modifier.align(alignment),
         shadowElevation = 1.dp,
         color = backgroundColor
     ) {

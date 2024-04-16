@@ -17,10 +17,10 @@ kotlin {
         instrumentedTestVariant {
             sourceSetTree.set(KotlinSourceSetTree.test)
             dependencies {
-                implementation(libs.test.androidxUiJunit)
-                debugImplementation(libs.test.androidxUiManifest)
 //                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.5")
 //                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
+                implementation(libs.test.androidxUiJunit)
+                debugImplementation(libs.test.androidxUiManifest)
             }
         }
 
@@ -73,7 +73,7 @@ kotlin {
 
 }
 android {
-    namespace = "peers"
+    namespace = "chatui"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

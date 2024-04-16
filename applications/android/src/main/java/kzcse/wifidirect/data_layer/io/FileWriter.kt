@@ -11,7 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import kzcse.wifidirect.PermissionIfNeeded
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +25,6 @@ File will be write in the download folder
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Preview
 @Composable
 fun TextFileWriteDemo() {
     PermissionIfNeeded()

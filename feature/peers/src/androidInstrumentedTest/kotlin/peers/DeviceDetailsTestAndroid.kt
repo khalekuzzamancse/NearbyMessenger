@@ -14,7 +14,8 @@ import peers.devices_list.DeviceDetails
 import peers.devices_list.NearByDevice
 import kotlin.test.Test
 
-class DeviceDetailsTest {
+class DeviceDetailsTestAndroid {
+
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun disConnectedDeviceInfoTest() = runComposeUiTest {
@@ -28,7 +29,8 @@ class DeviceDetailsTest {
         }
         onNodeWithTag(":DeviceNameText").assertTextEquals("Device Name: Md Abdul")
         onNodeWithTag(":IPAddressText").assertTextEquals("IP Address: 1234")
-        //on connected "Cancel" Button will be will be ,"
+        //on connected "Cancel" Button will be will be ,"Disconnect" will be shown
+        onNodeWithTag(":Dialog:DisconnectButton").assertDoesNotExist()
         onNodeWithTag(":Dialog:CancelButton").assertExists()
     }
 

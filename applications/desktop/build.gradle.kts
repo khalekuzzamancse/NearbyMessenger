@@ -16,6 +16,7 @@ kotlin {
                 implementation(compose.desktop.common)
                 implementation(compose.desktop.currentOs)
                 implementation(project(":feature:peers"))
+                implementation(project(":feature:chatui"))
 
             }
         }

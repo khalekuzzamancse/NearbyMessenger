@@ -10,14 +10,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+
 import kzcse.wifidirect.PermissionIfNeeded
 
 
 //Bugs:No bug till now
 //Tested works fine
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Preview
+
 @Composable
 fun AnyFileReadingWriteDemo() {
     PermissionIfNeeded()

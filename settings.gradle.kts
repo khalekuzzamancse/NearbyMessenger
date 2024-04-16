@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 val applicationsModules= listOf(":applications","applications:android",":applications:desktop")
-val featureModules= listOf(":feature",":feature:peers")
+val featureModules= listOf(":feature",":feature:peers",":feature:chatui")
 include(applicationsModules+featureModules)

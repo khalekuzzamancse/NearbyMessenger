@@ -30,10 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@Preview
+
 @Composable
 fun DeviceListPreview() {
     Column {
@@ -46,7 +45,7 @@ fun DeviceListPreview() {
 
 }
 
-@Preview
+
 @Composable
 fun DeviceListPreview2() {
     Column {
@@ -64,7 +63,7 @@ fun DeviceListPreview2() {
 
 }
 
-@Preview
+
 @Composable
 fun DeviceListPreview3() {
     Column {

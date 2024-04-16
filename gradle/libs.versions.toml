@@ -22,6 +22,7 @@ appcompat = "1.6.1"
 material = "1.11.0"
 core = "1.12.0"
 playServicesLocation = "21.2.0"
+androidxUItest="1.6.5"
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-activity-compose= { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -50,11 +51,16 @@ coil3-network = { module = "io.coil-kt.coil3:coil-network", version.ref = "coil3
 coil3-core = { module = "io.coil-kt.coil3:coil-core", version.ref = "coil3-io" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 windowSize = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform",version.ref = "windowSize"}
-
-#Test
-
+#TODO:Test dependency
+#TODO:Test dependency
+test-kotlinTest={ module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+test-kotlinTestJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+test-androidxUiJunit={module="androidx.compose.ui:ui-test-junit4-android",version.ref="androidxUItest"}
+test-androidxUiManifest={module="androidx.compose.ui:ui-test-manifest",version.ref="androidxUItest"}
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -69,6 +75,7 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 # WorkManager bundle
 workManager = ["androidx-work-runtime-ktx", "androidx-work-gcm", "androidx-work-multiprocess", "androidx-work-testing"]
 unitTest = ["kotlin-test", "kotlin-test-junit"]
+
 
 # Ktor Client bundle
 ktorClient = ["ktor-client-core", "ktor-client-okhttp", "ktor-serialization-kotlinx-json", "ktor-client-content-negotiation","androidx-lifecycle-livedata-ktx"]

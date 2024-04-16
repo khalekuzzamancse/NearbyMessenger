@@ -8,8 +8,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import peers.devices_list.NearByDevicesRoutePreview
-import peers.devices_list.PeersListPreview
+import chatui.ConversionScreenPreview
 
 
 fun main() {
@@ -25,7 +24,8 @@ fun main() {
         ) {
             MaterialTheme {
                 //PeersListPreview()
-            NearByDevicesRoutePreview()
+           // NearByDevicesRoutePreview()
+                ConversionScreenPreview()
 
             }
         }

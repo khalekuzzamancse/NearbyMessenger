@@ -58,16 +58,6 @@ internal fun DeviceDetails(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    if (device.isConnected) {
-                        TextButton(
-                            onClick = onDisconnectRequest,
-                            modifier = Modifier
-                                .semantics { contentDescription = "Disconnect Device" }
-                                .testTag(":Dialog:DisconnectButton")
-                        ) {
-                            Text(text = "Disconnect")
-                        }
-                    } else {
                         TextButton(
                             onClick = onClose,
                             modifier = Modifier
@@ -79,7 +69,7 @@ internal fun DeviceDetails(
                     }
 
                 }
-            }
+
 
         }
 
