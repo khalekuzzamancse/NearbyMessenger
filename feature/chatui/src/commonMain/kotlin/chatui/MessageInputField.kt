@@ -49,7 +49,6 @@ internal fun __MessageInputField(
         modifier = modifier
             .heightIn(min = 60.dp, max = 150.dp)
             .fillMaxWidth()
-            .testTag("MessageInputBox")
     ) {
         TextField(
             value = controller.message.collectAsState().value,

@@ -27,7 +27,7 @@ fun MessagePreview() {
             .padding(8.dp)
             .fillMaxSize()
     ) {
-        Message(
+        MessageInputBox(
             message = "It looks ?",
             timeStamp = "11:20 AM",
             shape = RoundedCornerShape(
@@ -40,7 +40,7 @@ fun MessagePreview() {
             backgroundColor = MaterialTheme.colorScheme.tertiary
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Message(
+        MessageInputBox(
             message = "It looks like you have",
             timeStamp = "11:20 AM",
             shape = RoundedCornerShape(
@@ -58,7 +58,7 @@ fun MessagePreview() {
 }
 
 @Composable
-fun ColumnScope.Message(
+fun ColumnScope.MessageInputBox(
     modifier: Modifier=Modifier,
     message: String,
     timeStamp: String,

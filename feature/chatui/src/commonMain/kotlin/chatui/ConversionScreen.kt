@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ConversionScreenPreview() {
-    var conversations by remember { mutableStateOf(getDummyConversation()) }
+    var conversations by remember { mutableStateOf(dummyConversation()) }
     val controller = remember { MessageFieldController() }
     val sendMessage:()->Unit={
         conversations=conversations+ChatMessage(
@@ -52,6 +52,7 @@ fun ConversionScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun _Conversions(
+    modifier: Modifier=Modifier,
     conversations: List<ChatMessage>,
     controller: MessageFieldController,
     onSendButtonClick: () -> Unit,
@@ -68,13 +69,13 @@ internal fun _Conversions(
                     }
                 },
                 title = {
-                    Text("Conversation")
+                    Text(text = "Conversation",modifier=Modifier.testTag("ScreenTitle"),)
                 }
             )
         }
     ) { scaffoldPadding ->
         _Conversions(
-            modifier = Modifier.padding(scaffoldPadding),
+            modifier = modifier.padding(scaffoldPadding),
             conversations = conversations,
             controller = controller,
             onSendButtonClick = onSendButtonClick,
@@ -99,19 +100,19 @@ private fun _Conversions(
         modifier = modifier
             .padding(start = 8.dp, end = 8.dp)
             .fillMaxWidth()
-            .testTag("ConversationsColumn")  // Test tag for the whole column
     ) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .testTag("MessagesList"),  // Test tag for the message list
+                .testTag("ConversationList"),  // Test tag for the message list
             reverseLayout = true
         ) {
             items(conversations.reversed()) { msg ->
                 val alignment = if (msg.isSender) Alignment.End else Alignment.Start
                 Column(modifier = Modifier.fillMaxWidth().testTag(if (msg.isSender) "SenderMessage" else "ReceiverMessage")) {
-                    Message(
+                    MessageInputBox(
+                        modifier=Modifier.testTag("MessageInputBox"),
                         message = msg.message,
                         timeStamp = msg.timestamp,
                         shape = if (msg.isSender) RoundedCornerShape(topStart = 8.dp, topEnd = 32.dp, bottomStart = 32.dp, bottomEnd = 32.dp)
@@ -128,7 +129,7 @@ private fun _Conversions(
             onSendRequest = onSendButtonClick,
             onAttachmentLoadRequest = onAttachmentClick,
             onSpeechToTextRequest = onSpeechToTextRequest,
-            modifier = Modifier.testTag("MessageInputField")
+            modifier = Modifier.testTag("MessageInputBox")
         )
     }
 }
