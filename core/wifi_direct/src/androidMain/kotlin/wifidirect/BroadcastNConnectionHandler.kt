@@ -43,13 +43,14 @@ class BroadcastNConnectionHandler(
 
 
     //WifiManager is used to enable or disable the wifi
-    private val wifiManager=context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    private val wifiManager =
+        context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
-    private val _isWifiEnabled=MutableStateFlow(wifiManager.isWifiEnabled)
-    val isWifiEnabled=_isWifiEnabled.asStateFlow()
-    val nearByDevices=connectionManager.nearbyDevices
+    private val _isWifiEnabled = MutableStateFlow(wifiManager.isWifiEnabled)
+    val isWifiEnabled = _isWifiEnabled.asStateFlow()
+    val nearByDevices = connectionManager.nearbyDevices
 
-    fun updateConnectedDeviceInfo()=connectionManager.updateConnectedDeviceInfo()
+    fun updateConnectedDeviceInfo() = connectionManager.updateConnectedDeviceInfo()
 
 
     companion object {
@@ -64,49 +65,37 @@ class BroadcastNConnectionHandler(
         },
         onConnectionChangeAction = {
             Log.d(TAG, "onConnectionChange")
-           connectionManager.updateConnectedDeviceInfo()
+            connectionManager.updateConnectedDeviceInfo()
         },
         onPeersChangeAction = {
-          //  Log.d(TAG, " onPeersChange")
+            //  Log.d(TAG, " onPeersChange")
         },
         onThisDeviceChangeAction = {
             Log.d(TAG, "  onThisDeviceChange")
         },
-        onWifiStateChangedAction = {wifiState->
+        onWifiStateChangedAction = { wifiState ->
 
             when (wifiState) {
                 WifiManager.WIFI_STATE_ENABLED -> {
-                   _isWifiEnabled.value=true
+                    _isWifiEnabled.value = true
                 }
+
                 WifiManager.WIFI_STATE_DISABLED -> {
-                    _isWifiEnabled.value=false
+                    _isWifiEnabled.value = false
                 }
             }
         }
 
-        )
-    fun disconnectAll()=connectionManager.disconnect()
+    )
 
-    fun registerBroadcast() {
-        broadcastManager.register()
-    }
+    fun disconnectAll() = connectionManager.disconnect()
 
-    fun unregisterBroadcast() {
-        broadcastManager.unregister()
-    }
+    fun registerBroadcast() = broadcastManager.register()
 
-    fun scanDevice() {
-        connectionManager.startScanning()
+    fun unregisterBroadcast() = broadcastManager.unregister()
 
-    }
-
-    fun connectTo(device: WifiP2pDevice) {
-        connectionManager.connectWith(device)
-    }
-    fun connectTo(address: String) {
-        connectionManager.connectWith(address)
-    }
-
+    fun scanDevice() = connectionManager.startScanning()
+    fun connectTo(address: String) = connectionManager.connectWith(address)
 
 }
 

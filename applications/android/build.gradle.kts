@@ -62,8 +62,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.windowSize)
     //
-    implementation(project(":feature:peers"))
-    implementation(project(":feature:chatui"))
+    implementation(project(":feature:peers:ui"))
+    implementation(project(":feature:chat:ui"))
     implementation(project(":core:wifi_direct"))
 
 }
