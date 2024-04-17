@@ -6,10 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
-import kzcse.wifidirect.data_layer.connectivity.WifiAndBroadcastHandlerInstance
 import kzcse.wifidirect.ui.WifiDialog
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
 import kzcse.wifidirect.ui.ui.navigation.NavGraph
+import wifidirect.Factory
 
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ConnectivitySamplesNetworkingTheme {
                 PermissionIfNeeded()
-                WifiDialog(WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler.isWifiEnabled.collectAsState().value) {
+                WifiDialog(Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value) {
                 }
                 NavGraph()
 //               ConversionScreenPreview(

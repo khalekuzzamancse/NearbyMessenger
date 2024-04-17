@@ -9,10 +9,9 @@ import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
-
 /*
 Through out the whole application we need to the manage it,
-but all application may not observe it such as all the screens may not want to listen the broadcast,
+but all application may not observe it such as all the screens may not want to listen the boroadcast,
 so do not make it directly singleton but you can less reference of it
 
 Intents along with description::
@@ -29,7 +28,7 @@ Intents along with description::
 
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class WifiDirectBroadcastPublisher(
+internal class WifiDirectBroadcastManager(
     private val context: Context,
     onStateChangeAction: () -> Unit={},
     onPeersChangeAction: () -> Unit={},
@@ -39,6 +38,7 @@ class WifiDirectBroadcastPublisher(
 ) {
     private val tag = "PeerToPeerApp: -> "
     private var actionReceiver: BroadcastReceiver? = null
+        private set
 
     private val intentFilter = IntentFilter().apply {
         addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)

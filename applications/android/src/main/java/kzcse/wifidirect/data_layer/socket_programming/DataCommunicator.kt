@@ -2,15 +2,15 @@ package kzcse.wifidirect.data_layer.socket_programming
 
 import android.content.ContentResolver
 import android.util.Log
-import kzcse.wifidirect.data_layer.connectivity.ConnectionInfo
-import kzcse.wifidirect.data_layer.connectivity.ConnectionType
-import kzcse.wifidirect.data_layer.socket_programming.client.Client
-import kzcse.wifidirect.data_layer.socket_programming.client.Peer
-import kzcse.wifidirect.data_layer.socket_programming.server.Server
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kzcse.wifidirect.data_layer.socket_programming.client.Client
+import kzcse.wifidirect.data_layer.socket_programming.client.Peer
+import kzcse.wifidirect.data_layer.socket_programming.server.Server
+import wifidirect.connection.ConnectionInfo
+import wifidirect.connection.ConnectionType
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.Socket

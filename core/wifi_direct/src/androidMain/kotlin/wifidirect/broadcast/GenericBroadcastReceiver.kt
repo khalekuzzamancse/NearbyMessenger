@@ -8,7 +8,7 @@ import android.content.Intent
 This is re usable
  */
 
-class GenericBroadcastReceiver(
+internal class GenericBroadcastReceiver(
     private val interestedActions: List<BroadcastReceiverAction>
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

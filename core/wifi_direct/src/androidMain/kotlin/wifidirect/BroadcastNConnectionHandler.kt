@@ -1,4 +1,4 @@
-package kzcse.wifidirect.data_layer.connectivity
+package wifidirect
 
 import android.content.Context
 import android.net.wifi.WifiManager
@@ -8,16 +8,18 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import wifidirect.broadcast.WifiDirectBroadcastManager
+import wifidirect.connection.ConnectionManager
 
 /*
 we need to know the wifi status thought the whole    application at any given time,
 that is why we keep a single instance
  */
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-object WifiAndBroadcastHandlerInstance {
-    lateinit var wifiAndBroadcastHandler: WifiAndBroadcastHandler
+object Factory {
+    lateinit var broadcastNConnectionHandler: BroadcastNConnectionHandler
     fun create(context: Context) {
-        wifiAndBroadcastHandler = WifiAndBroadcastHandler(context)
+        broadcastNConnectionHandler = BroadcastNConnectionHandler(context)
     }
 
 }
@@ -25,19 +27,19 @@ object WifiAndBroadcastHandlerInstance {
 /*
 /*
 Through out the whole application we need to the manage it,
-but all application may not observe it such as all the screens may not want to listen the boroadcast,
+but all application may not observe it such as all the screens may not want to listen the broadcast,
 so do not make it directly singleton but you can less reference of it
  */
 
  */
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class WifiAndBroadcastHandler(
+class BroadcastNConnectionHandler(
     context: Context,
 ) {
 
-    private val appWifiManager = AppWifiManager(context)
-    val connectionInfo = appWifiManager.connectionInfo
+    private val connectionManager = ConnectionManager(context)
+    val connectionInfo = connectionManager.connectionInfo
 
 
     //WifiManager is used to enable or disable the wifi
@@ -45,9 +47,9 @@ class WifiAndBroadcastHandler(
 
     private val _isWifiEnabled=MutableStateFlow(wifiManager.isWifiEnabled)
     val isWifiEnabled=_isWifiEnabled.asStateFlow()
-    val nearByDevices=appWifiManager.nearbyDevices
+    val nearByDevices=connectionManager.nearbyDevices
 
-    fun updateConnectedDeviceInfo()=appWifiManager.updateConnectedDeviceInfo()
+    fun updateConnectedDeviceInfo()=connectionManager.updateConnectedDeviceInfo()
 
 
     companion object {
@@ -62,7 +64,7 @@ class WifiAndBroadcastHandler(
         },
         onConnectionChangeAction = {
             Log.d(TAG, "onConnectionChange")
-           appWifiManager.updateConnectedDeviceInfo()
+           connectionManager.updateConnectedDeviceInfo()
         },
         onPeersChangeAction = {
           //  Log.d(TAG, " onPeersChange")
@@ -83,7 +85,7 @@ class WifiAndBroadcastHandler(
         }
 
         )
-    fun disconnectAll()=appWifiManager.disconnect()
+    fun disconnectAll()=connectionManager.disconnect()
 
     fun registerBroadcast() {
         broadcastManager.register()
@@ -94,18 +96,17 @@ class WifiAndBroadcastHandler(
     }
 
     fun scanDevice() {
-        appWifiManager.startScanning()
+        connectionManager.startScanning()
 
     }
 
     fun connectTo(device: WifiP2pDevice) {
-        appWifiManager.connectWith(device)
+        connectionManager.connectWith(device)
+    }
+    fun connectTo(address: String) {
+        connectionManager.connectWith(address)
     }
 
 
 }
-//devices ->
-//val device = devices.firstOrNull()
-//if (device != null)
-//myWifiManager.connectWith(device)
 

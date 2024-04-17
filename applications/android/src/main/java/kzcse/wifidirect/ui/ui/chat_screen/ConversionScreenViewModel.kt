@@ -4,13 +4,15 @@ import android.content.ContentResolver
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import kzcse.wifidirect.data_layer.connectivity.WifiAndBroadcastHandlerInstance
-import kzcse.wifidirect.data_layer.socket_programming.SocketManager
+import chatui.ChatMessage
+import chatui.MessageFieldController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kzcse.wifidirect.data_layer.socket_programming.SocketManager
+import wifidirect.Factory
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -24,11 +26,11 @@ class ConversionScreenViewModel(
     }
 
 
-    private val _messages = MutableStateFlow<List<ConversationScreenMessage>>(emptyList())
+    private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
     val messages = _messages.asStateFlow()
-    val messageInputFieldState = MessageInputFieldState()
+    val messageInputFieldState = MessageFieldController()
 
-    private val wifiManager = WifiAndBroadcastHandlerInstance.wifiAndBroadcastHandler
+    private val wifiManager = Factory.broadcastNConnectionHandler
 
     private var socketManager: SocketManager? = null
 
@@ -43,8 +45,8 @@ class ConversionScreenViewModel(
         )
             socketManager?.listenReceived()?.collect { data ->
                 if (data != null) {
-                    Log.d(TAG, "Recived: $data")
-                    _messages.value = messages.value + ConversationScreenMessage(
+                    Log.d(TAG, "Received: $data")
+                    _messages.value = messages.value + ChatMessage(
                         message = data,
                         isSender = false,
                         timestamp = getCurrentTimeAsString()
@@ -70,13 +72,13 @@ class ConversionScreenViewModel(
         val scope = CoroutineScope(Dispatchers.IO)
 
 
-        Log.d(TAG, "onSendRequest(): CommMangr=$socketManager")
+        Log.d(TAG, "onSendRequest(): CommManor=$socketManager")
         val message = messageInputFieldState.message.value
         scope.launch {
             socketManager?.sendData(message.toByteArray())
         }
 
-        _messages.value = messages.value + ConversationScreenMessage(
+        _messages.value = messages.value + ChatMessage(
             message = message,
             isSender = true,
             timestamp = getCurrentTimeAsString()

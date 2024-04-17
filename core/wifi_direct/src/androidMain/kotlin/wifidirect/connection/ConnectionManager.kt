@@ -1,4 +1,4 @@
-package wifidirect
+package wifidirect.connection
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,28 +14,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import wifidirect.scanneddevice.Device
-import wifidirect.scanneddevice.ScannedDevice
 
 /**
  *  It handle :
-* * Scanning for Nearby Devices
-* * Retrieving Scanned Device List
-* * Disconnecting from a Device or Group
-* * Connecting to a Device
-* * Updating Information about Connected Devices
-* * Keeping Connection status
+ * * Scanning for Nearby Devices
+ * * Retrieving Scanned Device List
+ * * Disconnecting from a Device or Group
+ * * Connecting to a Device
+ * * Updating Information about Connected Devices
+ * * Keeping Connection status
  */
 
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class AppWifiManager(
-    context: Context
-) {
-
+internal class ConnectionManager(context: Context) {
     companion object {
         private const val TAG = "AppWifiManagerLog: "
-
     }
 
     //for managing wifi direct
@@ -52,17 +46,15 @@ class AppWifiManager(
     //val connectionInfo = _connectionInfo.asStateFlow()
     private val _connInfo = MutableStateFlow(ConnectionInfo())
     val connectionInfo = _connInfo.asStateFlow()
-
     private val _nearbyDevices = MutableStateFlow<List<Device>>(emptyList())
     val nearbyDevices = _nearbyDevices.asStateFlow()
-
     private val _nearbyDeviceInfo = MutableStateFlow(ScannedDevice())
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
             _nearbyDeviceInfo.collect { peers ->
                 _nearbyDevices.value = peers.getDevice()
-            //    Log.d(TAG, "Nearby: ${peers.getDevice()}")
+                Log.d(TAG, "Nearby: ${peers.getDevice()}")
             }
 
         }
@@ -74,9 +66,11 @@ class AppWifiManager(
         }
     }
 
+
     fun connectWith(device: WifiP2pDevice) {
         val config = WifiP2pConfig()
-        config.deviceAddress = device.deviceAddress
+        val deviceAddress: String = device.deviceAddress
+        config.deviceAddress = deviceAddress
         channel.also { channel ->
             manager?.connect(
                 channel,
@@ -98,6 +92,33 @@ class AppWifiManager(
         }
     }
 
+    /**
+     * @param deviceAddress Taking as  String to decouple with some
+     * custom or built in data type such as [WifiP2pDevice]
+     */
+    fun connectWith(deviceAddress: String) {
+        val config = WifiP2pConfig()
+        config.deviceAddress = deviceAddress
+        channel.also { channel ->
+            manager?.connect(
+                channel,
+                config,
+                object : WifiP2pManager.ActionListener {
+                    override fun onSuccess() {
+//                        Log.d(TAG, "Connected:${device.deviceName}")
+                        updateConnectionInfo()
+                    }
+
+                    override fun onFailure(reason: Int) {
+//                        Log.d(TAG, "Connected:Fail")
+                        updateConnectionInfo()
+//
+                    }
+                }
+            )
+        }
+    }
+
     fun disconnect() {
         manager?.removeGroup(channel, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
@@ -106,11 +127,13 @@ class AppWifiManager(
                 startScanning()
                 updateConnectionInfo()
             }
+
             override fun onFailure(reason: Int) {
                 updateConnectionInfo()
             }
         })
     }
+
 
     fun updateConnectedDeviceInfo() {
         manager?.requestGroupInfo(channel) { group ->
@@ -125,7 +148,6 @@ class AppWifiManager(
             override fun onSuccess() {
                 requestScannedDevice()
             }
-
             override fun onFailure(reasonCode: Int) {
             }
 

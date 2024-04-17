@@ -34,7 +34,7 @@ class ConversationScreenTest {
         initializeNode()
         val totalConversation=conversations.size
         setContent {
-            _Conversions(
+            Conversions(
                 conversations = conversations,
                 controller = controller,
                 onSendButtonClick = {
@@ -89,7 +89,7 @@ class ConversationScreenTest {
         var speechToTextClicked = false
         var sendClicked = false
         setContent {
-            _Conversions(
+            Conversions(
                 conversations = conversations,
                 controller = controller,
                 onSendButtonClick = { sendClicked = true },
@@ -129,7 +129,7 @@ class ConversationScreenTest {
 
     private fun ComposeUiTest.setUI() {
         setContent {
-            _Conversions(
+            Conversions(
                 conversations = conversations,
                 controller = controller,
                 onSendButtonClick = ::sendMessage,

@@ -35,7 +35,7 @@ fun ConversionScreenPreview() {
             isSender = true
         )
     }
-    _Conversions(
+    Conversions(
         conversations = conversations,
         controller = controller,
         onSendButtonClick = sendMessage,
@@ -51,7 +51,7 @@ fun ConversionScreenPreview() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun _Conversions(
+ fun Conversions(
     modifier: Modifier=Modifier,
     conversations: List<ChatMessage>,
     controller: MessageFieldController,
@@ -74,7 +74,7 @@ internal fun _Conversions(
             )
         }
     ) { scaffoldPadding ->
-        _Conversions(
+        Conversions(
             modifier = modifier.padding(scaffoldPadding),
             conversations = conversations,
             controller = controller,
@@ -88,7 +88,7 @@ internal fun _Conversions(
 }
 
 @Composable
-private fun _Conversions(
+private fun Conversions(
     modifier: Modifier = Modifier,
     conversations: List<ChatMessage>,
     controller: MessageFieldController,

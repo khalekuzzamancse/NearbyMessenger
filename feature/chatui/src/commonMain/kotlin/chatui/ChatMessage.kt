@@ -5,7 +5,7 @@ data class ChatMessage(
     val isSender: Boolean,
 )
 
-fun dummyConversation():List<ChatMessage>{
+internal fun dummyConversation():List<ChatMessage>{
     val dummyConversation = mutableListOf<ChatMessage>()
     // Adding some sample messages
     dummyConversation.add(ChatMessage("Hello there!", "2023-11-03 10:00 AM", true))

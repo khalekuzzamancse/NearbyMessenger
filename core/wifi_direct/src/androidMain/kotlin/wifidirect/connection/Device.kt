@@ -1,4 +1,4 @@
-package wifidirect.scanneddevice
+package wifidirect.connection
 
 import android.net.wifi.p2p.WifiP2pDevice
 

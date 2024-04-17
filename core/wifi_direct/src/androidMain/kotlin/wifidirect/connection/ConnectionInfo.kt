@@ -1,4 +1,4 @@
-package wifidirect
+package wifidirect.connection
 
 import android.net.wifi.p2p.WifiP2pInfo
 
@@ -29,9 +29,9 @@ data class ConnectionInfo(
                 ConnectionType.Server
             else
                 ConnectionType.Client
-        } else
+        } else {
             ConnectionType.NotConnected
-
+        }
         return this.copy(
             type = type,
             groupOwnerAddress = info.groupOwnerAddress,
