@@ -11,12 +11,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.ServerSocket
 import java.net.Socket
+import kotlin.random.Random
 
 /**
  * * Use separate port for each test,otherwise can causes: [java.net.BindException] (Address already in use: bind)
  */
 class BasicServer(
-    override val port:Int = 45553
+    override val port:Int = generateFiveDigitNumber()
 ) : Server {
     //A server can have more than one connected client,
     private val _connectedClients = MutableStateFlow<List<Socket>>(emptyList())
@@ -51,6 +52,10 @@ class BasicServer(
         }
 
     }
+
+}
+private fun generateFiveDigitNumber(): Int {
+    return Random.nextInt(10000, 65535)
 }
 
 

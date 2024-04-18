@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets
  * - Messages are first converted to UTF-8 encoded bytes.
  * - A 4-byte header, representing the length of the byte array, is prepended to the message.
  * - The combined byte array (length header + message) is then sent over the socket.
- * - This method ensures that each message is sent as a discrete unit, regardless of TCP's
+ * - This method ensures that each message is sent as a discrete unit, regardless of TCPDF's
  *   stream-oriented nature, preventing message concatenation at the receiving end.
  *
  * Receiving Messages:
@@ -71,7 +71,7 @@ class TextDataCommunicatorImpl(
             val out = DataOutputStream(socket.getOutputStream())
             out.write(data)
             out.flush()
-            println("${this::class.simpleName}Log ,DataSend(): Successfully")
+            //println("${this::class.simpleName}Log ,DataSend(): Successfully")
             Result.success(Unit)
         }
     } catch (e: Exception) {
