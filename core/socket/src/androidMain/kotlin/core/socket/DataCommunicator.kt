@@ -1,14 +1,12 @@
-package kzcse.wifidirect.data_layer.socket_programming
+package core.socket
 
 import android.content.ContentResolver
 import android.util.Log
+import core.socket.networking.clinet.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kzcse.wifidirect.data_layer.socket_programming.client.Client
-import kzcse.wifidirect.data_layer.socket_programming.client.Peer
-import kzcse.wifidirect.data_layer.socket_programming.server.Server
 import wifidirect.connection.ConnectionInfo
 import wifidirect.connection.ConnectionType
 import java.io.DataInputStream
@@ -49,7 +47,7 @@ class SocketManager(
 
     init {
         if (connectionInfo.type == ConnectionType.Server) {
-            peer = Server(resolver)
+            peer = ServerImpl()
 
             Log.d(TAG, "ConnectionType:Server")
         } else if (connectionInfo.isConnected) {
@@ -91,6 +89,7 @@ class DataCommunicator(private val socket: Socket) {
             val receivedBytes = ByteArray(1024)
             val count = input.read(receivedBytes)
             val receivedData = String(receivedBytes, 0, count, Charsets.UTF_8)
+
 
             if (count > 0) {
                 Log.d(TAG, "ReceivedData(): ${receivedData}")

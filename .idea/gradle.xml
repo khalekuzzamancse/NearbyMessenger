@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/applications/android" />
             <option value="$PROJECT_DIR$/applications/desktop" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/socket" />
             <option value="$PROJECT_DIR$/core/wifi_direct" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/chat" />
