@@ -17,17 +17,16 @@ import kotlin.random.Random
  * * Use separate port for each test,otherwise can causes: [java.net.BindException] (Address already in use: bind)
  */
 class BasicServer(
-    override val port:Int = generateFiveDigitNumber()
+    override val port: Int = generateFiveDigitNumber(),
 ) : Server {
     //A server can have more than one connected client,
     private val _connectedClients = MutableStateFlow<List<Socket>>(emptyList())
     override val connectedClients: Flow<List<Socket>> = _connectedClients.asStateFlow()
-    override fun getClients()=_connectedClients.value.toList()
+    override fun getClientsSocket() = _connectedClients.value.toList()
     //try to use port given by OS,the fixed port may not be empty in that case it will fail to connect
 
     private val server = ServerSocket(port)
-    override val address: String? = server.inetAddress.hostAddress
-
+    override val address=server.inetAddress.hostAddress
     init {
         CoroutineScope(Dispatchers.Default).launch {
             runForever()
@@ -35,7 +34,7 @@ class BasicServer(
     }
 
     override suspend fun runForever() {
-        while (true){
+        while (true) {
             withContext(Dispatchers.IO) {
                 try {
                     val clientSocket = server.accept()
@@ -53,7 +52,11 @@ class BasicServer(
 
     }
 
+    override  fun isServerCreated() :Boolean{
+       return server.inetAddress!=null
+    }
 }
+
 private fun generateFiveDigitNumber(): Int {
     return Random.nextInt(10000, 65535)
 }

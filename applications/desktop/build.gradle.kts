@@ -15,8 +15,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation(compose.desktop.currentOs)
-                implementation(project(":feature:peers"))
-                implementation(project(":feature:chat"))
+                implementation(project(":feature:chat:ui"))
 
             }
         }

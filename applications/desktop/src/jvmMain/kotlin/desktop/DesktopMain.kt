@@ -25,7 +25,8 @@ fun main() {
             MaterialTheme {
                 //PeersListPreview()
            // NearByDevicesRoutePreview()
-                ConversionScreenPreview()
+
+                RootNavGraph()
 
             }
         }

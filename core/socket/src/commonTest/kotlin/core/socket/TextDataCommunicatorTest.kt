@@ -15,10 +15,11 @@ class TextDataCommunicatorTest {
 
     @Test
     fun `unidirectional Single Message Send snf ReceivedTest`() = runBlocking {
-        val server = startServer()
-        val client = connectClient(server)
-        val clientCommunicator = createDataCommunicatorForClient(client)
-        val serverCommunicator = createDataCommunicatorForServer(server)
+        val server: BasicServer = startServer()
+        val client: BasicClient = connectClient(server)
+        // Create communicators for both client and server
+        val clientCommunicator = TextDataCommunicatorImpl(client.getConnectedServerSocket()!!)
+        val serverCommunicator = TextDataCommunicatorImpl(server.getClientsSocket().first())
         val sendMessage = "Hello"
         clientCommunicator.sendMessage(sendMessage)
         val receivedMessage = serverCommunicator.retrieveReceivedData()
@@ -54,8 +55,8 @@ class TextDataCommunicatorTest {
         val client = connectClient(server)
 
         // Create communicators for both client and server
-        val clientCommunicator = createDataCommunicatorForClient(client)
-        val serverCommunicator = createDataCommunicatorForServer(server)
+        val clientCommunicator = TextDataCommunicatorImpl(client.getConnectedServerSocket()!!)
+        val serverCommunicator = TextDataCommunicatorImpl(server.getClientsSocket().first())
 
         // Define messages for both client and server
         val clientMessages = listOf("HI", "How are you?")
@@ -146,7 +147,8 @@ class TextDataCommunicatorTest {
     }
 
     private suspend fun connectClient(server: BasicServer): BasicClient {
-        val client = BasicClient(server.address!!, server.port)
+        val address= server.address
+        val client = BasicClient(address!!, server.port)
         val result = client.connect(timeoutSeconds = 5)
         assertTrue(result.isSuccess)
         delay(2_000)
@@ -154,20 +156,21 @@ class TextDataCommunicatorTest {
         return client
     }
 
-    private fun checkServerIsOk(server: BasicServer) {
-        assertTrue(server.address != null, "Server address must be initialized.")
+    private suspend fun checkServerIsOk(server: BasicServer) {
+        val address= server.address
+        assertTrue(address != null, "Server address must be initialized.")
     }
 
     private fun checkClientIsConnected(client: BasicClient) {
-        assertTrue(client.getConnectedServer() != null, "Client should be connected.")
+        assertTrue(client.getConnectedServerSocket() != null, "Client should be connected.")
     }
 
     private fun createDataCommunicatorForClient(client: BasicClient): TextDataCommunicator {
-        return TextDataCommunicatorImpl(client.getConnectedServer()!!)
+        return TextDataCommunicatorImpl(client.getConnectedServerSocket()!!)
     }
 
     private fun createDataCommunicatorForServer(server: BasicServer): TextDataCommunicator {
-        return TextDataCommunicatorImpl(server.getClients().first())
+        return TextDataCommunicatorImpl(server.getClientsSocket().first())
     }
 
 

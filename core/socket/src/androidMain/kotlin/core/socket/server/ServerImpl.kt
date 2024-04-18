@@ -2,7 +2,7 @@ package core.socket.server
 
 import android.util.Log
 import core.socket.DataCommunicator
-import core.socket.Peer
+import core.socket.peer.SocketApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,7 +21,7 @@ import java.net.Socket
  */
 class ServerImpl(
     private val onConnected: (client: Socket) -> Unit = {},
-) : Peer {
+) : SocketApplication {
     companion object {
         private const val TAG = "ServerLog: "
         const val SERVER_PORT = 45555

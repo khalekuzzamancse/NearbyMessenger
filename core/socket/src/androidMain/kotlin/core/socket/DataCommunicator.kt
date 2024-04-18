@@ -3,6 +3,7 @@ package core.socket
 import android.content.ContentResolver
 import android.util.Log
 import core.socket.networking.clinet.Client
+import core.socket.peer.SocketApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ class SocketManager(
     connectionInfo: ConnectionInfo,
     resolver: ContentResolver
 ) {
-    private var peer: Peer? = null
+    private var socketApplication: SocketApplication? = null
 
 
     companion object {
@@ -27,31 +28,31 @@ class SocketManager(
 
     suspend fun sendData(data: ByteArray = "".toByteArray()) {
         Log.d(TAG, "sendData():$data")
-        if (peer != null && peer is Client) {
-            val client = peer as Client
+        if (socketApplication != null && socketApplication is Client) {
+            val client = socketApplication as Client
             client.sendData(data)
 
 
         }
     }
     suspend fun stopSend(){
-        if (peer != null && peer is Client) {
-            val client = peer as Client
+        if (socketApplication != null && socketApplication is Client) {
+            val client = socketApplication as Client
             client.stopSend()
         }
     }
 
 
 
-    fun listenReceived() = peer?.readReceivedData()
+    fun listenReceived() = socketApplication?.readReceivedData()
 
     init {
         if (connectionInfo.type == ConnectionType.Server) {
-            peer = ServerImpl()
+            socketApplication = ServerImpl()
 
             Log.d(TAG, "ConnectionType:Server")
         } else if (connectionInfo.isConnected) {
-            peer = connectionInfo.groupOwnerAddress?.let { Client(it) }
+            socketApplication = connectionInfo.groupOwnerAddress?.let { Client(it) }
             Log.d(TAG, "ConnectionType:Client")
         }
 

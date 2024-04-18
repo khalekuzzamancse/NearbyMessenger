@@ -22,10 +22,13 @@ this technique will work insha-allah.
 because this class hold the reference of client and server so this may need to updated.
  * * Client will connected at most one server at a time
  */
-class BasicClient(private val serverAddress: String, private val serverPort: Int) : Client {
+class BasicClient(
+    private val serverAddress: String, private val serverPort: Int,
+) : Client {
     private val _serverSocket = MutableStateFlow<Socket?>(null)
     override val connectedServer = _serverSocket.asStateFlow()
-    override fun getConnectedServer()=_serverSocket.value
+
+    override fun getConnectedServerSocket() = _serverSocket.value
     override fun isNotConnected(): Boolean {
         _serverSocket.value ?: return true
         return false
@@ -37,19 +40,21 @@ class BasicClient(private val serverAddress: String, private val serverPort: Int
         return attemptConnectionWithTimeout(timeoutSeconds)
     }
 
-    private suspend fun attemptConnectionWithTimeout(timeoutSeconds: Int): Result<Unit> = withTimeoutOrNull(timeoutSeconds * 1000L) {
-        try {
-            val socket = createSocket()
-            if (socket.isConnected) {
-                handleSuccessfulConnection(socket)
-            } else {
-                handleFailedConnection(socket)
+    private suspend fun attemptConnectionWithTimeout(timeoutSeconds: Int): Result<Unit> =
+        withTimeoutOrNull(timeoutSeconds * 1000L) {
+            try {
+                val socket = createSocket()
+                if (socket.isConnected) {
+                    handleSuccessfulConnection(socket)
+                } else {
+                    handleFailedConnection(socket)
+                }
+            } catch (ex: IOException) {
+                println("${this::class.simpleName}Log ,Connection Failed: ${ex.message}")
+                Result.failure(ex)
             }
-        } catch (ex: IOException) {
-            println("${this::class.simpleName}Log ,Connection Failed: ${ex.message}")
-            Result.failure(ex)
         }
-    } ?: Result.failure(IOException("Connection attempt timed out, make sure that the server is running or not busy"))
+            ?: Result.failure(IOException("Connection attempt timed out, make sure that the server is running or not busy"))
 
     private suspend fun createSocket(): Socket = withContext(Dispatchers.IO) {
         Socket().apply {
@@ -63,10 +68,11 @@ class BasicClient(private val serverAddress: String, private val serverPort: Int
         return Result.success(Unit)
     }
 
-    private suspend fun handleFailedConnection(socket: Socket): Result<Unit> = withContext(Dispatchers.IO) {
-        socket.close()
-        Result.failure(IOException("Connection closed immediately after opening."))
-    }
+    private suspend fun handleFailedConnection(socket: Socket): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            socket.close()
+            Result.failure(IOException("Connection closed immediately after opening."))
+        }
 
     override suspend fun closeConnection() {
         _serverSocket.value?.let { socket ->

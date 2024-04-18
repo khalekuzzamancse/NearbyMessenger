@@ -5,7 +5,7 @@ import java.net.Socket
 
 interface Client {
     val connectedServer: Flow<Socket?>
-    fun getConnectedServer():Socket?
+    fun getConnectedServerSocket():Socket?
     fun isNotConnected(): Boolean
     fun isConnected(): Boolean
     suspend fun connect(timeoutSeconds: Int):Result<Unit>

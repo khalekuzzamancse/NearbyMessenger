@@ -25,13 +25,14 @@ class BasicServerTest {
             val server= BasicServer(45321)
             val clientSocket = Socket()
             val serverAddress = server.address
+            delay(2_000)
             val serverPort = server.port
             assertTrue(actual = serverAddress != null)
             clientSocket.connect(InetSocketAddress(serverAddress, serverPort))
             assertTrue(clientSocket.isConnected)
             //Asynchronous function for adding clients,delay to adding to list
             delay(3_000)
-            val connectedClients=server.getClients()
+            val connectedClients=server.getClientsSocket()
             println("ClientList:$connectedClients")
             assertTrue(connectedClients.isNotEmpty())
         }

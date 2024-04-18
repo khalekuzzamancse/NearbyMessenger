@@ -1,7 +1,7 @@
 package core.socket.clinet
 
 import android.util.Log
-import core.socket.Peer
+import core.socket.peer.SocketApplication
 import core.socket.networking.clinet.BasicClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ because this class hold the reference of client and server so this may need to u
  */
 class Client2(
    private val basicClient: BasicClient
-) : Peer {
+) : SocketApplication {
     private var serverSocket: Socket? = null
     private val _lastMessage = MutableStateFlow<String?>(null)
     companion object {
@@ -84,7 +84,7 @@ class Client2(
 }
 class Client(
     private val inetAddress: InetAddress,
-) : Peer {
+) : SocketApplication {
     private var serverSocket: Socket? = null
     private val _lastMessage = MutableStateFlow<String?>(null)
 
