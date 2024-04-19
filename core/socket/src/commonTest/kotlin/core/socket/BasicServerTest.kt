@@ -16,6 +16,7 @@ class BasicServerTest {
         runBlocking {
             val server = BasicServer(45524)
             assertTrue(server.isServerCreated())
+
         }
     }
 
@@ -24,9 +25,9 @@ class BasicServerTest {
         runBlocking {
             val server= BasicServer(45321)
             val clientSocket = Socket()
-            val serverAddress = server.address
+            val serverAddress = server.info.address
             delay(2_000)
-            val serverPort = server.port
+            val serverPort = server.info.port
             assertTrue(actual = serverAddress != null)
             clientSocket.connect(InetSocketAddress(serverAddress, serverPort))
             assertTrue(clientSocket.isConnected)

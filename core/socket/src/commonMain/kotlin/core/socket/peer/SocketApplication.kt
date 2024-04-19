@@ -65,9 +65,9 @@ class SocketApplication(
         val server = BasicServer()
         //server is running for ever
         _connectionStatus.update { ConnectionStatus.RunningAsServer }
-        address = server.address
-        port = server.port
-        server.connectedClients.collect { clients ->
+        address = server.info.address
+        port = server.info.port
+        server.clients.collect { clients ->
             if (clients.isNotEmpty()) {
                 communicator = TextDataCommunicatorImpl(server.getClientsSocket().first())
             }

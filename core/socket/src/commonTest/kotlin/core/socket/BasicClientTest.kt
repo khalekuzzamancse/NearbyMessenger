@@ -13,8 +13,8 @@ class BasicClientTest {
     fun `connecting to server after sever start`() {
         runBlocking {
             val server= BasicServer(45321)
-            val serverAddress= server.address
-            val serverPort = server.port
+            val serverAddress= server.info.address
+            val serverPort = server.info.port
             assertTrue(actual = serverAddress != null)
             val client= BasicClient(serverAddress, serverPort)
            val result=client.connect(timeoutSeconds = 5)

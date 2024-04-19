@@ -147,8 +147,8 @@ class TextDataCommunicatorTest {
     }
 
     private suspend fun connectClient(server: BasicServer): BasicClient {
-        val address= server.address
-        val client = BasicClient(address!!, server.port)
+        val address= server.info.address
+        val client = BasicClient(address!!, server.info.port)
         val result = client.connect(timeoutSeconds = 5)
         assertTrue(result.isSuccess)
         delay(2_000)
@@ -157,7 +157,7 @@ class TextDataCommunicatorTest {
     }
 
     private suspend fun checkServerIsOk(server: BasicServer) {
-        val address= server.address
+        val address= server.info.address
         assertTrue(address != null, "Server address must be initialized.")
     }
 

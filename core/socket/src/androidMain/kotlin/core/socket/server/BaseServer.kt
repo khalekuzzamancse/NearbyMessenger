@@ -17,12 +17,12 @@ import java.net.Socket
 class BaseServer : Server {
     //A server can have more than one connected client,
     private val _connectedClients = MutableStateFlow<List<Socket>>(emptyList())
-    override val connectedClients: Flow<List<Socket>> = _connectedClients.asStateFlow()
+    override val clients: Flow<List<Socket>> = _connectedClients.asStateFlow()
 
     //try to use port given by OS,the fixed port may not be empty in that case it will fail to connect
     override val port = 45555
     private val server = ServerSocket(port)
-    override val address: String? = server.inetAddress.hostAddress
+    override val hostAddress: String? = server.inetAddress.hostAddress
 
     init {
         CoroutineScope(Dispatchers.Default).launch {

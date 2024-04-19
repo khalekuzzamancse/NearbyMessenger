@@ -1,14 +1,16 @@
 package core.socket.networking.server
 
+import core.socket.networking.Participants
+import core.socket.networking.PeerInfo
 import java.net.Socket
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 
-interface Server {
-    val connectedClients: Flow<List<Socket>>
-    fun getClientsSocket():List<Socket>
-    val port: Int
-    val address: String?
+interface Server:Participants {
+    val clients: StateFlow<List<Socket>>
+    fun getClientsSocket(): List<Socket> = clients.value
+    val info:PeerInfo
     suspend fun runForever()
-    fun isServerCreated()=address!=null
+    fun isServerCreated() = info.address != null
+    fun shutdown()
 }
