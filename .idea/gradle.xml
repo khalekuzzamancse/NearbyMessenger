@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/socket" />
             <option value="$PROJECT_DIR$/core/socket/client" />
+            <option value="$PROJECT_DIR$/core/socket/peer" />
             <option value="$PROJECT_DIR$/core/socket/server" />
             <option value="$PROJECT_DIR$/core/wifi_direct" />
             <option value="$PROJECT_DIR$/feature" />

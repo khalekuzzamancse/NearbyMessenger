@@ -46,7 +46,7 @@ kotlin {
 
 }
 android {
-    namespace = "core.client"
+    namespace = "core.socket.client"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

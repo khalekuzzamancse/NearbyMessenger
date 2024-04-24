@@ -29,7 +29,7 @@ class MessageFieldController {
     fun onTextInput(text: String) {
         _message.value = text
     }
-    fun clear() {
+    fun clearInputField() {
         _message.value = ""
     }
 }

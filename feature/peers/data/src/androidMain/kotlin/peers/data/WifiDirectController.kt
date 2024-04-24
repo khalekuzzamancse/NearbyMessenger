@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -13,13 +14,23 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import peers.domain.misc.ConnectionController
+import peers.domain.misc.ConnectionInfo
 import peers.domain.model.ScannedDeviceModel
 import wifidirect.Factory
 import wifidirect.connection.Device
 
 @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class WifiDirectController() : ConnectionController {
+class WifiDirectController : ConnectionController {
     private val wifiManager = Factory.broadcastNConnectionHandler
+    override val connectionInfo: Flow<ConnectionInfo> = wifiManager.wifiDirectConnectionInfo.map { info ->
+        ConnectionInfo(
+            groupOwnerIP = info.groupOwnerIP,
+            isGroupOwner = info.isGroupOwner,
+            isConnected = info.isConnected,
+            groupOwnerName = info.groupOwnerName
+        )
+    }
+
     private val _wifiEnabled = MutableStateFlow(false)
 
     //
@@ -32,7 +43,9 @@ class WifiDirectController() : ConnectionController {
     private val _isDeviceScanning = MutableStateFlow(true)
     override val isDeviceScanning: Flow<Boolean> = _isDeviceScanning.asStateFlow()
     override val nearbyDevices =
-        wifiManager.nearByDevices.map { devices -> devices.map { it.toScannedDevice() } }
+        wifiManager.nearByDevices.map { devices ->
+            devices.map { it.toScannedDevice() }
+        }
 
     override fun onStatusChangeRequest() {
         _wifiEnabled.update { it }

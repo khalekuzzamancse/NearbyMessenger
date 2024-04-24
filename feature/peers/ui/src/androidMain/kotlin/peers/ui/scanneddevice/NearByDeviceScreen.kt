@@ -2,10 +2,8 @@ package peers.ui.scanneddevice
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -17,22 +15,42 @@ import peers.ui.devices_list.NearByDevice
 import peers.ui.devices_list.NearByDevicesRoute
 
 
+
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun NearByDeviceScreen(
-    onConversionOpen: (ip: String) -> Unit = {}
+    viewModel: DeviceListViewModel,
+    onGroupFormed: (DevicesConnectionInfo) -> Unit,
+    onConversionOpen: (ip: String) -> Unit = {},
 ) {
-    val viewModel = remember {
-        DeviceListViewModel()
-    }
+
+
+    viewModel.connectionInfo
     val hostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         viewModel.message.collect { msg ->
-            println("SnackbarMessage:$msg")
-            if (msg != null){
+            if (msg != null)
                 hostState.showSnackbar(msg)
+        }
+        viewModel.connectionInfo.collect { connectionInfo ->
+            println("ConnectionInfoLog:$connectionInfo")
+        }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.connectionInfo.collect { info ->
+            val ownerIP = info.groupOwnerIP
+            if (ownerIP != null) {
+                onGroupFormed(
+                    DevicesConnectionInfo(
+                        groupOwnerIP = ownerIP,
+                        isGroupOwner = info.isGroupOwner,
+                        isConnected = info.isConnected,
+                        groupOwnerName = info.groupOwnerName
+                    )
+                )
             }
 
+            //println("NearByDeviceScreenLog: ConnectionInfoLog:$connectionInfo")
         }
     }
     Scaffold(

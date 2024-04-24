@@ -8,26 +8,26 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import chatui.ConversionScreenPreview
 
 
 fun main() {
     application {
-        val state= remember { WindowState(
-            position = WindowPosition(0.dp, 0.dp),
-        ) }
-        state.size= DpSize(width = 400.dp, height =700.dp)
+        val state = remember {
+            WindowState(
+                position = WindowPosition(0.dp, 0.dp),
+            )
+        }
+        state.size = DpSize(width = 400.dp, height = 700.dp)
         Window(
-            state=state,
+            state = state,
             title = "Compose Desktop",
             onCloseRequest = ::exitApplication
         ) {
             MaterialTheme {
                 //PeersListPreview()
-           // NearByDevicesRoutePreview()
-
-                RootNavGraph()
-
+                // NearByDevicesRoutePreview()
+              //  Peer(PeerType.Client("localhost",8080))
+                 RootNavGraph()
             }
         }
     }

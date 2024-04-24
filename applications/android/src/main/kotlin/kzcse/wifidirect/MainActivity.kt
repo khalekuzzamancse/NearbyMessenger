@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
 import kzcse.wifidirect.ui.WifiDialog
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
-import kzcse.wifidirect.ui.ui.navigation.NavGraph
+import kzcse.wifidirect.ui.NavGraph
 import wifidirect.Factory
 
 
@@ -22,9 +22,6 @@ class MainActivity : ComponentActivity() {
                 WifiDialog(Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value) {
                 }
                 NavGraph()
-//               ConversionScreenPreview(
-//                   viewModel = ConversionScreenViewModel()
-//               )
 
             }
 

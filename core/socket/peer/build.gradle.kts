@@ -18,8 +18,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(project(":feature:peers:domain"))
-                implementation(project(":core:wifi_direct"))
+                implementation(project(":core:socket:client"))
+                implementation(project(":core:socket:server"))
             }
         }
         val androidMain by getting {
@@ -46,7 +46,7 @@ kotlin {
 
 }
 android {
-    namespace = "socket.server"
+    namespace = "core.socket.peer"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

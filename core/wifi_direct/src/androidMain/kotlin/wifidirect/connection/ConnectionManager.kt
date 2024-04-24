@@ -7,14 +7,13 @@ import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pDeviceList
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -30,15 +29,10 @@ import kotlinx.coroutines.launch
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 internal class ConnectionManager(context: Context) {
-    companion object {
-        private const val TAG = "AppWifiManagerLog: "
-    }
 
     //for managing wifi direct
-    private val manager: WifiP2pManager? =
-        context.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager?
-    private var channel: WifiP2pManager.Channel? =
-        manager?.initialize(context, context.mainLooper, null)
+    private val manager = context.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager?
+    private var channel = manager?.initialize(context, context.mainLooper, null)
 
     //keeping important states
     //connected client is the other devices except the group owner
@@ -46,8 +40,10 @@ internal class ConnectionManager(context: Context) {
 
     // private val _connectionInfo = MutableStateFlow<WifiP2pInfo?>(null)
     //val connectionInfo = _connectionInfo.asStateFlow()
-    private val _connInfo = MutableStateFlow(ConnectionInfo())
-    val connectionInfo = _connInfo.asStateFlow()
+    private val _wifiDirectInfoConnectionInfo = MutableStateFlow(WifiDirectConnectionInfo())
+    val wifiDirectConnectionInfo = _wifiDirectInfoConnectionInfo.asStateFlow()
+    private val _connectionInfo = MutableStateFlow(ConnectionInfo())
+    val connectionInfo = _connectionInfo.asStateFlow()
     private val _nearbyDevices = MutableStateFlow<List<Device>>(emptyList())
     val nearbyDevices: Flow<List<Device>> = _nearbyDevices.asStateFlow()
     private val _nearbyDeviceInfo = MutableStateFlow(ScannedDevice())
@@ -56,43 +52,29 @@ internal class ConnectionManager(context: Context) {
         CoroutineScope(Dispatchers.Default).launch {
             _nearbyDeviceInfo.collect { peers ->
                 _nearbyDevices.value = peers.getDevice()
-                Log.d(TAG, "Nearby: ${peers.getDevice()}")
             }
 
         }
     }
 
+
     fun updateConnectionInfo() {
-        manager?.requestConnectionInfo(channel) { info ->
-            _connInfo.value = _connInfo.value.updateInfo(info)
+        manager?.requestConnectionInfo(channel) { wifiP2PInfo ->
+            wifiP2PInfo?.let { info ->
+                val newInfo = WifiDirectConnectionInfo(
+                    groupOwnerIP = info.groupOwnerAddress?.hostAddress,//if not connected any devised then groupOwnerAddress==null
+                    isGroupOwner = info.isGroupOwner,
+                    isConnected = info.groupFormed,
+//                    groupOwnerName = info.groupOwnerAddress?.hostName //FIX bug why causes null pointer execution or   android.os.NetworkOnMainThreadException
+                    groupOwnerName = null
+                )
+//                log("$newInfo")
+                _wifiDirectInfoConnectionInfo.update { newInfo }
+                _connectionInfo.value = _connectionInfo.value.updateInfo(info)
+            }
         }
     }
 
-
-    fun connectWith(device: WifiP2pDevice) {
-        val config = WifiP2pConfig()
-        val deviceAddress: String = device.deviceAddress
-        config.deviceAddress = deviceAddress
-        channel.also { channel ->
-            manager?.connect(
-                channel,
-                config,
-                object : WifiP2pManager.ActionListener {
-                    override fun onSuccess() {
-//                        Log.d(TAG, "Connected:${device.deviceName}")
-                        updateConnectionInfo()
-
-                    }
-
-                    override fun onFailure(reason: Int) {
-//                        Log.d(TAG, "Connected:Fail")
-                        updateConnectionInfo()
-//
-                    }
-                }
-            )
-        }
-    }
 
     /**
      * @param deviceAddress Taking as  String to decouple with some
@@ -107,14 +89,11 @@ internal class ConnectionManager(context: Context) {
                 config,
                 object : WifiP2pManager.ActionListener {
                     override fun onSuccess() {
-//                        Log.d(TAG, "Connected:${device.deviceName}")
                         updateConnectionInfo()
                     }
 
                     override fun onFailure(reason: Int) {
-//                        Log.d(TAG, "Connected:Fail")
                         updateConnectionInfo()
-//
                     }
                 }
             )
@@ -124,11 +103,11 @@ internal class ConnectionManager(context: Context) {
     fun disconnect() {
         manager?.removeGroup(channel, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
-                Log.d(TAG, "Disconnect:successful disconnect")
                 updateConnectedDeviceInfo()
                 startScanning()
                 updateConnectionInfo()
             }
+
 
             override fun onFailure(reason: Int) {
                 updateConnectionInfo()
@@ -150,6 +129,7 @@ internal class ConnectionManager(context: Context) {
             override fun onSuccess() {
                 requestScannedDevice()
             }
+
             override fun onFailure(reasonCode: Int) {
             }
 
@@ -158,11 +138,17 @@ internal class ConnectionManager(context: Context) {
 
 
     fun requestScannedDevice() {
-        // Log.d(TAG, "requestScannedDevice()")
         manager?.requestPeers(channel) { peers: WifiP2pDeviceList? ->
             _nearbyDeviceInfo.value = _nearbyDeviceInfo.value.updateScannedDevices(peers)
         }
 
+    }
+
+    @Suppress("Unused")
+    private fun log(message: String, methodName: String? = null) {
+        val tag = "${this@ConnectionManager::class.simpleName}Log"
+        val method = if (methodName == null) "" else "$methodName()'s "
+        println("$tag:$method:-> $message")
     }
 
 

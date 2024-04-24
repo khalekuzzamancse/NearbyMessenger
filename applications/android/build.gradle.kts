@@ -65,5 +65,6 @@ dependencies {
     implementation(project(":feature:peers:ui"))
     implementation(project(":feature:chat:ui"))
     implementation(project(":core:wifi_direct"))
+    implementation(project(":core:socket:peer"))
 
 }

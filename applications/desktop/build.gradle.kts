@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
+    //kotlin("jvm")
     kotlin("multiplatform")
     id("org.jetbrains.compose")
 }
@@ -16,6 +17,7 @@ kotlin {
                 implementation(compose.desktop.common)
                 implementation(compose.desktop.currentOs)
                 implementation(project(":feature:chat:ui"))
+                implementation(project(":core:socket:peer"))
 
             }
         }
@@ -24,11 +26,20 @@ kotlin {
 
 compose.desktop {
     application {
+        javaHome  = System.getenv("JAVA_17")
         mainClass = "DesktopMainKt"
+
+
         nativeDistributions {
             targetFormats(TargetFormat.Exe)
-            packageName = "desktop"
+            packageName = "Nearby Messenger"
             version = "1.0.0"
+            windows {
+                packageVersion = "1.0.0"
+                msiPackageVersion = "1.0.0"
+                exePackageVersion = "1.0.0"
+              //  iconFile.set(project.file("icon.ico"))
+            }
         }
     }
 }
