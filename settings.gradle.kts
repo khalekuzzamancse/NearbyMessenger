@@ -4,6 +4,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -12,8 +13,12 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
-rootProject.name = "ConnectivitySamples(Networking)"
-include(":Level_1")
-include(":Level_1:wifi")
-include(":Level_1:wifi:peertopeer")
+val applicationsModules= listOf(":applications","applications:android",":applications:desktop")
+val coreModules= listOf(":core",":core:wifi_direct",
+    ":core:socket",":core:socket:server",":core:socket:client",":core:socket:peer",
+)
+val featureModules= listOf(":feature",
+    ":feature:peers",":feature:peers:data",":feature:peers:domain",":feature:peers:ui",":feature:peers:di",
+    ":feature:chat",":feature:chat:data",":feature:chat:domain",":feature:chat:ui",
+    )
+include(applicationsModules+coreModules+featureModules)
