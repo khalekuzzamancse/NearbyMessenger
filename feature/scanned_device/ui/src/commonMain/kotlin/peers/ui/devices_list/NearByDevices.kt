@@ -62,6 +62,21 @@ fun NearByDevices(
     val onDetailsDismiss: () -> Unit = {
         clickedDevice = null
     }
+    var showDisconnectConfirmDialog by remember { mutableStateOf(false) }
+    var disconnectedDevice by remember { mutableStateOf<NearByDevice?>(null) }
+    if (showDisconnectConfirmDialog){
+        DisconnectDialog(
+            onConfirm = {
+                disconnectedDevice?.let {
+                    onDisconnectRequest(it)
+                }
+                showDisconnectConfirmDialog=false
+            },
+            onCancel = {
+                showDisconnectConfirmDialog=false
+            }
+        )
+    }
     Surface(
         modifier = modifier
             .fillMaxWidth(),
@@ -83,7 +98,8 @@ fun NearByDevices(
                         clickedDevice = it
                     },
                     onDisconnectRequest = {
-                        onDisconnectRequest(it)
+                        disconnectedDevice=it
+                        showDisconnectConfirmDialog=true
                     },
                     onClick = {
                         onConversionScreenRequest(it)

@@ -19,8 +19,6 @@ kotlin {
             dependencies {
                 implementation(libs.test.androidxUiJunit)
                 debugImplementation(libs.test.androidxUiManifest)
-//                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.5")
-//                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
             }
         }
 
@@ -39,9 +37,9 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
+                implementation(project(":feature:scanned_device:ui"))
+                implementation(project(":feature:chat:ui"))
                 implementation(project(":core:wifi_direct"))
-                implementation(project(":feature:peers:domain"))
-                implementation(project(":feature:peers:di"))
                 implementation(project(":core:socket:peer"))
             }
         }
@@ -58,12 +56,9 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.core)
-                //for view model
-                val lifecycleVersion = "2.7.0"
-                // ViewModel
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-                // ViewModel utilities for Compose
-                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
+                implementation(libs.androidx.navigation.compose)
+                implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0-beta01")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0-beta01")
             }
         }
 
@@ -84,7 +79,7 @@ kotlin {
 
 }
 android {
-    namespace = "peers.ui"
+    namespace = "navigation"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

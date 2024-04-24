@@ -1,11 +1,11 @@
-package kzcse.wifidirect.ui
+package navigation
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun WifiDialog(isWifiEnabled: Boolean, onDismiss: () -> Unit) {
+internal fun WifiDialog(isWifiEnabled: Boolean) {
     if (!isWifiEnabled) {
         AlertDialog(
             onDismissRequest = { /* Dismiss when user taps outside the dialog */ },

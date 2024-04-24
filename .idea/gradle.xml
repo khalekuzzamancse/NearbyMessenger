@@ -23,11 +23,12 @@
             <option value="$PROJECT_DIR$/feature/chat/data" />
             <option value="$PROJECT_DIR$/feature/chat/domain" />
             <option value="$PROJECT_DIR$/feature/chat/ui" />
-            <option value="$PROJECT_DIR$/feature/peers" />
-            <option value="$PROJECT_DIR$/feature/peers/data" />
-            <option value="$PROJECT_DIR$/feature/peers/di" />
-            <option value="$PROJECT_DIR$/feature/peers/domain" />
-            <option value="$PROJECT_DIR$/feature/peers/ui" />
+            <option value="$PROJECT_DIR$/feature/navigation" />
+            <option value="$PROJECT_DIR$/feature/scanned_device" />
+            <option value="$PROJECT_DIR$/feature/scanned_device/data" />
+            <option value="$PROJECT_DIR$/feature/scanned_device/di" />
+            <option value="$PROJECT_DIR$/feature/scanned_device/domain" />
+            <option value="$PROJECT_DIR$/feature/scanned_device/ui" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

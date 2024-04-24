@@ -1,9 +1,11 @@
-package chatui
+package chatui.message
 data class ChatMessage(
     val message: String,
     val timestamp: String,
     val isSender: Boolean,
 )
+
+
 
 internal fun dummyConversation():List<ChatMessage>{
     val dummyConversation = mutableListOf<ChatMessage>()

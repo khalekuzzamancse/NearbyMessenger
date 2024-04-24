@@ -11,17 +11,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import chatui.message.ChatMessage
+import chatui.message.MessageFieldController
+import chatui.message.__MessageInputField
+import chatui.message.dummyConversation
+import chatui.viewmodel.ChatViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -29,7 +42,7 @@ fun ConversionScreenPreview() {
     var conversations by remember { mutableStateOf(dummyConversation()) }
     val controller = remember { MessageFieldController() }
     val sendMessage:()->Unit={
-        conversations=conversations+ChatMessage(
+        conversations=conversations+ ChatMessage(
             message = controller.message.value,
             timestamp = "now",
             isSender = true
@@ -45,13 +58,54 @@ fun ConversionScreenPreview() {
         navigationIcon = null
     )
 }
+
+@Composable
+fun ConversionScreen(
+    viewModel: ChatViewModel,
+) {
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val showNotImplementedYet:()->Unit={
+        scope.launch {
+            scope.launch {
+                snackBarHostState.currentSnackbarData?.dismiss()
+                snackBarHostState.showSnackbar(
+                    message = "Not implemented yet...",
+                    duration = SnackbarDuration.Short
+                )
+            }
+        }
+    }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        }
+    ) { scaffoldPadding ->
+        Conversions(
+            modifier = Modifier.padding(scaffoldPadding),
+            conversations = viewModel.conversations.collectAsState().value,
+            controller = viewModel.controller,
+            onSendButtonClick = {
+                CoroutineScope(Dispatchers.Default).launch {
+                    viewModel.sendMessage()
+                }
+
+            },
+            onAttachmentClick = showNotImplementedYet,
+            onSpeechToTextRequest =showNotImplementedYet,
+            navigationIcon = null
+        )
+    }
+
+
+}
 //Internal instead of private to access from ui test module
 /**
  * @param navigationIcon Nullable so that in expanded window can be used side by side
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
- fun Conversions(
+internal fun Conversions(
     modifier: Modifier=Modifier,
     conversations: List<ChatMessage>,
     controller: MessageFieldController,

@@ -19,6 +19,8 @@ kotlin {
             dependencies {
                 implementation(libs.test.androidxUiJunit)
                 debugImplementation(libs.test.androidxUiManifest)
+//                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.5")
+//                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
             }
         }
 
@@ -38,6 +40,9 @@ kotlin {
                 implementation(libs.windowSize)
                 //
                 implementation(project(":core:wifi_direct"))
+                implementation(project(":feature:scanned_device:domain"))
+                implementation(project(":feature:scanned_device:di"))
+                implementation(project(":core:socket:peer"))
             }
         }
         val commonTest by getting{
@@ -79,7 +84,7 @@ kotlin {
 
 }
 android {
-    namespace = "peers"
+    namespace = "peers.ui"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

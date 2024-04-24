@@ -53,7 +53,6 @@ android {
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.accompanist.permissions)
-    implementation(libs.androidx.navigation.compose)
     implementation(compose.ui)
     implementation(compose.material3)
     implementation(compose.animation)
@@ -62,9 +61,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.windowSize)
     //
-    implementation(project(":feature:peers:ui"))
-    implementation(project(":feature:chat:ui"))
+    implementation(project(":feature:navigation"))
+    //
     implementation(project(":core:wifi_direct"))
-    implementation(project(":core:socket:peer"))
+//
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }

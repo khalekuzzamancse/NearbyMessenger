@@ -6,9 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
-import kzcse.wifidirect.ui.WifiDialog
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
-import kzcse.wifidirect.ui.NavGraph
+import navigation.NavGraph
 import wifidirect.Factory
 
 
@@ -19,10 +18,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             ConnectivitySamplesNetworkingTheme {
                 PermissionIfNeeded()
-                WifiDialog(Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value) {
-                }
-                NavGraph()
-
+               val wifiEnabled= Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
+                NavGraph(wifiEnabled = wifiEnabled)
             }
 
         }

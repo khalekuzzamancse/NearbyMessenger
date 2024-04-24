@@ -18,8 +18,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(project(":feature:peers:domain"))
-                api(project(":feature:peers:data"))
+                implementation(project(":feature:scanned_device:domain"))
                 implementation(project(":core:wifi_direct"))
             }
         }
@@ -47,7 +46,7 @@ kotlin {
 
 }
 android {
-    namespace = "peers.di"
+    namespace = "peers.data"
     compileSdk = 34
     defaultConfig {
         minSdk = 27
