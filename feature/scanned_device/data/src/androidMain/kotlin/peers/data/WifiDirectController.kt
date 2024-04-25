@@ -6,30 +6,35 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import peers.domain.misc.ConnectionController
-import peers.domain.misc.ConnectionInfo
+import peers.domain.model.ConnectionInfoModel
 import peers.domain.model.ScannedDeviceModel
+import peers.domain.model.ThisDeviceInfoModel
 import wifidirect.Factory
 import wifidirect.connection.Device
 
 @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class WifiDirectController : ConnectionController {
+class WifiDirectController() : ConnectionController {
     private val wifiManager = Factory.broadcastNConnectionHandler
-    override val connectionInfo: Flow<ConnectionInfo> = wifiManager.wifiDirectConnectionInfo.map { info ->
-        ConnectionInfo(
+    override val connectionInfoModel: Flow<ConnectionInfoModel> = wifiManager.wifiDirectConnectionInfo.map { info ->
+        ConnectionInfoModel(
             groupOwnerIP = info.groupOwnerIP,
             isGroupOwner = info.isGroupOwner,
             isConnected = info.isConnected,
             groupOwnerName = info.groupOwnerName
         )
     }
+
+    override fun getThisDeviceInfo(): ThisDeviceInfoModel? {
+      val info=wifiManager.getThisDeviceInfo()
+      return  if (info!=null) ThisDeviceInfoModel(info.name,info.address) else null
+    }
+
 
     private val _wifiEnabled = MutableStateFlow(false)
 

@@ -7,11 +7,12 @@ import chatui.viewmodel.ChatViewModel
 import peers.ui.scanneddevice.DeviceListViewModel
 import peers.ui.scanneddevice.DevicesConnectionInfo
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MainViewModel : ViewModel() {
-    private val dataCommunicator = DataCommunicatorImpl()
-    val chatViewModel =ChatViewModel(dataCommunicator)
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val deviceListViewModel= DeviceListViewModel()
+    private val dataCommunicator = DataCommunicatorImpl(deviceListViewModel::getThisDeviceInfo)
+    val chatViewModel =ChatViewModel(dataCommunicator)
+
      fun onGroupFormed(info: DevicesConnectionInfo)=dataCommunicator.onGroupFormed(info)
 
 }

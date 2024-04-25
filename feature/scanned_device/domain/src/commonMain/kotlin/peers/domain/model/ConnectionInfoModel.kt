@@ -1,6 +1,6 @@
-package peers.domain.misc
+package peers.domain.model
 
-data class ConnectionInfo(
+data class ConnectionInfoModel(
     val groupOwnerIP: String?,
     val isGroupOwner: Boolean,
     val isConnected: Boolean,

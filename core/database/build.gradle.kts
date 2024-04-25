@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.realm)
+
 }
 kotlin {
     androidTarget {
@@ -9,48 +11,52 @@ kotlin {
                 jvmTarget = "17"
             }
         }
-
     }
-    jvm("desktop") {
+    jvm("desktop"){
         jvmToolchain(17)
     }
-    sourceSets {
-        val commonMain by getting {
+    sourceSets{
+        val commonMain by getting{
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(project(":core:socket:protocol"))
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.core)
+                implementation(libs.database.realm.base)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(libs.test.kotlinTest)
-                implementation(libs.test.kotlinTestJunit)
-
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlin.test.junit)
             }
-
         }
 
-        val desktopMain by getting {
+        val androidMain by getting{
             dependencies {
-                //dependency to support android coil on desktop
+
+
+            }
+        }
+        val desktopMain by getting{
+            dependencies {
+
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing")
             }
         }
     }
+    //to use expect and actual keywords
+    kotlin {
+        compilerOptions {
+            // Common compiler options applied to all Kotlin source sets
+            freeCompilerArgs.add("-Xmulti-platform")
+        }
+    }
+
 
 }
 android {
-    namespace = "socket.server"
+    namespace = "core.database"
     compileSdk = 34
     defaultConfig {
         minSdk = 27
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
 }

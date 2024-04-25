@@ -13,8 +13,10 @@
             <option value="$PROJECT_DIR$/applications/android" />
             <option value="$PROJECT_DIR$/applications/desktop" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/database" />
             <option value="$PROJECT_DIR$/core/socket" />
             <option value="$PROJECT_DIR$/core/socket/client" />
+            <option value="$PROJECT_DIR$/core/socket/protocol" />
             <option value="$PROJECT_DIR$/core/socket/role_factory" />
             <option value="$PROJECT_DIR$/core/socket/server" />
             <option value="$PROJECT_DIR$/core/wifi_direct" />

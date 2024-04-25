@@ -13,7 +13,7 @@ import java.util.Date
 import java.util.Locale
 
 class ChatViewModel(
-    private val dataCommunicator: DataCommunicator
+    private val dataCommunicator: DataCommunicator,
 ) {
     private val _conversations = MutableStateFlow(emptyList<ChatMessage>())
     internal val conversations = _conversations.asStateFlow()

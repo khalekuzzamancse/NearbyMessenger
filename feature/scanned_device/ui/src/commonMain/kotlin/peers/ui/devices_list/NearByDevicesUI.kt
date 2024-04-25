@@ -34,10 +34,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PeersListPreview() {
     val devices = listOf(
-        NearByDevice(name = "Md Abdul", isConnected = true, ip = "1234"),
-        NearByDevice(name = "Mr Bean", isConnected = false, ip = "1234"),
-        NearByDevice(name = "Galaxy Tab", isConnected = false, ip = "1234"),
-        NearByDevice(name = "Samsung A5", isConnected = false, ip = "1234"),
+        NearByDevice(name = "Md Abdul", isConnected = true, deviceAddress = "1234"),
+        NearByDevice(name = "Mr Bean", isConnected = false, deviceAddress = "1234"),
+        NearByDevice(name = "Galaxy Tab", isConnected = false, deviceAddress = "1234"),
+        NearByDevice(name = "Samsung A5", isConnected = false, deviceAddress = "1234"),
     )
     NearByDevices(
         devices = devices,

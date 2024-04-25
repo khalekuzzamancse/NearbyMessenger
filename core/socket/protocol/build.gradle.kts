@@ -18,7 +18,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(project(":core:socket:protocol"))
             }
         }
         val androidMain by getting {
@@ -45,7 +44,7 @@ kotlin {
 
 }
 android {
-    namespace = "socket.server"
+    namespace = "socket.protocol"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

@@ -38,6 +38,7 @@ fun NavGraph(wifiEnabled: Boolean,onExitRequest:()->Unit={}) {
             NearByDeviceScreen(
                 viewModel = mainViewModel.deviceListViewModel,
                 onConversionOpen = {
+                    println("ConversationLog:$it")
                     navController.navigate(Destination.Conversation.toString())
                 },
                 onGroupFormed = mainViewModel::onGroupFormed
