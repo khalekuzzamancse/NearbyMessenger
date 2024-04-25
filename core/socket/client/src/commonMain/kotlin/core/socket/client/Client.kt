@@ -12,7 +12,7 @@ import java.io.DataOutputStream
 import java.net.Socket
 
 /**
- * Must run the server and the client as separate process.
+ * Must run the server and the client as separate process(at least separate thread,instead of  separate coroutine)
  * not within the same process.otherwise they will not able to work
  * properly
  */
@@ -25,10 +25,6 @@ class Client(
     private val outputStream = DataOutputStream(socket.getOutputStream())
     private val inputStream = DataInputStream(socket.getInputStream())
 
-
-    /**
-     * For observing the new message
-     */
 
     fun sendMessage(message: TextMessage): Result<Unit> {
         return try {
@@ -61,21 +57,6 @@ class Client(
             }
         }.start()
     }
-//    fun listenForMessage() {
-//        Thread {
-//            while (socket.isConnected) {
-//                try {
-//                    val message = inputStream.readUTF()
-//                    val decodedMessage=TextMessageDecoder(message).decode()
-//                    log("New MessageReceived :$decodedMessage")
-//                } catch (e: Exception) {
-//                    log(methodName = "listenForMessage", message = "Exception:${e.message}:")
-//                    closeResources()
-//                    break//exit this because the client may disconnect or gone
-//                }
-//            }
-//        }.start()
-//    }
 
     private fun closeResources() {
         try {

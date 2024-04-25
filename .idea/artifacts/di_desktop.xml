@@ -2,7 +2,7 @@
   <artifact type="jar" name="di-desktop">
     <output-path>$PROJECT_DIR$/feature/scanned_device/di/build/libs</output-path>
     <root id="archive" name="di-desktop.jar">
-      <element id="module-output" name="BlueFiMessenger.feature.scanned_device.di.desktopMain" />
+      <element id="module-output" name="NearByMessenger.feature.scanned_device.di.desktopMain" />
     </root>
   </artifact>
 </component>

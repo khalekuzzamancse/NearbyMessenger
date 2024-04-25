@@ -2,7 +2,7 @@
   <artifact type="jar" name="wifi_direct-desktop">
     <output-path>$PROJECT_DIR$/core/wifi_direct/build/libs</output-path>
     <root id="archive" name="wifi_direct-desktop.jar">
-      <element id="module-output" name="BlueFiMessenger.core.wifi_direct.desktopMain" />
+      <element id="module-output" name="NearByMessenger.core.wifi_direct.desktopMain" />
     </root>
   </artifact>
 </component>

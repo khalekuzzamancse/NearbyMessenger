@@ -2,7 +2,7 @@
   <artifact type="jar" name="domain-desktop">
     <output-path>$PROJECT_DIR$/feature/scanned_device/domain/build/libs</output-path>
     <root id="archive" name="domain-desktop.jar">
-      <element id="module-output" name="BlueFiMessenger.feature.scanned_device.domain.desktopMain" />
+      <element id="module-output" name="NearByMessenger.feature.scanned_device.domain.desktopMain" />
     </root>
   </artifact>
 </component>

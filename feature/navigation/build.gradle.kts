@@ -40,7 +40,7 @@ kotlin {
                 implementation(project(":feature:scanned_device:ui"))
                 implementation(project(":feature:chat:ui"))
                 implementation(project(":core:wifi_direct"))
-                implementation(project(":core:socket:peer"))
+                implementation(project(":core:socket:role_factory"))
             }
         }
         val commonTest by getting{
@@ -57,8 +57,13 @@ kotlin {
             dependencies {
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.navigation.compose)
-                implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0-beta01")
-                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0-beta01")
+                //for view model
+                val lifecycleVersion = "2.7.0"
+                // ViewModel
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+                // ViewModel utilities for Compose
+                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
+                implementation(libs.androidx.navigation.compose)
             }
         }
 

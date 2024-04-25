@@ -1,6 +1,6 @@
 package core.socket.client.data_communication
 
-class TextMessageEncoder(
+internal class TextMessageEncoder(
     textMessage: TextMessage
 ) : TextMessageProtocol() {
     private val ip = textMessage.senderIp

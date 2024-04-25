@@ -49,8 +49,6 @@ fun NearByDeviceScreen(
                     )
                 )
             }
-
-            //println("NearByDeviceScreenLog: ConnectionInfoLog:$connectionInfo")
         }
     }
     Scaffold(

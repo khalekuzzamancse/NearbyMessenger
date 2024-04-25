@@ -1,5 +1,5 @@
 package core.socket.client.data_communication
-class TextMessageDecoder(
+internal class TextMessageDecoder(
     private val message: String
 ) : TextMessageProtocol() {
 

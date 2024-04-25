@@ -30,19 +30,23 @@ class DataCommunicatorImpl : DataCommunicator {
     }
     private var communicator: Communicator? = null
     fun onGroupFormed(info: DevicesConnectionInfo) {
-        if (info.isConnected) {
-            CoroutineScope(Dispatchers.Default).launch {
-                val ownerName = info.groupOwnerName ?: "GroupUserWithNULLName"
-                communicator = Communicator(
-                    groupOwnerIP = info.groupOwnerIP,
-                    isGroupOwner = info.isGroupOwner,
-                    deviceName = if (info.isGroupOwner) ownerName else "client1",
-                    //TODO : for more than two device,must use a separate name for each client,
-                    onNewMessageReceived = onNewMessageReceived
-                )
+        try {
+            if (info.isConnected) {
+                    val ownerName = info.groupOwnerName ?: "GroupUserWithNULLName"
+                    communicator = Communicator(
+                        groupOwnerIP = info.groupOwnerIP,
+                        isGroupOwner = info.isGroupOwner,
+                        deviceName = if (info.isGroupOwner) ownerName else "client1",
+                        //TODO : for more than two device,must use a separate name for each client,
+                        onNewMessageReceived = onNewMessageReceived
+                    )
             }
+            //TODO:FIX why causes Exception on back button presses from conversation screen,for the client app or android 10
+        }
+        catch (_:Exception){
 
         }
+
     }
 
     override suspend fun sendMessage(msg: SendAbleMessage): Result<Unit> {

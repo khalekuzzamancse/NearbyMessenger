@@ -27,7 +27,7 @@
         <activity
             android:name="kzcse.wifidirect.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ConnectivitySamplesNetworking">
+            android:theme="@style/Theme.SplashScreen.MySplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -42,7 +42,6 @@ kotlin {
                 implementation(project(":core:wifi_direct"))
                 implementation(project(":feature:scanned_device:domain"))
                 implementation(project(":feature:scanned_device:di"))
-                implementation(project(":core:socket:peer"))
             }
         }
         val commonTest by getting{

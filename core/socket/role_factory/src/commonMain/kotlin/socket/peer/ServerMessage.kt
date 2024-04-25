@@ -1,8 +1,5 @@
 package socket.peer
 
-import java.sql.Timestamp
-import java.util.Date
-
 /**
  * Used to decouple from nested or transient module
  *
@@ -14,7 +11,7 @@ data class ServerMessage(
     val senderIp: String? = null,
     val senderPort: Int? = null,
     val message: String,
-    val timestamp:Long =Date().time
+    val timestamp:Long =System.currentTimeMillis()
 ) {
     val isGroupMessage = senderIp == null && senderPort == null
 }

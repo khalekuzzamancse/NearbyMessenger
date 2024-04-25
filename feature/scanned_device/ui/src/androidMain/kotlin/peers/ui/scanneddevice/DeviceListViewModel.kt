@@ -2,15 +2,8 @@ package peers.ui.scanneddevice
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import peers.di.PeersDependencyFactoryAndroid
-import socket.peer.Communicator
-import socket.peer.ServerMessage
 
 /**
  * * Using the Delegation Design pattern
