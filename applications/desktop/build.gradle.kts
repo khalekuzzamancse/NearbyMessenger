@@ -17,7 +17,7 @@ kotlin {
                 implementation(compose.desktop.common)
                 implementation(compose.desktop.currentOs)
                 implementation(project(":feature:chat:ui"))
-                implementation(project(":core:socket:peer"))
+                implementation(project(":core:socket:role_factory"))
 
             }
         }

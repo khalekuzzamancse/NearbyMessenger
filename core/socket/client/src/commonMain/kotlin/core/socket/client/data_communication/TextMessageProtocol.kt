@@ -1,6 +1,6 @@
 package core.socket.client.data_communication
 
-abstract class TextMessageProtocol {
+internal abstract class TextMessageProtocol {
     companion object {
         const val IP_LENGTH: Int = 32
         const val PORT_LENGTH: Int = 8

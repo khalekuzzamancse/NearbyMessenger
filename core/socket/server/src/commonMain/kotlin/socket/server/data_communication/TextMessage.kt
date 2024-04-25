@@ -1,4 +1,4 @@
-package client.data_communication
+package socket.server.data_communication
 
 /**
  * @param senderIp Nullable if message is for group

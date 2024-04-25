@@ -9,6 +9,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
+import chatui.message.MessageFieldController
+import chatui.message.__MessageInputField
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

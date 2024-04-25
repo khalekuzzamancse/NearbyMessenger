@@ -19,8 +19,6 @@ kotlin {
             dependencies {
                 implementation(libs.test.androidxUiJunit)
                 debugImplementation(libs.test.androidxUiManifest)
-//                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.5")
-//                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
             }
         }
 

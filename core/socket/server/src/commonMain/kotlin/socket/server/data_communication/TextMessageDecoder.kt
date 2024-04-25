@@ -1,8 +1,7 @@
 package socket.server.data_communication
 
-import client.data_communication.TextMessage
-
-class TextMessageDecoder(
+@Suppress("unused")
+internal class TextMessageDecoder(
     private val message: String
 ) : TextMessageProtocol() {
 

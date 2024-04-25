@@ -1,8 +1,7 @@
 package socket.server.data_communication
 
-import client.data_communication.TextMessage
-
-class TextMessageEncoder(
+@Suppress("unused")
+internal class TextMessageEncoder(
     textMessage: TextMessage
 ) : TextMessageProtocol() {
     private val ip = textMessage.senderIp

@@ -18,8 +18,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(project(":feature:peers:domain"))
-                implementation(project(":core:wifi_direct"))
             }
         }
         val androidMain by getting {
