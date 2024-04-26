@@ -1,12 +1,8 @@
 package core.socket.client
 
-import core.socket.client.data_communication.TextMessage
-import core.socket.client.data_communication.TextMessageDecoder
-import core.socket.client.data_communication.TextMessageEncoder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.update
+import socket.protocol.data_communication.TextMessage
+import socket.protocol.data_communication.TextMessageDecoder
+import socket.protocol.data_communication.TextMessageEncoder
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.Socket
@@ -39,16 +35,19 @@ class Client(
     }
 
     init {
-        log("created")
+        log("created,host name:${socket.remoteSocketAddress}")
+        //inetAddress.hostName the name of the server,not the client
+        //remoteSocketAddress address:ip:port of server
     }
-    fun listenForMessage(callback:(TextMessage)->Unit) {
+
+    fun listenForMessage(callback: (TextMessage) -> Unit) {
         Thread {
             while (socket.isConnected) {
                 try {
                     val message = inputStream.readUTF()
-                    val decodedMessage=TextMessageDecoder(message).decode()
+                    val decodedMessage = TextMessageDecoder(message).decode()
                     log("New MessageReceived :$decodedMessage")
-                   callback(decodedMessage)
+                    callback(decodedMessage)
                 } catch (e: Exception) {
                     log(methodName = "listenForMessage", message = "Exception:${e.message}:")
                     closeResources()

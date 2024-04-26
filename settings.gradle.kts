@@ -14,8 +14,10 @@ dependencyResolutionManagement {
     }
 }
 val applicationsModules= listOf(":applications","applications:android",":applications:desktop")
-val coreModules= listOf(":core",":core:wifi_direct",
-    ":core:socket",":core:socket:server",":core:socket:client",":core:socket:role_factory",
+val coreModules= listOf(":core",
+    ":core:wifi_direct",
+    ":core:socket",":core:socket:server",":core:socket:client",":core:socket:protocol",":core:socket:role_factory",
+    ":core:database",
 )
 val featureModules= listOf(":feature",
     ":feature:scanned_device",":feature:scanned_device:data",":feature:scanned_device:domain",":feature:scanned_device:ui",":feature:scanned_device:di",

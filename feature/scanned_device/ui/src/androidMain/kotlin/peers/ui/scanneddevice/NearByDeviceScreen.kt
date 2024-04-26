@@ -21,7 +21,7 @@ import peers.ui.devices_list.NearByDevicesRoute
 fun NearByDeviceScreen(
     viewModel: DeviceListViewModel,
     onGroupFormed: (DevicesConnectionInfo) -> Unit,
-    onConversionOpen: (ip: String) -> Unit = {},
+    onConversionOpen: (NearByDevice) -> Unit = {},
 ) {
 
 
@@ -55,13 +55,13 @@ fun NearByDeviceScreen(
         snackbarHost = {
             SnackbarHost(hostState)
         }
-    ) {
+    ) {scaffoldPadding->
         NearByDevicesRoute(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.padding(scaffoldPadding),
             devices = viewModel.nearbyDevices.collectAsState(emptyList()).value.map {
                 NearByDevice(
                     name = it.name,
-                    ip = it.address,
+                    deviceAddress = it.address,
                     isConnected = it.isConnected
                 )
             },
@@ -71,10 +71,10 @@ fun NearByDeviceScreen(
                 viewModel.disconnectAll()
             },
             onConnectionRequest = {
-                viewModel.connectTo(it.ip)
+                viewModel.connectTo(it.deviceAddress)
             },
             onConversionScreenOpenRequest = {
-                onConversionOpen(it.ip)
+                onConversionOpen(it)
             },
             onScanDeviceRequest = viewModel::scanDevices,
             onWifiStatusChangeRequest = viewModel::onNetworkStatusChangeRequest

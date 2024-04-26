@@ -33,6 +33,8 @@ internal class ConnectionManager(context: Context) {
     //for managing wifi direct
     private val manager = context.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager?
     private var channel = manager?.initialize(context, context.mainLooper, null)
+    private val _thisDeviceInfo = MutableStateFlow<ThisDeviceInfo?>(null)
+    fun getThisDeviceInfo()=_thisDeviceInfo.value
 
     //keeping important states
     //connected client is the other devices except the group owner
@@ -57,6 +59,25 @@ internal class ConnectionManager(context: Context) {
         }
     }
 
+    init {
+        requestThisDeviceInfo()
+    }
+
+    private fun requestThisDeviceInfo() {
+        channel?.let {
+            manager?.requestDeviceInfo(it) { device ->
+                if (device != null) {
+                    _thisDeviceInfo.update {
+                        ThisDeviceInfo(
+                            name = device.deviceName,
+                            address = device.deviceAddress
+                        )
+                    }
+                    log(device.deviceName)
+                }
+            }
+        }
+    }
 
     fun updateConnectionInfo() {
         manager?.requestConnectionInfo(channel) { wifiP2PInfo ->
@@ -117,6 +138,7 @@ internal class ConnectionManager(context: Context) {
 
 
     fun updateConnectedDeviceInfo() {
+        requestThisDeviceInfo()//update the this device info
         manager?.requestGroupInfo(channel) { group ->
             _nearbyDeviceInfo.value = _nearbyDeviceInfo.value.updateConnectDevices(group)
             updateConnectionInfo()
@@ -125,6 +147,7 @@ internal class ConnectionManager(context: Context) {
 
 
     fun startScanning() {
+        requestThisDeviceInfo()//update the this device info
         manager?.discoverPeers(channel, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
                 requestScannedDevice()
@@ -138,6 +161,7 @@ internal class ConnectionManager(context: Context) {
 
 
     fun requestScannedDevice() {
+        requestThisDeviceInfo()//update the this device info
         manager?.requestPeers(channel) { peers: WifiP2pDeviceList? ->
             _nearbyDeviceInfo.value = _nearbyDeviceInfo.value.updateScannedDevices(peers)
         }

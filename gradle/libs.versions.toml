@@ -23,6 +23,7 @@ material = "1.11.0"
 core = "1.12.0"
 playServicesLocation = "21.2.0"
 androidxUItest="1.6.5"
+realmVersion = "1.13.0"
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-activity-compose= { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -70,6 +71,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 #
+# local database
+database-realm-base={ module = "io.realm.kotlin:library-base", version.ref = "realmVersion" }
+database-realm-sync={ module = "io.realm.kotlin:library-sync", version.ref = "realmVersion" }
 
 [bundles]
 # WorkManager bundle
@@ -87,5 +91,6 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
+realm={id="io.realm.kotlin", version.ref = "realmVersion"}
 
 

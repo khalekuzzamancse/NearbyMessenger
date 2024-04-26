@@ -18,6 +18,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(project(":core:socket:protocol"))
             }
         }
         val androidMain by getting {

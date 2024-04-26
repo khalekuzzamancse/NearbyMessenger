@@ -28,6 +28,7 @@ class BroadcastNConnectionHandler(
     private val connectionManager = ConnectionManager(context)
     val connectionInfo = connectionManager.connectionInfo
     val wifiDirectConnectionInfo=connectionManager.wifiDirectConnectionInfo
+    fun getThisDeviceInfo()=connectionManager.getThisDeviceInfo()
 
 
     //WifiManager is used to enable or disable the wifi
