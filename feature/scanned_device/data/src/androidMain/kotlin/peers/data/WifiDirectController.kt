@@ -16,7 +16,7 @@ import peers.domain.model.ConnectionInfoModel
 import peers.domain.model.ScannedDeviceModel
 import peers.domain.model.ThisDeviceInfoModel
 import wifidirect.Factory
-import wifidirect.connection.Device
+import wifidirect.connection.model.Device
 
 @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class WifiDirectController() : ConnectionController {

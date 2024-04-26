@@ -5,5 +5,7 @@ package chatui.viewmodel
  */
 data class SendAbleMessage internal constructor(
     val message: String,
+    val receiverName:String,
+    val receiverAddresses:String,
     val timestamp: Long=System.currentTimeMillis(),
 )

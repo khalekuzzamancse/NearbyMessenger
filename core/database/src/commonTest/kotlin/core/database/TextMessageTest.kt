@@ -1,11 +1,11 @@
 package core.database
 
 import core.database.api.TextMessageAPIs
+import core.database.schema.RoleEntity
 import core.database.schema.TextMessageEntity
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class TextMessageTest {
@@ -14,35 +14,22 @@ class TextMessageTest {
     fun `add Text message test`() {
         // Before running this test, make sure to delete the old database or configuration file
         runBlocking {
-            val requestModel = TextMessageEntity(
-                senderDeviceAddress = "sender",
-                timeStamp = System.currentTimeMillis(),
-                message = "Test message"
-            )
-            val responseModel = TextMessageAPIs.addTextMessage(requestModel)
-            println(responseModel)
-            assertEquals(requestModel, responseModel.getOrNull())
+            runBlocking {
+                val requestModel = createMessage()
+                assertTrue(TextMessageAPIs.add(requestModel).isSuccess)
+            }
         }
     }
 
     @Test
-    fun `retrieve text messages`() = runBlocking {
-        // Ensure database or configuration is reset before test
-        val requestModel = TextMessageEntity(
-            senderDeviceAddress = "sender",
-            timeStamp = System.currentTimeMillis(),
-            message = "Test message"
-        )
-        TextMessageAPIs.addTextMessage(requestModel)
-        TextMessageAPIs.addTextMessage(TextMessageEntity(
-            senderDeviceAddress = "sender2",
-            timeStamp = System.currentTimeMillis(),
-            message = "Test message"
-        ))
+    fun `retrieve conversation`() = runBlocking {
+        createMessages().forEach {
+            TextMessageAPIs.add(it)
+        }
 
         // Set a timeout for collecting messages
         withTimeoutOrNull(5000) { // Timeout after 1000 milliseconds (1 second)
-            TextMessageAPIs.getMessages(senderAddress = "sender")
+            TextMessageAPIs.retrieveConversation(participantAddress = "B")
                 .collect { messages ->
                     if (messages.isNotEmpty()) {
                         println(messages)
@@ -54,22 +41,13 @@ class TextMessageTest {
 
     @Test
     fun `retrieve all text messages`() = runBlocking {
-        // Ensure database or configuration is reset before test
-        val requestModel = TextMessageEntity(
-            senderDeviceAddress = "sender",
-            timeStamp = System.currentTimeMillis(),
-            message = "Test message"
-        )
-        TextMessageAPIs.addTextMessage(requestModel)
-        TextMessageAPIs.addTextMessage(TextMessageEntity(
-            senderDeviceAddress = "sender2",
-            timeStamp = System.currentTimeMillis(),
-            message = "Test message"
-        ))
+        createMessages().forEach {
+            TextMessageAPIs.add(it)
+        }
 
         // Set a timeout for collecting messages
         withTimeoutOrNull(5000) { // Timeout after 1000 milliseconds (1 second)
-            TextMessageAPIs.getMessages()
+            TextMessageAPIs.retrieveConversation()
                 .collect { messages ->
                     if (messages.isNotEmpty()) {
                         println(messages)
@@ -79,5 +57,18 @@ class TextMessageTest {
         } ?: println("Test timed out")
     }
 
+    private fun createMessage() = TextMessageEntity(
+        participantsAddress = "B",
+        timeStamp = System.currentTimeMillis(),
+        message = "congratulations B",
+        deviceRole = RoleEntity.Sender
+    )
+
+    private fun createMessages() = listOf(
+        createMessage(),
+        createMessage().copy(message = "Hi B", participantsAddress = "B", deviceRole = RoleEntity.Sender),
+        createMessage().copy(message = "Hello ", participantsAddress = "B",deviceRole = RoleEntity.Receiver),
+        createMessage().copy(message = "Hello C", participantsAddress = "C",deviceRole = RoleEntity.Sender),
+    )
 
 }

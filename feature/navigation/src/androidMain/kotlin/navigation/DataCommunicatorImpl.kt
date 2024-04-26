@@ -3,14 +3,12 @@ package navigation
 import chatui.viewmodel.DataCommunicator
 import chatui.viewmodel.ReceivedMessage
 import chatui.viewmodel.SendAbleMessage
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import peers.ui.scanneddevice.DevicesConnectionInfo
 import peers.ui.scanneddevice.ThisDeviceInfo
@@ -23,7 +21,12 @@ class DataCommunicatorImpl(
     //
     private val _newMessage = MutableStateFlow<ServerMessage?>(null)
     override val newMessage: Flow<ReceivedMessage?> = _newMessage.asStateFlow().map { msg ->
-        if (msg != null) ReceivedMessage(msg.message, msg.timestamp) else null
+        if (msg != null) ReceivedMessage(
+            senderName = msg.senderName,
+            senderAddress = msg.senderAddress,
+            message = msg.message,
+            timestamp = msg.timestamp
+        ) else null
     }
 
 
@@ -31,6 +34,7 @@ class DataCommunicatorImpl(
         log("NewMessage:${msg.message}")
         _newMessage.update { msg }
     }
+
     private var communicator: Communicator? = null
     fun onGroupFormed(info: DevicesConnectionInfo) {
         try {
@@ -53,16 +57,23 @@ class DataCommunicatorImpl(
 
     override suspend fun sendMessage(msg: SendAbleMessage): Result<Unit> {
         val thisDeviceInfo=getThisDeviceInfo()
-      //  log("$thisDeviceInfo")
+       log("$thisDeviceInfo")
         if (thisDeviceInfo == null)
             return Result.failure(Throwable("ThisDeviceInfo is null"))
+        /*
+     Right now,we are unable to access the this device address,so use name as device identifier.
+   Caution:If multiple device has the same name with your friend list,then it may causes
+   in consistent,since name is not globally unique
+    */
         return withContext(Dispatchers.Default) {
             return@withContext communicator?.sendToServer(
                 ServerMessage(
+                    senderName = thisDeviceInfo.name,
+                    senderAddress =thisDeviceInfo.name ,
+                    receiverName =msg.receiverName,
+                    receiverAddress = msg.receiverAddresses,
                     message = msg.message,
                     timestamp = msg.timestamp,
-                    senderAddress = thisDeviceInfo.address,
-                    senderName = thisDeviceInfo.name
                 )
             )
                 ?: Result.failure(Throwable("DataCommunicator is NULL"))

@@ -1,13 +1,13 @@
 package socket.peer
 
 import core.socket.client.Client
+import core.socket.client.ClientMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import socket.protocol.data_communication.TextMessage
 
 internal class JoinAsClient(
     groupOwnerIP: String,
@@ -36,13 +36,19 @@ internal class JoinAsClient(
     }
 
     init {
+       listenIncomingMessage()
+
+    }
+    private fun listenIncomingMessage(){
         CoroutineScope(Dispatchers.Default).launch {
             latestClientInstance.collect { client ->
                 client?.listenForMessage {
                     onNewMessageReceived(
                         ServerMessage(
                             message = it.message,
-                            timestamp = it.timestamp
+                            timestamp = it.timestamp,
+                            senderName = it.senderName,
+                            senderAddress = it.senderAddress
                         )
                     )
                 }
@@ -57,9 +63,12 @@ internal class JoinAsClient(
             latestClientInstance.update { result.getOrNull() }//update the old clients
             if (result.isSuccess) {
                 return@withContext result.getOrThrow().sendMessage(
-                    TextMessage(
+                    ClientMessage(
                         senderName = msg.senderAddress,
-                        senderPort = msg.senderAddress,
+                        senderAddress = msg.senderAddress,
+                        receiverName = msg.receiverName,
+                        receiverAddress =msg.receiverAddress,
+                        timestamp = msg.timestamp,
                         message = msg.message,
                     )
                 )

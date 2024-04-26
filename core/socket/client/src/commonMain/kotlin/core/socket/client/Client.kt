@@ -1,8 +1,8 @@
 package core.socket.client
 
-import socket.protocol.data_communication.TextMessage
-import socket.protocol.data_communication.TextMessageDecoder
-import socket.protocol.data_communication.TextMessageEncoder
+import socket.protocol.TextMessage
+import socket.protocol.TextMessageDecoder
+import socket.protocol.TextMessageEncoder
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.Socket
@@ -22,9 +22,9 @@ class Client(
     private val inputStream = DataInputStream(socket.getInputStream())
 
 
-    fun sendMessage(message: TextMessage): Result<Unit> {
+    fun sendMessage(message: ClientMessage): Result<Unit> {
         return try {
-            outputStream.writeUTF(TextMessageEncoder(message).encode())
+            outputStream.writeUTF(TextMessageEncoder(message.toTextMessage()).encodeText())
             outputStream.flush()
             Result.success(Unit)
         } catch (e: Exception) {
@@ -40,14 +40,14 @@ class Client(
         //remoteSocketAddress address:ip:port of server
     }
 
-    fun listenForMessage(callback: (TextMessage) -> Unit) {
+    fun listenForMessage(callback: (ClientMessage) -> Unit) {
         Thread {
             while (socket.isConnected) {
                 try {
                     val message = inputStream.readUTF()
                     val decodedMessage = TextMessageDecoder(message).decode()
                     log("New MessageReceived :$decodedMessage")
-                    callback(decodedMessage)
+                    callback(decodedMessage.toMessageToServer())
                 } catch (e: Exception) {
                     log(methodName = "listenForMessage", message = "Exception:${e.message}:")
                     closeResources()
@@ -66,6 +66,23 @@ class Client(
         }
 
     }
+    private fun TextMessage.toMessageToServer()=
+        ClientMessage(
+            senderName = senderName,
+            senderAddress = senderAddress,
+            receiverName = receiverName,
+            receiverAddress = receiverAddress,
+            timestamp = timestamp,
+            message = message
+        )
+    private fun ClientMessage.toTextMessage()=TextMessage(
+        senderName = senderName,
+        senderAddress = senderAddress,
+        receiverName = receiverName,
+        receiverAddress = receiverAddress,
+        timestamp = timestamp,
+        message = message
+    )
 
     private fun log(message: String, methodName: String? = null) {
         val tag = "${this@Client::class.simpleName}Log:$userName"
