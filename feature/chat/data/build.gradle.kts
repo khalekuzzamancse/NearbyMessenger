@@ -1,24 +1,12 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
 }
 kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "17"
-            }
-        }
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        instrumentedTestVariant {
-            sourceSetTree.set(KotlinSourceSetTree.test)
-            dependencies {
-                implementation(libs.test.androidxUiJunit)
-                debugImplementation(libs.test.androidxUiManifest)
             }
         }
 
@@ -29,23 +17,15 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.ui)
-                implementation(compose.material3)
-                implementation(compose.animation)
-                implementation(compose.animationGraphics)
-                implementation(compose.materialIconsExtended)
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.windowSize)
-                //
-                implementation(project(":core:wifi_direct"))
+                implementation(project(":core:database"))
+                implementation(project(":feature:chat:domain"))
             }
         }
         val commonTest by getting{
             dependencies{
                 implementation(libs.test.kotlinTest)
                 implementation(libs.test.kotlinTestJunit)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.uiTest)
 
             }
 
@@ -53,12 +33,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.core)
-                //for view model
-                val lifecycleVersion = "2.7.0"
-                // ViewModel
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-                // ViewModel utilities for Compose
-                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
             }
         }
 
@@ -68,18 +42,12 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing")
             }
         }
-        val desktopTest by getting {
-            dependencies {
-                implementation(compose.desktop.uiTestJUnit4)
-                implementation(compose.desktop.currentOs)
-            }
-        }
     }
 
 
 }
 android {
-    namespace = "peers"
+    namespace = "chat.data"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

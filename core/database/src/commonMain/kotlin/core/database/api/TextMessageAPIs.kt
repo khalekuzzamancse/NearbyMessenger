@@ -3,6 +3,7 @@ package core.database.api
 import core.database.DB
 import core.database.DB.addEntity
 import core.database.DB.retrieveEntities
+import core.database.schema.RoleEntity
 import core.database.schema.TextMessageEntity
 import core.database.schema.TextMessageSchema
 import io.realm.kotlin.ext.query
@@ -10,33 +11,36 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 object TextMessageAPIs {
-
     private val db = DB.db
-
-
-    suspend fun addTextMessage(model: TextMessageEntity) =
-        addEntity(TextMessageSchema().apply {
-            this.senderDeviceAddress = model.senderDeviceAddress
-            this.message = model.message
-            this.timeStamp = model.timeStamp
+    suspend fun add(entity: TextMessageEntity): Result<Unit> {
+        val result: Result<TextMessageEntity> = addEntity(TextMessageSchema().apply {
+            this.participantsAddress=entity.participantsAddress
+            this.message = entity.message
+            this.timeStamp = entity.timeStamp
+            this.isSender=entity.deviceRole==RoleEntity.Sender
         }) { this.toEntity() }
-
-
-
-
-    fun getMessages(senderAddress: String): Flow<List<TextMessageEntity>> {
-        return getMessages() // Assuming getMessages() returns Flow<List<TextMessageEntity>>
-            .map { list ->
-                list.filter {
-                    it.senderDeviceAddress == senderAddress
-                }
-            }
-    }
-     fun getMessages(): Flow<List<TextMessageEntity>> {
-        return getAllMessages().map { list -> list.map { it.toEntity() } }
+        return if (result.isSuccess)
+            Result.success(Unit)
+        else
+            Result.failure(
+                result.exceptionOrNull() ?: Throwable("Failed to add database for unknown reason")
+            )
     }
 
-    private fun getAllMessages(): Flow<List<TextMessageSchema>> {
+
+    fun retrieveConversation(participantAddress: String): Flow<List<TextMessageEntity>> {
+        val original= retrieveConversation()
+        val filtered=original.map { list ->
+            list.filter {message-> message.participantsAddress==participantAddress }
+        }
+        return filtered
+    }
+
+    fun retrieveConversation(): Flow<List<TextMessageEntity>> {
+        return getAll().map { list -> list.map { it.toEntity() } }
+    }
+
+    private fun getAll(): Flow<List<TextMessageSchema>> {
         return DB.db.query<TextMessageSchema>().asFlow().map { it.list }
     }
 
@@ -48,5 +52,10 @@ object TextMessageAPIs {
             transform = TextMessageSchema::toEntity
         )
         return res
+    }
+    private fun log(message: String, methodName: String? = null) {
+        val tag = "${this@TextMessageAPIs::class.simpleName}Log:"
+        val method = if (methodName == null) "" else "$methodName()'s "
+        println("$tag:$method:-> $message")
     }
 }

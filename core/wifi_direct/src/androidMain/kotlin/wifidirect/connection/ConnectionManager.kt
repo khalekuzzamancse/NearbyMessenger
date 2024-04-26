@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pDeviceList
+import android.net.wifi.p2p.WifiP2pGroup
+import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -15,6 +17,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import wifidirect.connection.model.ConnectionInfo
+import wifidirect.connection.model.ConnectionType
+import wifidirect.connection.model.Device
+import wifidirect.connection.model.ScannedDevice
+import wifidirect.connection.model.ThisDeviceInfo
+import wifidirect.connection.model.WifiDirectConnectionInfo
 
 /**
  *  It handle :
@@ -58,6 +66,14 @@ internal class ConnectionManager(context: Context) {
 
         }
     }
+    private fun ScannedDevice.getDevice() = scannedDevices.map { device ->
+        Device(
+            name = device.deviceName,
+            isConnected = connectedDevices.contains(device),
+            device = device
+        )
+    }
+
 
     init {
         requestThisDeviceInfo()
@@ -94,6 +110,28 @@ internal class ConnectionManager(context: Context) {
                 _connectionInfo.value = _connectionInfo.value.updateInfo(info)
             }
         }
+    }
+    /*
+Tracking the connected devices' status enables other parts of the app to make decisions or take actions accordingly.
+Storing information about the connection type, whether the device functions as a server or client.
+
+*/
+
+    private fun ConnectionInfo.updateInfo(info: WifiP2pInfo): ConnectionInfo {
+        val isConnected = info.groupFormed
+        val type: ConnectionType = if (isConnected) {
+            if (info.isGroupOwner)
+                ConnectionType.Server
+            else
+                ConnectionType.Client
+        } else {
+            ConnectionType.NotConnected
+        }
+        return this.copy(
+            type = type,
+            groupOwnerAddress = info.groupOwnerAddress,
+            isConnected = type !== ConnectionType.NotConnected
+        )
     }
 
 
@@ -144,6 +182,24 @@ internal class ConnectionManager(context: Context) {
             updateConnectionInfo()
         }
     }
+   private fun ScannedDevice.updateConnectDevices(group: WifiP2pGroup?): ScannedDevice {
+        // group != null ,if there are connected devices/network
+        val connectedDevices: List<WifiP2pDevice> = if (group != null) {
+            //if it is the group owner then will get the client list
+            //otherwise the list is empty though is it is connected
+            //if the device is not group owner then its connected with only
+            //a single device that is the group owner
+            val thisDeviceIsGroupOwner = group.isGroupOwner
+            if (thisDeviceIsGroupOwner) {
+                group.clientList.toList()
+            } else {
+                this.connectedDevices + group.owner
+            }
+        } else {
+            emptyList()
+        }
+        return this.copy(connectedDevices = connectedDevices)
+    }
 
 
     fun startScanning() {
@@ -166,6 +222,12 @@ internal class ConnectionManager(context: Context) {
             _nearbyDeviceInfo.value = _nearbyDeviceInfo.value.updateScannedDevices(peers)
         }
 
+    }
+
+    private fun ScannedDevice.updateScannedDevices(peers: WifiP2pDeviceList?): ScannedDevice {
+        return if (peers != null) {
+            this.copy(scannedDevices = peers.deviceList.toList())
+        } else this
     }
 
     @Suppress("Unused")

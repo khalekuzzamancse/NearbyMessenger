@@ -20,7 +20,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(project(":core:socket:client"))
                 implementation(project(":core:socket:server"))
-                implementation(project(":core:socket:protocol"))
             }
         }
         val androidMain by getting {

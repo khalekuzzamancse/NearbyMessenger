@@ -15,10 +15,13 @@ import wifidirect.Factory
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var uuidManager: DeviceUUIDManager
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        uuidManager = DeviceUUIDManager(this)
+        val deviceUUID = uuidManager.deviceUUID
 
         setContent {
             ConnectivitySamplesNetworkingTheme {

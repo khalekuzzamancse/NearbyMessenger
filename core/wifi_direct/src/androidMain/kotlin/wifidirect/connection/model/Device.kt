@@ -1,4 +1,4 @@
-package wifidirect.connection
+package wifidirect.connection.model
 
 import android.net.wifi.p2p.WifiP2pDevice
 

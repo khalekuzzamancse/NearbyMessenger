@@ -83,7 +83,7 @@ fun ConversionScreen(
     ) { scaffoldPadding ->
         Conversions(
             modifier = Modifier.padding(scaffoldPadding),
-            conversations = viewModel.conversations.collectAsState().value,
+            conversations = viewModel.conversations.collectAsState(emptyList()).value,
             controller = viewModel.controller,
             onSendButtonClick = {
                 CoroutineScope(Dispatchers.Default).launch {
