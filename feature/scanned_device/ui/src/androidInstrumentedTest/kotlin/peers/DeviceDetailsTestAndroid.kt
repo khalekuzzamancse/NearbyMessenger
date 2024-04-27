@@ -22,10 +22,8 @@ class DeviceDetailsTestAndroid {
         val device = NearByDevice(name = "Md Abdul", isConnected = false, deviceAddress = "1234")
         setContent {
             DeviceDetails(
-                device = device,
-                onClose = {},
-                onDisconnectRequest = {}
-            )
+                device = device
+            ) {}
         }
         onNodeWithTag(":DeviceNameText").assertTextEquals("Device Name: Md Abdul")
         onNodeWithTag(":IPAddressText").assertTextEquals("IP Address: 1234")
@@ -44,14 +42,10 @@ class DeviceDetailsTestAndroid {
             if (showDialog) {
                 DeviceDetails(
                     modifier = Modifier.testTag(":Dialog"),
-                    device = device,
-                    onClose = {
-                        showDialog = false
-                    },
-                    onDisconnectRequest = {
-                        showDialog = false
-                    }
-                )
+                    device = device
+                ) {
+                    showDialog = false
+                }
             }
 
         }

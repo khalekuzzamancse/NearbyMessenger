@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 
+@Suppress("Unused")
 
 @Composable
 fun MessagePreview() {
@@ -27,7 +28,8 @@ fun MessagePreview() {
             .padding(8.dp)
             .fillMaxSize()
     ) {
-        MessageInputBox(
+        Message(
+            senderName = "Md Abdul Kalam",
             message = "It looks ?",
             timeStamp = "11:20 AM",
             shape = RoundedCornerShape(
@@ -40,7 +42,8 @@ fun MessagePreview() {
             backgroundColor = MaterialTheme.colorScheme.tertiary
         )
         Spacer(modifier = Modifier.height(8.dp))
-        MessageInputBox(
+        Message(
+            senderName = null,
             message = "It looks like you have",
             timeStamp = "11:20 AM",
             shape = RoundedCornerShape(
@@ -57,35 +60,41 @@ fun MessagePreview() {
 
 }
 
+/**
+ * @param senderName ,if device is sender then null
+ */
 @Composable
-fun ColumnScope.MessageInputBox(
+fun ColumnScope.Message(
     modifier: Modifier=Modifier,
+    senderName:String?,
     message: String,
     timeStamp: String,
     shape: Shape,
     alignment: Alignment.Horizontal,
     backgroundColor: Color
 ) {
-    Surface(
-        shape = shape,
-        modifier = modifier.align(alignment),
-        shadowElevation = 1.dp,
-        color = backgroundColor
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-            )
+  Column (modifier.align(alignment)){
+      Text(text = senderName ?: "Me", style = MaterialTheme.typography.bodyMedium,)
+      Surface(
+          shape = shape,
+          modifier =Modifier,
+          shadowElevation = 1.dp,
+          color = backgroundColor
+      ) {
+          Column(modifier = Modifier.padding(8.dp)) {
+              Text(
+                  text = message,
+                  style = MaterialTheme.typography.bodyLarge,
+              )
+              Text(
+                  text = timeStamp,
+                  style = MaterialTheme.typography.labelSmall,
+                  modifier = Modifier.align(Alignment.End).alpha(0.5f) // Set the alpha value (0.5f for 50% transparency)
+              )
+          }
 
-            Text(
-                text = timeStamp,
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.align(Alignment.End).alpha(0.5f) // Set the alpha value (0.5f for 50% transparency)
-            )
-        }
-
-    }
+      }
+  }
 
 }
 

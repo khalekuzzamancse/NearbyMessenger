@@ -8,9 +8,7 @@ package socket.peer
 
 data class ServerMessage(
     val senderName: String,
-    val senderAddress: String,
     val receiverName: String?=null,
-    val receiverAddress: String?=null,
     val message: String,
     val timestamp:Long
 )

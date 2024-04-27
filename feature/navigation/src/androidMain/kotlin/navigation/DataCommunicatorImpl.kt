@@ -11,19 +11,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import peers.ui.scanneddevice.DevicesConnectionInfo
-import peers.ui.scanneddevice.ThisDeviceInfo
 import socket.peer.Communicator
 import socket.peer.ServerMessage
 
 class DataCommunicatorImpl(
-  private  val getThisDeviceInfo:()->ThisDeviceInfo?,
+    private val thisDeviceName:String
 ) : DataCommunicator {
     //
     private val _newMessage = MutableStateFlow<ServerMessage?>(null)
     override val newMessage: Flow<ReceivedMessage?> = _newMessage.asStateFlow().map { msg ->
         if (msg != null) ReceivedMessage(
             senderName = msg.senderName,
-            senderAddress = msg.senderAddress,
             message = msg.message,
             timestamp = msg.timestamp
         ) else null
@@ -56,22 +54,11 @@ class DataCommunicatorImpl(
     }
 
     override suspend fun sendMessage(msg: SendAbleMessage): Result<Unit> {
-        val thisDeviceInfo=getThisDeviceInfo()
-       log("$thisDeviceInfo")
-        if (thisDeviceInfo == null)
-            return Result.failure(Throwable("ThisDeviceInfo is null"))
-        /*
-     Right now,we are unable to access the this device address,so use name as device identifier.
-   Caution:If multiple device has the same name with your friend list,then it may causes
-   in consistent,since name is not globally unique
-    */
         return withContext(Dispatchers.Default) {
             return@withContext communicator?.sendToServer(
                 ServerMessage(
-                    senderName = thisDeviceInfo.name,
-                    senderAddress =thisDeviceInfo.name ,
+                    senderName = thisDeviceName,
                     receiverName =msg.receiverName,
-                    receiverAddress = msg.receiverAddresses,
                     message = msg.message,
                     timestamp = msg.timestamp,
                 )

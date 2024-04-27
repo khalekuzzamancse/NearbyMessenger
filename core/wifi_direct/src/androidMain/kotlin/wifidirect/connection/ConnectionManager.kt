@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ internal class ConnectionManager(context: Context) {
     private val _connectionInfo = MutableStateFlow(ConnectionInfo())
     val connectionInfo = _connectionInfo.asStateFlow()
     private val _nearbyDevices = MutableStateFlow<List<Device>>(emptyList())
-    val nearbyDevices: Flow<List<Device>> = _nearbyDevices.asStateFlow()
+    val nearbyDevices: StateFlow<List<Device>> = _nearbyDevices.asStateFlow()
     private val _nearbyDeviceInfo = MutableStateFlow(ScannedDevice())
 
     init {

@@ -6,7 +6,7 @@ import java.util.*
 
 class DeviceUUIDManager(context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-    private val uuidKey = "device_uuid"
+    private val uuidKey = "device_name"
 
     val deviceUUID: String
         get() = sharedPreferences.getString(uuidKey, null) ?: generateAndStoreUUID()

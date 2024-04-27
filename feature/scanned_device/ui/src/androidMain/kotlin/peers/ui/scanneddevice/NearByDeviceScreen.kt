@@ -1,9 +1,12 @@
 package peers.ui.scanneddevice
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -15,27 +18,18 @@ import peers.ui.devices_list.NearByDevice
 import peers.ui.devices_list.NearByDevicesRoute
 
 
-
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun NearByDeviceScreen(
+    modifier: Modifier,
+    thisDeviceName:String,
     viewModel: DeviceListViewModel,
+    wifiEnabled: Boolean,
     onGroupFormed: (DevicesConnectionInfo) -> Unit,
-    onConversionOpen: (NearByDevice) -> Unit = {},
+    onConversionOpen: (NearByDevice) -> Unit,
+    onGroupConversationRequest:()->Unit,
 ) {
-
-
-    viewModel.connectionInfo
-    val hostState = remember { SnackbarHostState() }
-    LaunchedEffect(Unit) {
-        viewModel.message.collect { msg ->
-            if (msg != null)
-                hostState.showSnackbar(msg)
-        }
-        viewModel.connectionInfo.collect { connectionInfo ->
-            println("ConnectionInfoLog:$connectionInfo")
-        }
-    }
+    val snackBarMessage = viewModel.message.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.connectionInfo.collect { info ->
             val ownerIP = info.groupOwnerIP
@@ -51,13 +45,12 @@ fun NearByDeviceScreen(
             }
         }
     }
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState)
-        }
-    ) {scaffoldPadding->
+    _SnackBarDecorator(
+        message = snackBarMessage,
+    ) { scaffoldPadding ->
         NearByDevicesRoute(
-            modifier = Modifier.padding(scaffoldPadding),
+            modifier = modifier.padding(scaffoldPadding),
+            thisDeviceName=thisDeviceName,
             devices = viewModel.nearbyDevices.collectAsState(emptyList()).value.map {
                 NearByDevice(
                     name = it.name,
@@ -76,20 +69,40 @@ fun NearByDeviceScreen(
             onConversionScreenOpenRequest = {
                 onConversionOpen(it)
             },
-            onScanDeviceRequest = viewModel::scanDevices,
-            onWifiStatusChangeRequest = viewModel::onNetworkStatusChangeRequest
+            onScanDeviceRequest = {
+                if (wifiEnabled)
+                    viewModel.scanDevices()
+            },
+            onWifiStatusChangeRequest = viewModel::onNetworkStatusChangeRequest,
+            onGroupConversationRequest = onGroupConversationRequest
         )
         LaunchedEffect(Unit) {
-            viewModel.scanDevices()
+            if (wifiEnabled)
+                viewModel.scanDevices()
         }
-
     }
 
 
 }
 
+@SuppressLint("ComposableNaming")
 @Composable
-private fun SnackBarDecorator() {
+private fun _SnackBarDecorator(
+    message: String?,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    val hostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(message) {
+        if (message != null)
+            hostState.showSnackbar(message = message, duration = SnackbarDuration.Long)
+    }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState)
+        }
+    ) { scaffoldPadding ->
+        content(scaffoldPadding)
+    }
 }
 

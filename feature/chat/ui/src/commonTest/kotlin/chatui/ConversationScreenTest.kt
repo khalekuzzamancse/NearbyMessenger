@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
+import chatui.conversations.Conversions
 import chatui.message.ChatMessage
 import chatui.message.MessageFieldController
 import kotlin.test.Test

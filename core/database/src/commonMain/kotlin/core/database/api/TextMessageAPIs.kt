@@ -14,7 +14,7 @@ object TextMessageAPIs {
     private val db = DB.db
     suspend fun add(entity: TextMessageEntity): Result<Unit> {
         val result: Result<TextMessageEntity> = addEntity(TextMessageSchema().apply {
-            this.participantsAddress=entity.participantsAddress
+            this.participantsAddress=entity.participantName
             this.message = entity.message
             this.timeStamp = entity.timeStamp
             this.isSender=entity.deviceRole==RoleEntity.Sender
@@ -31,7 +31,7 @@ object TextMessageAPIs {
     fun retrieveConversation(participantAddress: String): Flow<List<TextMessageEntity>> {
         val original= retrieveConversation()
         val filtered=original.map { list ->
-            list.filter {message-> message.participantsAddress==participantAddress }
+            list.filter {message-> message.participantName==participantAddress }
         }
         return filtered
     }

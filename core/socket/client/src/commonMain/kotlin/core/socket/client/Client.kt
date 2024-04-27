@@ -69,17 +69,13 @@ class Client(
     private fun TextMessage.toMessageToServer()=
         ClientMessage(
             senderName = senderName,
-            senderAddress = senderAddress,
             receiverName = receiverName,
-            receiverAddress = receiverAddress,
             timestamp = timestamp,
             message = message
         )
     private fun ClientMessage.toTextMessage()=TextMessage(
         senderName = senderName,
-        senderAddress = senderAddress,
         receiverName = receiverName,
-        receiverAddress = receiverAddress,
         timestamp = timestamp,
         message = message
     )

@@ -64,6 +64,7 @@ dependencies {
     implementation(project(":feature:navigation"))
     //
     implementation(project(":core:wifi_direct"))
+    implementation(project(":core:permission_n_notification"))
 //
     implementation("androidx.core:core-splashscreen:1.0.1")
 

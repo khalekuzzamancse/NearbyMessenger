@@ -9,14 +9,16 @@ import peers.ui.scanneddevice.DevicesConnectionInfo
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MainViewModel(
+    private val thisDeviceUserName: String
 ) : ViewModel() {
     val deviceListViewModel = DeviceListViewModel()
-    private val dataCommunicator = DataCommunicatorImpl(deviceListViewModel::getThisDeviceInfo)
+    private val dataCommunicator = DataCommunicatorImpl(thisDeviceUserName)
 
-    fun createChatViewModel(deviceID: String) = ChatViewModel(
+    fun createChatViewModel()=ChatViewModel(
         dataCommunicator = dataCommunicator,
-        deviceId = deviceID
+        thisDeviceUserName =thisDeviceUserName
     )
+    val newMessage = dataCommunicator.newMessage
 
     fun onGroupFormed(info: DevicesConnectionInfo) = dataCommunicator.onGroupFormed(info)
 

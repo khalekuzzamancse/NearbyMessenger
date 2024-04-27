@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/applications/desktop" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/database" />
+            <option value="$PROJECT_DIR$/core/permission_n_notification" />
             <option value="$PROJECT_DIR$/core/socket" />
             <option value="$PROJECT_DIR$/core/socket/client" />
             <option value="$PROJECT_DIR$/core/socket/protocol" />

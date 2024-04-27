@@ -58,7 +58,7 @@ class TextMessageTest {
     }
 
     private fun createMessage() = TextMessageEntity(
-        participantsAddress = "B",
+        participantName = "B",
         timeStamp = System.currentTimeMillis(),
         message = "congratulations B",
         deviceRole = RoleEntity.Sender
@@ -66,9 +66,9 @@ class TextMessageTest {
 
     private fun createMessages() = listOf(
         createMessage(),
-        createMessage().copy(message = "Hi B", participantsAddress = "B", deviceRole = RoleEntity.Sender),
-        createMessage().copy(message = "Hello ", participantsAddress = "B",deviceRole = RoleEntity.Receiver),
-        createMessage().copy(message = "Hello C", participantsAddress = "C",deviceRole = RoleEntity.Sender),
+        createMessage().copy(message = "Hi B", participantName = "B", deviceRole = RoleEntity.Sender),
+        createMessage().copy(message = "Hello ", participantName = "B",deviceRole = RoleEntity.Receiver),
+        createMessage().copy(message = "Hello C", participantName = "C",deviceRole = RoleEntity.Sender),
     )
 
 }

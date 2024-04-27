@@ -5,8 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-internal fun WifiDialog(isWifiEnabled: Boolean) {
-    if (!isWifiEnabled) {
+internal fun WifiDialog() {
         AlertDialog(
             onDismissRequest = { /* Dismiss when user taps outside the dialog */ },
             title = { Text("Wi-Fi is Disabled") },
@@ -15,5 +14,4 @@ internal fun WifiDialog(isWifiEnabled: Boolean) {
 
             }
         )
-    }
 }
