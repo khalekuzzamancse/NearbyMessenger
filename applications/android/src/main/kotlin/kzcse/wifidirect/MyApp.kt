@@ -3,6 +3,7 @@ package kzcse.wifidirect
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import navigation.DataCommunicatorImpl
 import wifidirect.Factory
 
 
@@ -14,6 +15,7 @@ class MyApp : Application() {
         Factory.create(this)
         Factory.broadcastNConnectionHandler.registerBroadcast()
         Factory.broadcastNConnectionHandler.updateConnectedDeviceInfo()
+
 
     }
 

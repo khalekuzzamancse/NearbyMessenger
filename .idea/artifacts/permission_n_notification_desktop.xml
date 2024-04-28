@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="permission_n_notification-desktop">
+    <output-path>$PROJECT_DIR$/core/permission_n_notification/build/libs</output-path>
+    <root id="archive" name="permission_n_notification-desktop.jar">
+      <element id="module-output" name="NearByMessenger.core.permission_n_notification.desktopMain" />
+    </root>
+  </artifact>
+</component>

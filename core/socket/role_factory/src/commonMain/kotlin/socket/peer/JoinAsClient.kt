@@ -48,7 +48,6 @@ internal class JoinAsClient(
                             message = it.message,
                             timestamp = it.timestamp,
                             senderName = it.senderName,
-                            senderAddress = it.senderAddress
                         )
                     )
                 }
@@ -64,10 +63,8 @@ internal class JoinAsClient(
             if (result.isSuccess) {
                 return@withContext result.getOrThrow().sendMessage(
                     ClientMessage(
-                        senderName = msg.senderAddress,
-                        senderAddress = msg.senderAddress,
+                        senderName = msg.senderName,
                         receiverName = msg.receiverName,
-                        receiverAddress =msg.receiverAddress,
                         timestamp = msg.timestamp,
                         message = msg.message,
                     )

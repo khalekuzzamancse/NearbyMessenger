@@ -12,21 +12,19 @@ import kotlinx.coroutines.flow.map
 class TextMessageRepositoryImpl : TextMessageRepository {
     override suspend fun addToDatabase(message: TextMessageModel) = TextMessageAPIs.add(
         TextMessageEntity(
-            participantsAddress = message.participantsAddress,
+            participantName = message.participantsName,
             message = message.message,
             timeStamp = message.timeStamp,
             deviceRole = if (message.deviceRole == TextMessageModelRole.Sender) RoleEntity.Sender else RoleEntity.Receiver
         )
     )
 
-    override fun observerConversation(particpantAddress:String): Flow<List<TextMessageModel>> {
-        //TODO ::Right now Scanned Device name has problem,that is why do not using the filter as:TextMessageAPIs.retrieveConversation(participantAddress)
-        //TODO:Later fix it,from wifi direct client,otherwise all participant chat will be show in a single inbox
+
+    override fun observerGroupConversation(): Flow<List<TextMessageModel>> {
         return TextMessageAPIs.retrieveConversation().map { messages ->
-            messages
-                .map {
+            messages.map {
                 TextMessageModel(
-                    participantsAddress = it.participantsAddress,//the device itself is the receiver
+                    participantsName = it.participantName,//the device itself is the receiver
                     message = it.message,
                     timeStamp = it.timeStamp,
                     deviceRole = if (it.deviceRole == RoleEntity.Sender) TextMessageModelRole.Sender else TextMessageModelRole.Receiver,

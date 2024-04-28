@@ -7,8 +7,8 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
-import peers.ui.devices_list.NearByDevice
-import peers.ui.devices_list.NearByDevicesRoute
+import peers.ui.devices.NearByDevice
+import peers.ui.route.NearByDevicesRoute
 import kotlin.test.Test
 
 class DeviceListRouteListTestAndroid {

@@ -74,13 +74,15 @@ internal fun __MessageInputField(
                 IconButton(onClick = onAttachmentLoadRequest, modifier = Modifier.testTag("AttachmentButton")) {
                     Icon(
                         imageVector = Icons.Filled.Attachment,
-                        contentDescription = "Attach file"
+                        contentDescription = "Attach file",
+                        tint = MaterialTheme.colorScheme.primary//Important,since clickable
                     )
                 }
                 IconButton(onClick = onSpeechToTextRequest, modifier = Modifier.testTag("SpeechToTextButton")) {
                     Icon(
                         imageVector = Icons.Filled.Mic,
-                        contentDescription = "Activate microphone"
+                        contentDescription = "Activate microphone",
+                        tint = MaterialTheme.colorScheme.primary//Important,since clickable
                     )
                 }
             }
@@ -93,7 +95,8 @@ internal fun __MessageInputField(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Send message"
+                    contentDescription = "Send message",
+                    tint = MaterialTheme.colorScheme.primary//Important,since clickable
                 )
             }
         }

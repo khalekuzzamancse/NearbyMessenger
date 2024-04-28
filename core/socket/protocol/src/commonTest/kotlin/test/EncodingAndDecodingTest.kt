@@ -14,11 +14,11 @@ class EncodingAndDecodingTest {
         println("Encoded:$encoded")
         val decoded= TextMessageDecoder(encoded).decode()
         println("Decoded:$decoded")
-        assertEquals(decoded,message)
+        assertEquals(message,decoded)
     }
     @Test
     fun `test for  group message`(){
-        val message=createMessage().copy(receiverName = null, receiverAddress = null)
+        val message=createMessage().copy(receiverName = null)
         val encoded= TextMessageEncoder(message).encodeText()
         println("Encoded:$encoded")
         val decoded= TextMessageDecoder(encoded).decode()
@@ -26,9 +26,7 @@ class EncodingAndDecodingTest {
         assertEquals(message,decoded)
     }
     private fun createMessage()=TextMessage(
-        senderAddress = "POCO C3 Unknown Address",
         senderName = "POCO C3",
-        receiverAddress = "Tab Unknown Address ",
         receiverName = "Samsung Tab",
         message = "Hello Tab",
         timestamp = System.currentTimeMillis()

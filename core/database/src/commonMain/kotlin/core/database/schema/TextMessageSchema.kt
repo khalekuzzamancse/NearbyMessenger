@@ -1,7 +1,6 @@
 package core.database.schema
 
 import io.realm.kotlin.types.RealmObject
-import io.realm.kotlin.types.annotations.PrimaryKey
 
 internal class TextMessageSchema : RealmObject {
     var participantsAddress: String = "otherDevice"
@@ -11,7 +10,7 @@ internal class TextMessageSchema : RealmObject {
     fun toEntity() = TextMessageEntity(
         timeStamp = timeStamp,
         message = message,
-        participantsAddress = participantsAddress,
+        participantName = participantsAddress,
         deviceRole = if (isSender)RoleEntity.Sender else RoleEntity.Receiver
     )
 
@@ -22,10 +21,10 @@ internal class TextMessageSchema : RealmObject {
 
 /**
  * Need not to to store receiver address,because device itself is the receiver
- * @param participantsAddress either who send message to this or device send message to whom
+ * @param participantName either who send message to this or device send message to whom
  */
 data class TextMessageEntity(
-    val participantsAddress: String,
+    val participantName: String,
     val timeStamp: Long,
     val message: String,
     val deviceRole:RoleEntity

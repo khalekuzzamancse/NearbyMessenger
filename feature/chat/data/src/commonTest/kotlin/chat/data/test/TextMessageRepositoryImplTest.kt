@@ -3,7 +3,6 @@ package chat.data.test
 import chat.data.TextMessageRepositoryImpl
 import chat.domain.model.TextMessageModel
 import chat.domain.model.TextMessageModelRole
-import core.database.schema.RoleEntity
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.test.Test
@@ -42,16 +41,16 @@ class TextMessageRepositoryImplTest {
     }
 
     private fun createMessage() = TextMessageModel(
-        participantsAddress = "A",
+        participantsName = "A",
         timeStamp = System.currentTimeMillis(),
         message = "Test message",
         deviceRole = TextMessageModelRole.Sender
     )
     private fun createMessages() = listOf(
         createMessage(),
-        createMessage().copy(message = "Hi B", participantsAddress = "B", deviceRole = TextMessageModelRole.Sender),
-        createMessage().copy(message = "Hello ", participantsAddress = "B",deviceRole = TextMessageModelRole.Receiver),
-        createMessage().copy(message = "Hello C", participantsAddress = "C",deviceRole = TextMessageModelRole.Sender),
+        createMessage().copy(message = "Hi B", participantsName = "B", deviceRole = TextMessageModelRole.Sender),
+        createMessage().copy(message = "Hello ", participantsName = "B",deviceRole = TextMessageModelRole.Receiver),
+        createMessage().copy(message = "Hello C", participantsName = "C",deviceRole = TextMessageModelRole.Sender),
     )
 
 }

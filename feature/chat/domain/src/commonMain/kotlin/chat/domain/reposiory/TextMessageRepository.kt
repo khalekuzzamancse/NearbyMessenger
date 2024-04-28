@@ -9,5 +9,5 @@ interface TextMessageRepository {
     /**
      * Using function instead of variable so that later filter argument injected
      */
-   fun observerConversation(participantAddress:String): Flow<List<TextMessageModel>>
+   fun observerGroupConversation(): Flow<List<TextMessageModel>>
 }

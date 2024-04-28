@@ -1,10 +1,11 @@
 package core.socket.client
 
+/**
+ * @param receiverName nullable for group message
+ */
 data class ClientMessage(
     val senderName: String,
-    val senderAddress: String,
     val receiverName: String?=null,
-    val receiverAddress: String?=null,
     val timestamp: Long,
     val message: String
 )

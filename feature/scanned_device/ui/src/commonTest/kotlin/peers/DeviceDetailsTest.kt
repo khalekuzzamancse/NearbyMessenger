@@ -10,8 +10,8 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
-import peers.ui.devices_list.DeviceDetails
-import peers.ui.devices_list.NearByDevice
+import peers.ui.devices.DeviceDetails
+import peers.ui.devices.NearByDevice
 import kotlin.test.Test
 
 class DeviceDetailsTest {
@@ -21,10 +21,8 @@ class DeviceDetailsTest {
         val device = NearByDevice(name = "Md Abdul", isConnected = false, deviceAddress = "1234")
         setContent {
             DeviceDetails(
-                device = device,
-                onClose = {},
-                onDisconnectRequest = {}
-            )
+                device = device
+            ) {}
         }
         onNodeWithTag(":DeviceNameText").assertTextEquals("Device Name: Md Abdul")
         onNodeWithTag(":IPAddressText").assertTextEquals("IP Address: 1234")
@@ -42,14 +40,10 @@ class DeviceDetailsTest {
             if (showDialog) {
                 DeviceDetails(
                     modifier = Modifier.testTag(":Dialog"),
-                    device = device,
-                    onClose = {
-                        showDialog = false
-                    },
-                    onDisconnectRequest = {
-                        showDialog = false
-                    }
-                )
+                    device = device
+                ) {
+                    showDialog = false
+                }
             }
 
         }

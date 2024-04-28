@@ -1,4 +1,4 @@
-package peers.ui.devices_list
+package peers.ui.devices
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +23,9 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DeviceDetails(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     device: NearByDevice,
-    onClose: () -> Unit,
-    onDisconnectRequest: () -> Unit
+    onClose: () -> Unit
 ) {
 
     AlertDialog(
