@@ -6,10 +6,13 @@ plugins {
 
 android {
     namespace = "kzcse.bluefimessenger"
+    //do not change this later,already sign in certificate generated,and in plays tore this already uploaded,if changed then update will not work
+
     compileSdk = 34
 
     defaultConfig {
         applicationId = "kzcse.bluefimessenger"
+        //do not change this later,already sign in certificate generated,and in plays tore this already uploaded,if changed then update will not work
         minSdk = 27
         targetSdk = 33
         versionCode = 1
