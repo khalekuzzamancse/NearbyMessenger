@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import chatui.viewmodel.ChatViewModel
 import peers.ui.scanneddevice.DeviceListViewModel
-import peers.ui.scanneddevice.DevicesConnectionInfo
+import peers.ui.misc.DevicesConnectionInfo
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MainViewModel(

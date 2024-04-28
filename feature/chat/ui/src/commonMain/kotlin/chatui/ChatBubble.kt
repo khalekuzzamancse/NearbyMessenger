@@ -2,11 +2,7 @@ package chatui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,47 +14,48 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
-
-@Suppress("Unused")
-
-@Composable
-fun MessagePreview() {
-    Column(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxSize()
-    ) {
-        Message(
-            senderName = "Md Abdul Kalam",
-            message = "It looks ?",
-            timeStamp = "11:20 AM",
-            shape = RoundedCornerShape(
-                topStart = 8.dp,
-                topEnd = 8.dp,
-                bottomStart = 8.dp,
-                bottomEnd = 16.dp
-            ),
-            alignment = Alignment.End,
-            backgroundColor = MaterialTheme.colorScheme.tertiary
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Message(
-            senderName = null,
-            message = "It looks like you have",
-            timeStamp = "11:20 AM",
-            shape = RoundedCornerShape(
-                topStart = 8.dp,
-                topEnd = 16.dp,
-                bottomStart = 16.dp,
-                bottomEnd = 16.dp
-            ),
-            alignment = Alignment.Start,
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
-        )
-
-    }
-
-}
+//
+//
+//@Suppress("Unused")
+//
+//@Composable
+//fun MessagePreview() {
+//    Column(
+//        modifier = Modifier
+//            .padding(8.dp)
+//            .fillMaxSize()
+//    ) {
+//        Message(
+//            senderName = "Md Abdul Kalam",
+//            message = "It looks ?",
+//            timeStamp = "11:20 AM",
+//            shape = RoundedCornerShape(
+//                topStart = 8.dp,
+//                topEnd = 8.dp,
+//                bottomStart = 8.dp,
+//                bottomEnd = 16.dp
+//            ),
+//            alignment = Alignment.End,
+//            backgroundColor = MaterialTheme.colorScheme.tertiary
+//        )
+//        Spacer(modifier = Modifier.height(8.dp))
+//        Message(
+//            senderName = null,
+//            message = "It looks like you have",
+//            timeStamp = "11:20 AM",
+//            shape = RoundedCornerShape(
+//                topStart = 8.dp,
+//                topEnd = 16.dp,
+//                bottomStart = 16.dp,
+//                bottomEnd = 16.dp
+//            ),
+//            alignment = Alignment.Start,
+//            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+//        )
+//
+//    }
+//
+//}
 
 /**
  * @param senderName ,if device is sender then null
@@ -81,7 +78,7 @@ fun ColumnScope.Message(
           shadowElevation = 1.dp,
           color = backgroundColor
       ) {
-          Column(modifier = Modifier.padding(8.dp)) {
+          Column(modifier = Modifier.padding(12.dp)) {
               Text(
                   text = message,
                   style = MaterialTheme.typography.bodyLarge,

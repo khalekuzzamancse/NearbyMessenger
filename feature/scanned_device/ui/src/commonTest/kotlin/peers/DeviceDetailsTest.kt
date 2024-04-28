@@ -10,8 +10,8 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
-import peers.ui.devices_list.DeviceDetails
-import peers.ui.devices_list.NearByDevice
+import peers.ui.devices.DeviceDetails
+import peers.ui.devices.NearByDevice
 import kotlin.test.Test
 
 class DeviceDetailsTest {

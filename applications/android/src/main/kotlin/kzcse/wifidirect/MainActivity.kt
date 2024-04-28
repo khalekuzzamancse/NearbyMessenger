@@ -7,7 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.filled.TabletMac
+import androidx.compose.material.icons.filled.WifiFind
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
                         onNewMessageNotificationRequest = ::createNotification,
                         onExitRequest = ::finish
                     )
+
                 }
             }
             PermissionIfNeeded()

@@ -1,4 +1,4 @@
-package peers.ui.devices_list
+package peers.ui.devices
 
 data class NearByDevice(
     val name: String,

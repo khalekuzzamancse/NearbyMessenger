@@ -1,4 +1,4 @@
-package peers.ui.devices_list
+package peers.ui.devices
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

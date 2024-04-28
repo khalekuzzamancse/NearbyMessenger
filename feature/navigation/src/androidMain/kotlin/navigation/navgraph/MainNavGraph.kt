@@ -1,9 +1,7 @@
 package navigation.navgraph
 
 import android.os.Build
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,14 +9,32 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import chatui.conversations.ConversionRoute
 import navigation.MainViewModel
 import navigation.WifiDialog
-
+import navigation.theme.Theme
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun NavGraph(
+    thisDeviceUserName:String,
+    wifiEnabled: Boolean,
+    onNewMessageNotificationRequest:(sender:String)->Unit,
+    onExitRequest: () -> Unit,
+){
+    Theme {
+        _NavGraph(
+            thisDeviceUserName = thisDeviceUserName,
+            wifiEnabled = wifiEnabled,
+            onNewMessageNotificationRequest = onNewMessageNotificationRequest,
+            onExitRequest = onExitRequest
+        )
+    }
+
+}
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Suppress("ComposableNaming")
+@Composable
+private fun _NavGraph(
     thisDeviceUserName:String,
     wifiEnabled: Boolean,
     onNewMessageNotificationRequest:(sender:String)->Unit,

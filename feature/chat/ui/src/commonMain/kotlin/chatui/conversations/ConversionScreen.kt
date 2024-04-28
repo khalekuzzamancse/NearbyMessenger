@@ -143,7 +143,9 @@ private fun ConversionBase(
                             bottomEnd = 32.dp
                         ),
                         alignment = alignment,
-                        backgroundColor = if (isSender) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondaryContainer
+                        backgroundColor =
+                        if (isSender) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                        //telegram uses white for received message that is equivalent to surface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
-import peers.ui.scanneddevice.DevicesConnectionInfo
+import peers.ui.misc.DevicesConnectionInfo
 import socket.peer.Communicator
 import socket.peer.ServerMessage
 

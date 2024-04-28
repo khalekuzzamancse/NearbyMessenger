@@ -21,7 +21,7 @@ class DeviceListViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val message = _errorMessage.asStateFlow()
     private val _isScanning = MutableStateFlow(false)
-    private val _numberOfConnectedDevices=MutableStateFlow(0)
+    private val _numberOfConnectedDevices = MutableStateFlow(0)
     val isDeviceScanning = _isScanning
 
     val connectionInfo = controller.connectionInfoModel
@@ -31,29 +31,15 @@ class DeviceListViewModel : ViewModel() {
     fun onNetworkStatusChangeRequest() = controller.onStatusChangeRequest()
 
     val nearbyDevices = controller.nearbyDevices
-    private fun observerConnectedDevices(){
-        CoroutineScope(Dispatchers.Default).launch {
-            nearbyDevices.collect{devices->
-                _numberOfConnectedDevices.update {
-                    devices.filter { it.isConnected }.size
-                }
-            }
-        }
-    }
+
     fun scanDevices() {
         CoroutineScope(Dispatchers.Default).launch {
             _isScanning.update { true }
+            repeat(8) {
+                controller.scanDevices()
+                delay(250)
+            }
             //TODO: There is Bug ,that is why Scanning multiple times,to avoid multiple
-            controller.scanDevices()
-            delay(500)
-            controller.scanDevices()
-            delay(500)
-            controller.scanDevices()
-            delay(500)
-            controller.scanDevices()
-            delay(500)
-            controller.scanDevices()
-            delay(100)
             _isScanning.update { false }
             updateErrorMessageAboutScannedDevice()
 

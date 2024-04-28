@@ -1,4 +1,4 @@
-package peers.ui.devices_list
+package peers.ui.devices
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
