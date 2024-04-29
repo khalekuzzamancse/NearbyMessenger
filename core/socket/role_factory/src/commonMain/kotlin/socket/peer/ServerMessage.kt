@@ -3,7 +3,7 @@ package socket.peer
 /**
  * Used to decouple from nested or transient module
  * @param receiverName Nullable if message is for group
- * @param receiverAddress Nullable if message is for group
+
 */
 
 data class ServerMessage(

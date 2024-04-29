@@ -6,12 +6,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PersonSearch
-import androidx.compose.material.icons.filled.TabletMac
-import androidx.compose.material.icons.filled.WifiFind
-import androidx.compose.material.icons.filled.WifiOff
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,7 +15,6 @@ import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
 import navigation.navgraph.NavGraph
-import wifidirect.Factory
 
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +35,8 @@ class MainActivity : ComponentActivity() {
                         log(userNameManager.userName)
                     }
                 } else {
-                    val wifiEnabled = Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
+//                    val wifiEnabled = Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
+                    val wifiEnabled = true
                     NavGraph(
                         thisDeviceUserName = userNameManager.userName,
                         wifiEnabled = wifiEnabled,
