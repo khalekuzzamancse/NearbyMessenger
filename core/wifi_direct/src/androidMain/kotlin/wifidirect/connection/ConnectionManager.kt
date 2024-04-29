@@ -43,6 +43,7 @@ internal class ConnectionManager(context: Context) {
     private val manager = context.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager?
     private var channel = manager?.initialize(context, context.mainLooper, null)
     private val _thisDeviceInfo = MutableStateFlow<ThisDeviceInfo?>(null)
+
     fun getThisDeviceInfo()=_thisDeviceInfo.value
 
     //keeping important states

@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/core/socket/role_factory" />
             <option value="$PROJECT_DIR$/core/socket/server" />
             <option value="$PROJECT_DIR$/core/wifi_direct" />
+            <option value="$PROJECT_DIR$/core/wifi_hotspot" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/chat" />
             <option value="$PROJECT_DIR$/feature/chat/data" />

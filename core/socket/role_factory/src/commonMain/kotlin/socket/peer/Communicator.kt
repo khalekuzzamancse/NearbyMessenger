@@ -6,27 +6,28 @@ package socket.peer
  * -  Handle :
  * -  Send message
  * - Listen for Receiver message
- * @param groupOwnerIP is NULL if this is just a client
+ * @param groupOwnerIP is NULL if this device is is the group owner,means the server will run on this device,if this parameter is null
+ *
  *
  */
 
 class Communicator(
-    private val groupOwnerIP: String,
+    private val groupOwnerIP: String?,
     deviceName: String,
-    isGroupOwner: Boolean,
     onNewMessageReceived: (ServerMessage)->Unit,
 ) {
+    private val  isGroupOwner=groupOwnerIP==null
     private val joinAsServer = isGroupOwner
     private val joinedAsOnlyClient =!joinAsServer
     private lateinit var joinAsClient: JoinAsClient
-    private var server = if (joinAsServer) JoinAsServer(groupOwnerIP, deviceName,onNewMessageReceived) else null
+    private var server = if (joinAsServer) JoinAsServer( deviceName,onNewMessageReceived) else null
 
     init {
         //if it not maintain the server,then it will create an client instance only to communicate with server
-        if (joinedAsOnlyClient) {
+        if (joinedAsOnlyClient&&groupOwnerIP!=null) {
             joinAsClient = JoinAsClient(groupOwnerIP, deviceName,onNewMessageReceived)
         } else {
-            //join as server
+            //join as server:Already Done...
         }
     }
 
