@@ -1,8 +1,8 @@
-package nsd.common.data_communicator
+package nearbyapi.component.common.data_communicator
 
 import com.google.android.gms.nearby.connection.PayloadCallback
 import kotlinx.coroutines.flow.StateFlow
-import nsd.common.Message
+import nearbyapi.component.common.Message
 
 internal interface DataCommunicator {
 

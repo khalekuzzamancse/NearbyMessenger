@@ -1,4 +1,4 @@
-package nsd.common
+package nearbyapi.component.common
 
 import android.content.Context
 import android.util.Log
@@ -6,10 +6,10 @@ import com.google.android.gms.nearby.connection.ConnectionInfo
 import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.PayloadCallback
 import kotlinx.coroutines.suspendCancellableCoroutine
-import nsd.common.conformer.AuthToken
-import nsd.common.conformer.ConnectionConformer
-import nsd.common.endpoint.EndPointStatus
-import nsd.common.endpoint.EndpointList
+import nearbyapi.component.common.conformer.AuthToken
+import nearbyapi.component.common.conformer.ConnectionConformer
+import nearbyapi.component.common.endpoint.EndPointStatus
+import nearbyapi.component.common.endpoint.EndpointList
 import kotlin.coroutines.resume
 
 internal class ConnectionAcceptor(

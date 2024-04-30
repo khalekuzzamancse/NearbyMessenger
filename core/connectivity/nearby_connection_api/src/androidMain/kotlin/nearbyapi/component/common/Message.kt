@@ -1,4 +1,4 @@
-package nsd.common
+package nearbyapi.component.common
 
 /**
  * @param receiverName nullable for group message

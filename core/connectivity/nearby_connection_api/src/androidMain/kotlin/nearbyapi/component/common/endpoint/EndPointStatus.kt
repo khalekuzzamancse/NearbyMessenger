@@ -1,4 +1,4 @@
-package nsd.common.endpoint
+package nearbyapi.component.common.endpoint
 
 /**
  * - [Connecting] will be helpful to update ui till it connecting,and prevent user to click multiple time connect

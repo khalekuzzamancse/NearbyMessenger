@@ -1,4 +1,4 @@
-package nsd.common.endpoint
+package nearbyapi.component.common.endpoint
 
 
 /**

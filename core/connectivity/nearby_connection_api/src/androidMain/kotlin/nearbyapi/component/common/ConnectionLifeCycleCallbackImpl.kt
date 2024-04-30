@@ -1,4 +1,4 @@
-package nsd.common
+package nearbyapi.component.common
 
 import android.util.Log
 import com.google.android.gms.nearby.connection.ConnectionInfo
@@ -6,12 +6,12 @@ import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
 import com.google.android.gms.nearby.connection.ConnectionResolution
 import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes
-import nsd.common.endpoint.EndPointInfo
-import nsd.common.endpoint.EndPointStatus
-import nsd.common.endpoint.EndpointList
+import nearbyapi.component.common.endpoint.EndPointInfo
+import nearbyapi.component.common.endpoint.EndPointStatus
+import nearbyapi.component.common.endpoint.EndpointList
 
 internal class ConnectionLifeCycleCallbackImpl(
-    private val advertiserList:EndpointList,
+    private val advertiserList: EndpointList,
     private val _onConnectionInitiated:(endpointId: String, info: ConnectionInfo)->Unit,
 ) : ConnectionLifecycleCallback() {
     /** - Executed when new connection is initiated to connect with this device

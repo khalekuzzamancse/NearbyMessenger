@@ -10,12 +10,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import nsd.Factory
-import nsd.advertiser.Advertiser
-import nsd.common.Message
-import nsd.common.endpoint.EndPointInfo
-import nsd.common.endpoint.EndPointStatus
-import nsd.discoverer.Discoverer
+import nearbyapi.component.common.Message
+import nearbyapi.component.common.endpoint.EndPointInfo
+import nearbyapi.component.common.endpoint.EndPointStatus
+import nearbyapi.endpoint.EndPointType
+import nearbyapi.endpoint.NearByEndpointBuilder
 import peers.ui.devices.ConnectionStatus
 import peers.ui.devices.NearByDevice
 
@@ -26,44 +25,39 @@ import peers.ui.devices.NearByDevice
 
 class DeviceListViewModel(
     context: Context,
-   private val name: String,
+    private val name: String,
     isAdvertiser: Boolean
 ) : ViewModel() {
 
-    private val _message = MutableStateFlow<String?>(null)
-    val errorMessage = _message.asStateFlow()
-    private val advertiser: Advertiser? =
-        if (isAdvertiser) Factory.createAdvertiser(context, name) else null
-    private val discoverer: Discoverer? =
-        if (!isAdvertiser) Factory.createDiscover(context, name) else null
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+    private val thisTheNearByEndPoint = if (isAdvertiser)
+        NearByEndpointBuilder(context, name).build(EndPointType.Advertiser)
+    else
+        NearByEndpointBuilder(context, name).build(EndPointType.Discoverer)
+
 
     // Assuming both advertiser and discoverer are of a type that can possibly be null
-    val nearbyDevices = (advertiser?.discoverers ?: discoverer?.advertisers)?.map { endPoints ->
+    val nearbyDevices = thisTheNearByEndPoint.endPoints.map { endPoints ->
         endPoints.mapNotNull { endpoint ->
             endpoint.toNearByDeviceOrNull()
         }
     } ?: flowOf(emptyList())
 
- init {
-     CoroutineScope(Dispatchers.Default).launch {
-         advertiser?.receivedMessage?.collect {newMessage->
-             if (newMessage!=null)
-             log("New Message:$newMessage")
-         }
-     }
-     CoroutineScope(Dispatchers.Default).launch {
-         discoverer?.receivedMessage?.collect {newMessage->
-             if (newMessage!=null)
-                 log("New Message:$newMessage")
-         }
-     }
- }
+    init {
+        CoroutineScope(Dispatchers.Default).launch {
+            thisTheNearByEndPoint.receivedMessage.collect { newMessage ->
+                if (newMessage != null)
+                    log("New Message:$newMessage")
+            }
+        }
+    }
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            nearbyDevices.collect{devices->
-                devices.forEach {device->
-                    if (device.connectionStatus==ConnectionStatus.Connected){
+            nearbyDevices.collect { devices ->
+                devices.forEach { device ->
+                    if (device.connectionStatus == ConnectionStatus.Connected) {
                         sendDummyMessage(device.id)
                     }
                 }
@@ -71,30 +65,29 @@ class DeviceListViewModel(
             }
         }
     }
-     private suspend fun sendDummyMessage(endpointId: String){
-         repeat(4){i->
-             val message= Message(
-                 senderName = name,
-                 sendId = endpointId,
-                 timestamp = System.currentTimeMillis(),
-                 body = "Hello From $name:${i+10}"
-             )
-             advertiser?.sendMessage(message)
-             discoverer?.sendMessage(message)
-             delay(1_000)
-         }
+
+    private suspend fun sendDummyMessage(endpointId: String) {
+        repeat(4) { i ->
+            val message = Message(
+                senderName = name,
+                sendId = endpointId,
+                timestamp = System.currentTimeMillis(),
+                body = "Hello From $name:${i + 10}"
+            )
+            thisTheNearByEndPoint.sendMessage(message)
+            delay(1_000)
+        }
 
     }
 
 
     suspend fun scan(): Result<Unit> {
-        return (advertiser?.startAdvertising())
-            ?: (discoverer?.startDiscovery() ?: Result.failure(Throwable("Failed to scan")))
+        return thisTheNearByEndPoint.scan()
     }
 
     fun connect(endpointId: String) {
         CoroutineScope(Dispatchers.Default).launch {
-            discoverer?.initiateConnect(endpointId)
+            thisTheNearByEndPoint.initiateConnection(endpointId)
         }
     }
 

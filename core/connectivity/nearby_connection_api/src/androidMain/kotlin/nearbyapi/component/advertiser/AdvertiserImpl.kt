@@ -1,4 +1,4 @@
-package nsd.advertiser
+package nearbyapi.component.advertiser
 
 import android.content.Context
 import android.util.Log
@@ -12,11 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import nsd.common.ConnectionAcceptor
-import nsd.common.ConnectionLifeCycleCallbackImpl
-import nsd.common.data_communicator.DataCommunicatorImpl
-import nsd.common.Message
-import nsd.common.endpoint.EndpointList
+import nearbyapi.component.common.ConnectionAcceptor
+import nearbyapi.component.common.ConnectionLifeCycleCallbackImpl
+import nearbyapi.component.common.data_communicator.DataCommunicatorImpl
+import nearbyapi.component.common.Message
+import nearbyapi.component.common.endpoint.EndpointList
 import kotlin.coroutines.resume
 
 /**

@@ -1,4 +1,4 @@
-package nsd.common.conformer
+package nearbyapi.component.common.conformer
 
 import android.app.AlertDialog
 import android.content.Context

@@ -1,4 +1,4 @@
-package nsd.common.conformer
+package nearbyapi.component.common.conformer
 
 internal data class AuthToken(
     val endpointId: String,

@@ -1,11 +1,11 @@
-package nsd.discoverer
+package nearbyapi.component.discoverer
 
 import android.util.Log
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
-import nsd.common.endpoint.EndPointInfo
-import nsd.common.endpoint.EndPointStatus
-import nsd.common.endpoint.EndpointList
+import nearbyapi.component.common.endpoint.EndPointInfo
+import nearbyapi.component.common.endpoint.EndPointStatus
+import nearbyapi.component.common.endpoint.EndpointList
 /** - The callback of this instance will be executed when a new advertiser is found or when an existing one is lost */
 internal class EndPointDiscoveryCallbackImpl(
     private val advertiserList: EndpointList,

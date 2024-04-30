@@ -1,8 +1,8 @@
-package nsd.discoverer
+package nearbyapi.component.discoverer
 
 import kotlinx.coroutines.flow.StateFlow
-import nsd.common.Message
-import nsd.common.endpoint.EndPointInfo
+import nearbyapi.component.common.Message
+import nearbyapi.component.common.endpoint.EndPointInfo
 
 interface Discoverer {
 

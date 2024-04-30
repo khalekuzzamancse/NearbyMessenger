@@ -1,4 +1,4 @@
-package nsd.common.endpoint
+package nearbyapi.component.common.endpoint
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,4 +1,4 @@
-package nsd.common.data_communicator
+package nearbyapi.component.common.data_communicator
 
 import android.util.Log
 import com.google.android.gms.nearby.connection.ConnectionsClient
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.suspendCancellableCoroutine
-import nsd.common.Message
+import nearbyapi.component.common.Message
 import socket.protocol.TextMessage
 import socket.protocol.TextMessageDecoder
 import socket.protocol.TextMessageEncoder
@@ -18,7 +18,7 @@ import kotlin.coroutines.resume
 
 internal class DataCommunicatorImpl(
     private val connectionsClient: ConnectionsClient
-) :DataCommunicator{
+) : DataCommunicator {
 
     private val _receivedMessage=MutableStateFlow<Message?>(null)
     override val receivedMessage=_receivedMessage.asStateFlow()

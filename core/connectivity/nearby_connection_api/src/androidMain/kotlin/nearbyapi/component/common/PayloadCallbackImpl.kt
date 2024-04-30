@@ -1,4 +1,4 @@
-package nsd.common
+package nearbyapi.component.common
 
 import android.util.Log
 import com.google.android.gms.nearby.connection.Payload

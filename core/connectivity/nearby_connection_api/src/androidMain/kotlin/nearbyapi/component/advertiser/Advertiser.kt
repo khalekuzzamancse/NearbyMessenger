@@ -1,8 +1,8 @@
-package nsd.advertiser
+package nearbyapi.component.advertiser
 
 import kotlinx.coroutines.flow.StateFlow
-import nsd.common.Message
-import nsd.common.endpoint.EndPointInfo
+import nearbyapi.component.common.Message
+import nearbyapi.component.common.endpoint.EndPointInfo
 
 interface Advertiser {
     val receivedMessage:StateFlow<Message?>
@@ -12,7 +12,7 @@ interface Advertiser {
     /** - This indicates nearby devices that we have either discovered, connected to, or have pending requests for*/
     val discoverers: StateFlow<Set<EndPointInfo>>
     fun getDiscoverer(): Set<EndPointInfo>
-   suspend fun sendMessage(msg:Message):Result<Unit>
+   suspend fun sendMessage(msg: Message):Result<Unit>
 
 
 }
