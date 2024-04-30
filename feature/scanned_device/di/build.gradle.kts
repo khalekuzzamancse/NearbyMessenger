@@ -20,7 +20,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(project(":feature:scanned_device:domain"))
                 api(project(":feature:scanned_device:data"))
-                implementation(project(":core:wifi_direct"))
+                implementation(project(":core:connectivity:wifi_direct"))
             }
         }
         val androidMain by getting {

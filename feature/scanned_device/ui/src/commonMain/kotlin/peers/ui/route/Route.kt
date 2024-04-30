@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import peers.ui.devices.ConnectionStatus
 import peers.ui.devices.NearByDevice
 import peers.ui.devices.NearByDevices
 
@@ -65,6 +66,7 @@ fun NearByDevicesRoute(
     devices: List<NearByDevice>,
     wifiEnabled: Boolean,
     showProgressbar: Boolean,
+    isScanning: Boolean=true,
     onScanDeviceRequest: () -> Unit,
     onWifiStatusChangeRequest: () -> Unit,
     onConnectionRequest: (NearByDevice) -> Unit,
@@ -83,13 +85,13 @@ fun NearByDevicesRoute(
         Spacer(Modifier.height(4.dp))
         GroupConversationCard(
             modifier=Modifier,
-            connectedParticipants = devices.filter { it.isConnected }.size,
+            connectedParticipants = devices.filter { it.connectionStatus==ConnectionStatus.Connected }.size,
             onClick = onGroupConversationRequest
         )
         Spacer(Modifier.height(8.dp))
         HorizontalDivider()
         Spacer(Modifier.height(8.dp))
-        WifiDirectDevicesHeader(Modifier.fillMaxWidth(), onScanDeviceRequest)
+        WifiDirectDevicesHeader(Modifier.fillMaxWidth(), isScanning,onScanDeviceRequest)
         if (showProgressbar) {
             _OnLoadingContent(
                 modifier = Modifier

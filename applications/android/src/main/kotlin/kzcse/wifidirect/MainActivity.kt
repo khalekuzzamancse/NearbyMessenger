@@ -6,20 +6,24 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import chatbynearbyapi.navigation.NearByAPIChatServiceNavGraph
 import core.notification.StandardNotificationBuilder
-import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
-import navigation.navgraph.NavGraph
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
     private var showDialog by mutableStateOf(false)
+    private var joinAsAdvertiser by mutableStateOf<Boolean?>(null)
+    private var deviceName="Tab"
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,24 +31,52 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         userNameManager = UserNameManager(this)
         showDialog = userNameManager.userName.isEmpty()
+
         setContent {
             ConnectivitySamplesNetworkingTheme {
-                if (showDialog) {
-                    UserNameDialog(userNameManager = userNameManager) {
-                        showDialog = false
-                        log(userNameManager.userName)
-                    }
-                } else {
-//                    val wifiEnabled = Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
-                    val wifiEnabled = true
-                    NavGraph(
-                        thisDeviceUserName = userNameManager.userName,
-                        wifiEnabled = wifiEnabled,
-                        onNewMessageNotificationRequest = ::createNotification,
-                        onExitRequest = ::finish
+                joinAsAdvertiser?.let {
+                    NearByAPIChatServiceNavGraph(
+                        thisDeviceName = deviceName,
+                        isAdvertiser = it,
+                        onExitRequest = {},
+                        onNewMessageNotificationRequest = {}
                     )
-
                 }
+                if (joinAsAdvertiser==null){
+                    Row {
+                        Button(onClick = {
+                            joinAsAdvertiser = true
+                            deviceName="Tab"
+                        }) {
+                            Text(text = "Adv")
+                        }
+                        Button(onClick = {
+                            joinAsAdvertiser = false
+                            deviceName="Phone"
+                        }) {
+                            Text(text = "Dis")
+                        }
+
+                    }
+                }
+
+
+//                if (showDialog) {
+//                    UserNameDialog(userNameManager = userNameManager) {
+//                        showDialog = false
+//                        log(userNameManager.userName)
+//                    }
+//                } else {
+////                    val wifiEnabled = Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
+//                    val wifiEnabled = true
+//                    NavGraph(
+//                        thisDeviceUserName = userNameManager.userName,
+//                        wifiEnabled = wifiEnabled,
+//                        onNewMessageNotificationRequest = ::createNotification,
+//                        onExitRequest = ::finish
+//                    )
+//
+//                }
             }
             PermissionIfNeeded()
         }
@@ -63,4 +95,6 @@ class MainActivity : ComponentActivity() {
         Log.d(tag, msg)
     }
 }
+
+
 

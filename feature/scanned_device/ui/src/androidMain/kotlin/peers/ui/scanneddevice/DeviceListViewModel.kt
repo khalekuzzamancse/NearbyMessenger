@@ -21,7 +21,6 @@ class DeviceListViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val message = _errorMessage.asStateFlow()
     private val _isScanning = MutableStateFlow(false)
-    private val _numberOfConnectedDevices = MutableStateFlow(0)
     val isDeviceScanning = _isScanning
 
     val connectionInfo = controller.connectionInfoModel

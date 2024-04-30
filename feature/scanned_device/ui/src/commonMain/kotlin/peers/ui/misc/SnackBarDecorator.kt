@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 
-@PublishedApi
+
 @Composable
-internal fun SnackBarDecorator(
+ fun SnackBarDecorator(
     message: String?,
     content: @Composable (PaddingValues) -> Unit
 ) {

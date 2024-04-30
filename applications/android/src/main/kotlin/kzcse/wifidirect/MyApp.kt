@@ -1,19 +1,10 @@
 package kzcse.wifidirect
 
 import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.LinkAddress
-import android.net.LinkProperties
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import navigation.DataCommunicatorImpl
 import wifidirect.Factory
-import java.net.InetAddress
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

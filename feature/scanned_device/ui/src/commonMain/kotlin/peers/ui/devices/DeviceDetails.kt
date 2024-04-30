@@ -48,7 +48,7 @@ internal fun DeviceDetails(
                         .testTag(":DeviceNameText")
                 )
                 Text(
-                    text = "IP Address: ${device.deviceAddress}",
+                    text = "IP Address: ${device.id}",
                     modifier = Modifier
                         .testTag(":IPAddressText")
                 )

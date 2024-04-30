@@ -39,7 +39,7 @@ kotlin {
                 //
                 implementation(project(":feature:scanned_device:ui"))
                 implementation(project(":feature:chat:ui"))
-                implementation(project(":core:wifi_direct"))
+                implementation(project(":core:connectivity:wifi_direct"))
                 implementation(project(":core:socket:role_factory"))
             }
         }

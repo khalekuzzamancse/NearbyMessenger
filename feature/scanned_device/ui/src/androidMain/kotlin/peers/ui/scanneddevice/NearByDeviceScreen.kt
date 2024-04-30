@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import peers.ui.devices.ConnectionStatus
 import peers.ui.devices.NearByDevice
 import peers.ui.misc.DevicesConnectionInfo
 import peers.ui.misc.SnackBarDecorator
@@ -49,8 +50,8 @@ fun NearByDeviceScreen(
             devices = viewModel.nearbyDevices.collectAsState(emptyList()).value.map {
                 NearByDevice(
                     name = it.name,
-                    deviceAddress = it.address,
-                    isConnected = it.isConnected
+                    id = it.address,
+                    connectionStatus = if (it.isConnected)ConnectionStatus.Connected else ConnectionStatus.NotConnected
                 )
             },
             wifiEnabled = viewModel.isNetworkOn.collectAsState(true).value,
@@ -59,7 +60,7 @@ fun NearByDeviceScreen(
                 viewModel.disconnectAll()
             },
             onConnectionRequest = {
-                viewModel.connectTo(it.deviceAddress)
+                viewModel.connectTo(it.id)
             },
             onConversionScreenOpenRequest = {
                 onConversionOpen(it)

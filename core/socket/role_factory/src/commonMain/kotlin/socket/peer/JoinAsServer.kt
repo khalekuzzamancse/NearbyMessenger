@@ -45,6 +45,7 @@ internal class JoinAsServer(
         }
     }
 
+    @Suppress("Unused")
     private fun log(message: String, methodName: String? = null) {
         val tag = "${this@JoinAsServer::class.simpleName}Log"
         val method = if (methodName == null) "" else "$methodName()'s "

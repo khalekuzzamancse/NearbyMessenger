@@ -37,7 +37,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
-                implementation(project(":core:wifi_direct"))
+                implementation(project(":core:connectivity:wifi_direct"))
                 implementation(project(":core:database"))
                 implementation(project(":feature:chat:di"))
                 implementation(project(":feature:chat:domain"))
