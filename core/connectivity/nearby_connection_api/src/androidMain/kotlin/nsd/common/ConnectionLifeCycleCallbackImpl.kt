@@ -1,56 +1,60 @@
 package nsd.common
 
-import android.content.Context
 import android.util.Log
 import com.google.android.gms.nearby.connection.ConnectionInfo
 import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
 import com.google.android.gms.nearby.connection.ConnectionResolution
+import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes
+import nsd.common.endpoint.EndPointInfo
+import nsd.common.endpoint.EndPointStatus
+import nsd.common.endpoint.EndpointList
 
-class ConnectionLifeCycleCallbackImpl(
-    private val context: Context,
-    private val onAcceptConfirm: (endpointId:String) -> Unit,
-    private val onConnected: (endpointId:String) -> Unit,
-
-    private val onDisconnectedFrom:(endpointId:String)->Unit,
+internal class ConnectionLifeCycleCallbackImpl(
+    private val advertiserList:EndpointList,
+    private val _onConnectionInitiated:(endpointId: String, info: ConnectionInfo)->Unit,
 ) : ConnectionLifecycleCallback() {
-    //Executed when there is a connection request form Discover device
-    override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-        log("Connection initiated: $endpointId")
-        //When a new connection request arrived,Confirm/Authenticate before accept
-        showConfirmationDialog(
-            context = context,
-            endpointId = endpointId,
-            endpointName = connectionInfo.endpointName,
-            authDigit = connectionInfo.authenticationDigits,
-            onConfirm = {
-                log("Connection confirm: $endpointId")
-                onAcceptConfirm(endpointId)
-
-            }
-        )
+    /** - Executed when new connection is initiated to connect with this device
+     * - The connection can be accept or reject now, with  or without confirmation
+     */
+    override fun onConnectionInitiated(endpointId: String, info: ConnectionInfo) {
+        log("Connection initiated:${info.endpointName}")
+        //if for some reason the device is not added,previous
+        if (!advertiserList.doesEndPointExits(endpointId)) {
+            advertiserList.add(
+                EndPointInfo(
+                    endpointId,
+                    info.endpointName,
+                    EndPointStatus.Discovered
+                )
+            )
+        }
+        _onConnectionInitiated(endpointId, info)
     }
 
-    /*
-    Executed when there is a connection request result available such as connection is accepted or rejected
-    */
-    override fun onConnectionResult(endpointId: String, resolution: ConnectionResolution) {
-        when (resolution.status.statusCode) {
+    /**
+     * - Executed when a connection has been accepted ,reject or failed to accept or reject
+     * - Typically trigger in response to [ConnectionsClient.acceptConnection] ,[ConnectionsClient.rejectConnection]
+     */
+    override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
+        val isFailed = !result.status.isSuccess
+        if (isFailed) {
+            log("Connection Result failed:endpointId=$endpointId")
+            advertiserList.updateStatus(endpointId, EndPointStatus.Discovered)
+            return
+        }
+        when (result.status.statusCode) {
             ConnectionsStatusCodes.STATUS_OK -> {
+                advertiserList.updateStatus(endpointId, EndPointStatus.Connected)
                 log("Connected: $endpointId")
-                onConnected(endpointId)
-            }
-            ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
-                log("Connection rejected by endpoint: $endpointId")
-            }
-            ConnectionsStatusCodes.STATUS_ERROR -> {
-                log("Error establishing connection with endpointId: $endpointId")
             }
         }
     }
-    // We've been disconnected from this endpoint. No more data can be  sent or received
-    override fun onDisconnected(endpointId: String)=onDisconnectedFrom(endpointId)
 
+    override fun onDisconnected(endpointId: String) {
+        log("disconnected=$endpointId", "onDisconnected")
+        advertiserList.updateStatus(endpointId, EndPointStatus.Disconnected)
+    }
     @Suppress("Unused")
     private fun log(message: String, methodName: String? = null) {
         val tag = "${this@ConnectionLifeCycleCallbackImpl::class.simpleName}Log:"

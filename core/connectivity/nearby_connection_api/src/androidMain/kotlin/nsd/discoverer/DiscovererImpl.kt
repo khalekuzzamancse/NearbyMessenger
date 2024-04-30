@@ -4,27 +4,19 @@ import android.content.Context
 import android.util.Log
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.ConnectionInfo
-import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
-import com.google.android.gms.nearby.connection.ConnectionResolution
 import com.google.android.gms.nearby.connection.ConnectionsClient
-import com.google.android.gms.nearby.connection.ConnectionsStatusCodes
-import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
-import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
-import com.google.android.gms.nearby.connection.Payload
-import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.Strategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import nsd.common.AuthToken
-import nsd.common.ConnectionLifeCycleCallbackImpl2
-import nsd.common.endpoint.EndPointInfo
+import nsd.common.ConnectionAcceptor
+import nsd.common.ConnectionLifeCycleCallbackImpl
+import nsd.common.data_communicator.DataCommunicatorImpl
+import nsd.common.Message
 import nsd.common.endpoint.EndPointStatus
 import nsd.common.endpoint.EndpointList
-import nsd.common.PayloadCallbackImpl
-import nsd.common.confirm
 import kotlin.coroutines.resume
 
 /**
@@ -36,6 +28,10 @@ class DiscovererImpl internal constructor(
     private val name: String,
 ) : Discoverer {
     private val advertiserList = EndpointList()
+    private val connectionsClient = Nearby.getConnectionsClient(context)
+    private val dataCommunicator= DataCommunicatorImpl(connectionsClient)
+    private val payloadCallback=dataCommunicator.payloadCallback
+
 
     /**
      * - This value is required for creating a new Android service.
@@ -47,6 +43,9 @@ class DiscovererImpl internal constructor(
 
     /** - This indicates nearby devices that we have either discovered, connected to, or have pending requests for*/
     override val advertisers = advertiserList.endpoints
+
+
+    override val receivedMessage=dataCommunicator.receivedMessage
 
     /** - The return value indicates that the device discovery process has completed.
      * Based on this information,you can update the user interface (UI)
@@ -68,29 +67,7 @@ class DiscovererImpl internal constructor(
     }
 
     /** - The callback of this instance will be executed when a new advertiser is found or when an existing one is lost */
-    private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
-        /** - Executed when a new advertiser is found ,advertiser list or UI can be updated based on this information
-         * - Can made a new connection request using the [endpointId]
-         **/
-        override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            log("Endpoint found :${info.endpointName}")
-            advertiserList.add(
-                EndPointInfo(
-                    endpointId,
-                    info.endpointName,
-                    EndPointStatus.Discovered
-                )
-            )
-        }
-
-        /** - Executed when an existing endpoint is gone
-         * - advertiser list or UI can be updated based on this information
-         * */
-        override fun onEndpointLost(endpointId: String) {
-            log("Endpoint lost :$endpointId")
-            advertiserList.remove(endpointId)
-        }
-    }
+    private val endpointDiscoveryCallback = EndPointDiscoveryCallbackImpl(advertiserList)
 
 
     /**
@@ -99,11 +76,11 @@ class DiscovererImpl internal constructor(
      *  has been accepted,rejected or failed with  Exception
      *  */
 
-    private val connectionLifecycleCallback = ConnectionLifeCycleCallbackImpl2(
+    private val connectionLifecycleCallback = ConnectionLifeCycleCallbackImpl(
         advertiserList = advertiserList,
-        _onConnectionInitiated = {endpointId, info ->
+        _onConnectionInitiated = { endpointId, info ->
             //confirm for accept
-            CoroutineScope(Dispatchers.Default).launch{
+            CoroutineScope(Dispatchers.Default).launch {
                 acceptWithConfirmation(endpointId, info)
             }
         }
@@ -115,24 +92,8 @@ class DiscovererImpl internal constructor(
      * - It will show a confirmation dialog in both advertiser and discovered
      */
     private suspend fun acceptWithConfirmation(endpointId: String, info: ConnectionInfo) {
-        //Start updating to denoted try to connecting
-        advertiserList.updateStatus(endpointId, EndPointStatus.Connecting)
-        val token = AuthToken(endpointId, info.endpointName, info.authenticationDigits)
-        val confirmationResult = confirm(context, token)
-        log("Confirmation result:$confirmationResult")
-        val isConfirmed = confirmationResult.isSuccess
-        if (isConfirmed) {
-            val acceptationResult = acceptConnection(
-                endpointId,
-                PayloadCallbackImpl(onTextReceived = {})
-            )
-            log("acceptResult:$acceptationResult")
-            advertiserList.updateStatus(endpointId, EndPointStatus.Connected)
-        } else {
-            //Connected was not successful
-            advertiserList.updateStatus(endpointId, EndPointStatus.Discovered)
-        }
-
+        val acceptor = ConnectionAcceptor(context, createConnectionClient(), advertiserList, payloadCallback = payloadCallback)
+        acceptor.acceptWithConfirmation(endpointId, info)
     }
 
     /**
@@ -157,53 +118,24 @@ class DiscovererImpl internal constructor(
         }
     }
 
-    /**
-     * - Accept and initiate connection
-     * - You have to make sure to accept both adviser and discover side
-     * @param payloadCallback for data communication
-     */
-    private suspend fun acceptConnection(
-        endpointId: String,
-        payloadCallback: PayloadCallback
-    ): Result<Unit> {
-        return suspendCancellableCoroutine { continuation ->
-            createConnectionClient()
-                .acceptConnection(endpointId, payloadCallback)
-                .addOnSuccessListener {
-                    continuation.resume(Result.success(Unit))
-                }
-                .addOnFailureListener { e ->
-                    continuation.resume(Result.failure(e))
-                }
-        }
 
-    }
-
-    private fun onConnectedToEndPoint(endpointId: String) {
-        log("Connection: $endpointId")
-        //send test data
-        val bytesPayload = Payload.fromBytes("Hello From Discover:$name".toByteArray())
-        createConnectionClient().sendPayload(endpointId, bytesPayload)
-    }
 
     /**
      * - Create a new instance  of  [ConnectionsClient]
      * - [ConnectionsClient] can be used to start discovering,initiate ,accept or reject a connection
      * */
-    private fun createConnectionClient(): ConnectionsClient = Nearby.getConnectionsClient(context)
+    private fun createConnectionClient(): ConnectionsClient {
+//        return  Nearby.getConnectionsClient(context)
+        return connectionsClient
+    }
+
+    override suspend fun sendMessage(msg: Message)=dataCommunicator.sendMessage(msg)
 
 
     //TODO: Helper methods --- Helper methods --- Helper methods --- Helper methods --- Helper methods
     //TODO: Helper methods --- Helper methods --- Helper methods --- Helper methods --- Helper methods
     //TODO: Helper methods --- Helper methods --- Helper methods --- Helper methods --- Helper methods
     override fun getAdvertiser() = advertisers.value
-
-
-    /**
-     * - In case of Advertiser,add when startA
-     * - In case of Discovered add new device when discovered
-     */
-
 
     @Suppress("Unused")
     private fun log(message: String, methodName: String? = null) {

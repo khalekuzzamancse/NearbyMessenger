@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import nsd.Factory
 import nsd.advertiser.Advertiser
+import nsd.common.Message
 import nsd.common.endpoint.EndPointInfo
 import nsd.common.endpoint.EndPointStatus
 import nsd.discoverer.Discoverer
@@ -22,7 +24,11 @@ import peers.ui.devices.NearByDevice
  * - It not holding the reference of [Context],it is one time use
  */
 
-class DeviceListViewModel(context: Context, name: String, isAdvertiser: Boolean) : ViewModel() {
+class DeviceListViewModel(
+    context: Context,
+   private val name: String,
+    isAdvertiser: Boolean
+) : ViewModel() {
 
     private val _message = MutableStateFlow<String?>(null)
     val errorMessage = _message.asStateFlow()
@@ -37,6 +43,48 @@ class DeviceListViewModel(context: Context, name: String, isAdvertiser: Boolean)
             endpoint.toNearByDeviceOrNull()
         }
     } ?: flowOf(emptyList())
+
+ init {
+     CoroutineScope(Dispatchers.Default).launch {
+         advertiser?.receivedMessage?.collect {newMessage->
+             if (newMessage!=null)
+             log("New Message:$newMessage")
+         }
+     }
+     CoroutineScope(Dispatchers.Default).launch {
+         discoverer?.receivedMessage?.collect {newMessage->
+             if (newMessage!=null)
+                 log("New Message:$newMessage")
+         }
+     }
+ }
+
+    init {
+        CoroutineScope(Dispatchers.Default).launch {
+            nearbyDevices.collect{devices->
+                devices.forEach {device->
+                    if (device.connectionStatus==ConnectionStatus.Connected){
+                        sendDummyMessage(device.id)
+                    }
+                }
+
+            }
+        }
+    }
+     private suspend fun sendDummyMessage(endpointId: String){
+         repeat(4){i->
+             val message= Message(
+                 senderName = name,
+                 sendId = endpointId,
+                 timestamp = System.currentTimeMillis(),
+                 body = "Hello From $name:${i+10}"
+             )
+             advertiser?.sendMessage(message)
+             discoverer?.sendMessage(message)
+             delay(1_000)
+         }
+
+    }
 
 
     suspend fun scan(): Result<Unit> {

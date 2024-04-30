@@ -38,6 +38,7 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
+                implementation(project(":core:socket:protocol"))
             }
         }
         val commonTest by getting{
