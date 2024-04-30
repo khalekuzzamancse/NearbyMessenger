@@ -1,29 +1,62 @@
 package chatbynearbyapi.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import chatbynearbyapi.chat.ConversationScreen
+import chatbynearbyapi.chat.DataCommunicatorImpl
 import chatbynearbyapi.devices.DeviceListViewModel
 import chatbynearbyapi.devices.NearByDeviceScreen
+import chatui.viewmodel.ChatViewModel
 
-@Suppress("ComposableNaming")
 @Composable
 fun NearByAPIChatServiceNavGraph(
     thisDeviceName: String,
-    isAdvertiser: Boolean,
+    onNewMessageNotificationRequest: (sender: String) -> Unit,
+    onExitRequest: () -> Unit,
+) {
+    var role by remember { mutableStateOf<NetworkRole?>(null) }
+
+    JoinAsDialog { role = it }
+    role?.let { endpointRole ->
+        _NearByAPIChatServiceNavGraph(
+            thisDeviceName,
+            endpointRole,
+            onNewMessageNotificationRequest,
+            onExitRequest
+        )
+    }
+
+
+}
+
+@Suppress("ComposableNaming")
+@Composable
+private fun _NearByAPIChatServiceNavGraph(
+    thisDeviceName: String,
+    role: NetworkRole,
     onNewMessageNotificationRequest: (sender: String) -> Unit,
     onExitRequest: () -> Unit,
 ) {
 
     val navController: NavHostController = rememberNavController()
     val context = LocalContext.current
-    val viewModel: DeviceListViewModel =
-        remember { DeviceListViewModel(context, thisDeviceName, isAdvertiser) }
+    val deviceListViewModel: DeviceListViewModel =
+        remember { DeviceListViewModel(context, thisDeviceName, role) }
+    val chatViewModel= remember {
+        ChatViewModel(
+            DataCommunicatorImpl(thisDeviceName, deviceListViewModel),
+            thisDeviceName
+        )
+    }
 
 //    BackHandler {
 //        navController.popBackStack()
@@ -37,15 +70,22 @@ fun NearByAPIChatServiceNavGraph(
         startDestination = Destination.Home.toString()
     ) {
         composable(route = Destination.Home.toString()) {
-                NearByDeviceScreen(
-                    modifier = Modifier,
-                    viewModel=viewModel,
-                    thisDeviceName = thisDeviceName,
-                    onConversionOpen = {},
-                    onGroupConversationRequest = {}
-                )
-
-
+            NearByDeviceScreen(
+                modifier = Modifier,
+                viewModel = deviceListViewModel,
+                thisDeviceName = thisDeviceName,
+                onConversionOpen = {},
+                onGroupConversationRequest = {
+                    navController.navigate( Destination.Conversation.toString())
+                }
+            )
+        }
+        composable(
+            route = Destination.Conversation.toString(),
+        ) {
+            ConversationScreen(
+                chatViewModel =chatViewModel
+            )
         }
 
     }

@@ -20,8 +20,8 @@ internal class DataCommunicatorImpl(
     private val connectionsClient: ConnectionsClient
 ) : DataCommunicator {
 
-    private val _receivedMessage=MutableStateFlow<Message?>(null)
-    override val receivedMessage=_receivedMessage.asStateFlow()
+    private val _receivedMessage = MutableStateFlow<Message?>(null)
+    override val receivedMessage = _receivedMessage.asStateFlow()
 
     override val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
@@ -33,7 +33,7 @@ internal class DataCommunicatorImpl(
                     val message = String(receivedBytes)
                     val decodedMessage = TextMessageDecoder(message).decode()
                     log("Payload received from endpointId: ${decodedMessage.toMessage()}")
-                   _receivedMessage.update { decodedMessage.toMessage() }
+                    _receivedMessage.update { decodedMessage.toMessage() }
                 }
 
             }
@@ -50,6 +50,9 @@ internal class DataCommunicatorImpl(
     /* Byte payloads are the simplest type of payloads. They are suitable for sending simple data like messages
     or metadata up to a maximum size of Connections.MAX_BYTES_DATA_SIZE(32k bytes) Here's an example of sending a BYTES payload:*/
     override suspend fun sendMessage(msg: Message): Result<Unit> {
+        val senderId = msg.sendId
+        if (senderId == null)
+            return Result.failure(Throwable("Sender Id is null"))
         return suspendCancellableCoroutine { continuation ->
             val bytesPayload = Payload.fromBytes(
                 TextMessageEncoder(msg.toTextMessage()).encodeText().toByteArray()
@@ -69,8 +72,6 @@ internal class DataCommunicatorImpl(
     }
 
 
-
-
     //TODO : Helper method ----  Helper method ----  Helper method ----  Helper method ----  Helper method
     //TODO : Helper method ----  Helper method ----  Helper method ----  Helper method ----  Helper method
 
@@ -82,6 +83,7 @@ internal class DataCommunicatorImpl(
             timestamp = timestamp,
             body = message
         )
+
     private fun Message.toTextMessage() = TextMessage(
         senderName = senderName,
         receiverName = receiverName,

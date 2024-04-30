@@ -40,6 +40,7 @@ kotlin {
                 implementation(project(":feature:scanned_device:ui"))
                 implementation(project(":feature:chat:ui"))
                 implementation(project(":core:connectivity:nearby_connection_api"))
+
             }
         }
         val commonTest by getting{

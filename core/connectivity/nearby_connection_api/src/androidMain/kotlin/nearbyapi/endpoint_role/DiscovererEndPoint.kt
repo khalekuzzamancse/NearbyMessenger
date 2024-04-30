@@ -1,4 +1,4 @@
-package nearbyapi.endpoint
+package nearbyapi.endpoint_role
 
 import android.content.Context
 import kotlinx.coroutines.flow.StateFlow

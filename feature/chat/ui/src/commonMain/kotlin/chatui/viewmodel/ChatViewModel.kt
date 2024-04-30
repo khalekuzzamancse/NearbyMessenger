@@ -9,18 +9,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 /**
- * @param thisDeviceUserName is other device that is connected with the device and whose conversation list we are going to open
+ * @param thisDeviceName is other device that is connected with the device and whose conversation list we are going to open
  */
 class ChatViewModel(
     private val dataCommunicator: DataCommunicator,
-    private val thisDeviceUserName: String
+    private val thisDeviceName: String
 ) {
 
     private val repository = DependencyFactory.getChatRepository()
@@ -57,11 +56,6 @@ class ChatViewModel(
             dataCommunicator.newMessage.collect { msg ->
                 if (msg != null) {
                     log("NewMessage:$msg")
-//                    addToConversation(
-//                        senderName = msg.senderName,
-//                        message = msg.message,
-//                        timeStamp = msg.timestamp,
-//                    )
                  val res= repository.addToDatabase(msg.toModel())
                     log("$res")
                 }
@@ -80,6 +74,8 @@ class ChatViewModel(
 //            )
             repository.addToDatabase(message.toModel())
             controller.clearInputField()
+        }else{
+            log("$result")
         }
     }
 

@@ -1,4 +1,4 @@
-package nearbyapi.endpoint
+package nearbyapi.endpoint_role
 
 import kotlinx.coroutines.flow.StateFlow
 import nearbyapi.component.common.Message
