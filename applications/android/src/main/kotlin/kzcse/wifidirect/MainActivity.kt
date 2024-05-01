@@ -1,6 +1,6 @@
 package kzcse.wifidirect
 
-import TechnologyInputDialog
+import navigation.TechnologyInputDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log

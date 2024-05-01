@@ -2,12 +2,11 @@ package kzcse.wifidirect
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import navigation.navgraph.Technology
+import navigation.Technology
 import wifidirect.WifiDirectFactory
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class AppViewModel:ViewModel() {

@@ -1,4 +1,4 @@
-package navigation.navgraph
+package navigation
 
  enum class Technology {
     WifiDirect, WifiHotspot, Bluetooth, NearByAPI

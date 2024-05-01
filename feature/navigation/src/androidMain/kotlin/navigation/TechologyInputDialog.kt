@@ -1,3 +1,5 @@
+package navigation
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +17,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import navigation.navgraph.Technology
 
 internal data class TechnologyInfo(
     val technology: Technology,
@@ -26,7 +27,7 @@ internal data class TechnologyInfo(
 internal val technologyDetails = listOf(
     TechnologyInfo(
         Technology.NearByAPI,
-        "Uses combination of Bluetooth,Bluetooth Lite and Wifi technologies"
+        "Uses combination of Bluetooth,BLE and Wi-Fi technologies"
     ),
     TechnologyInfo(
         Technology.WifiDirect,

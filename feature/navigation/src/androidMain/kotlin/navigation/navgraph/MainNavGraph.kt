@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import chatbynearbyapi.navigation.NearByAPIChatServiceNavGraph
 import chatbywifidirect.navigation.WifiDirectChatServiceNavGraph
+import navigation.Technology
 import navigation.theme.Theme
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
