@@ -39,7 +39,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
-                implementation(project(":core:wifi_direct"))
+                implementation(project(":core:connectivity:wifi_direct"))
                 implementation(project(":feature:scanned_device:domain"))
                 implementation(project(":feature:scanned_device:di"))
             }

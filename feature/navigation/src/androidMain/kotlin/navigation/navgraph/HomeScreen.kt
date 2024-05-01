@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,8 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import chatui.viewmodel.ChatViewModel
-import peers.ui.scanneddevice.DeviceListViewModel
 import peers.ui.misc.DevicesConnectionInfo
+import peers.ui.scanneddevice.DeviceListViewModel
 import peers.ui.scanneddevice.NearByDeviceScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -52,7 +51,6 @@ internal fun HomeScreen(
         }
 
         else -> {
-            Column {
                 _DeviceListNConversationScreen(
                     thisDeviceName = thisDeviceName,
                     deviceListViewModel = deviceListViewModel,
@@ -62,7 +60,7 @@ internal fun HomeScreen(
                     onGroupFormed = onGroupFormed,
                     onGroupConversationRequest = onGroupConversationRequest
                 )
-            }
+
 
         }
     }
@@ -127,7 +125,6 @@ internal fun _DeviceListScreen(
     NearByDeviceScreen(
         modifier = Modifier,
         viewModel = viewModel,
-        wifiEnabled = wifiEnabled,
         onGroupFormed = onGroupFormed,
         thisDeviceName = thisDeviceName,
         onConversionOpen = {},

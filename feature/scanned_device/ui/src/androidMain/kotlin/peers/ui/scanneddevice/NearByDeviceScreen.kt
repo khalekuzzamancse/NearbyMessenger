@@ -3,10 +3,14 @@ package peers.ui.scanneddevice
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeviceUnknown
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import peers.ui.devices.ConnectionStatus
 import peers.ui.devices.NearByDevice
 import peers.ui.misc.DevicesConnectionInfo
 import peers.ui.misc.SnackBarDecorator
@@ -19,7 +23,6 @@ fun NearByDeviceScreen(
     modifier: Modifier,
     thisDeviceName:String,
     viewModel: DeviceListViewModel,
-    wifiEnabled: Boolean,
     onGroupFormed: (DevicesConnectionInfo) -> Unit,
     onConversionOpen: (NearByDevice) -> Unit,
     onGroupConversationRequest:()->Unit,
@@ -49,30 +52,29 @@ fun NearByDeviceScreen(
             devices = viewModel.nearbyDevices.collectAsState(emptyList()).value.map {
                 NearByDevice(
                     name = it.name,
-                    deviceAddress = it.address,
-                    isConnected = it.isConnected
+                    id = it.address,
+                    connectionStatus = if (it.isConnected)ConnectionStatus.Connected else ConnectionStatus.NotConnected
                 )
             },
-            wifiEnabled = viewModel.isNetworkOn.collectAsState(true).value,
-            showProgressbar = viewModel.isDeviceScanning.collectAsState(true).value,
             onDisconnectRequest = {
                 viewModel.disconnectAll()
             },
             onConnectionRequest = {
-                viewModel.connectTo(it.deviceAddress)
+                viewModel.connectTo(it.id)
             },
             onConversionScreenOpenRequest = {
                 onConversionOpen(it)
             },
+            isScanning = true,
             onScanDeviceRequest = {
-                if (wifiEnabled)
+
                     viewModel.scanDevices()
             },
-            onWifiStatusChangeRequest = viewModel::onNetworkStatusChangeRequest,
-            onGroupConversationRequest = onGroupConversationRequest
+            onGroupConversationRequest = onGroupConversationRequest,
+            headerIcon = Icons.Default.DeviceUnknown,
+            headerTitle = "No Title"
         )
         LaunchedEffect(Unit) {
-            if (wifiEnabled)
                 viewModel.scanDevices()
         }
     }

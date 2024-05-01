@@ -16,7 +16,7 @@ class MainViewModel(
 
     fun createChatViewModel()=ChatViewModel(
         dataCommunicator = dataCommunicator,
-        thisDeviceUserName =thisDeviceUserName
+        thisDeviceName =thisDeviceUserName
     )
     val newMessage = dataCommunicator.newMessage
 

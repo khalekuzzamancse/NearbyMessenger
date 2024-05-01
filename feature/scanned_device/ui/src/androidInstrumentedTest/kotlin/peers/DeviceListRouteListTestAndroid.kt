@@ -72,7 +72,7 @@ class DeviceListRouteListTestAndroid {
     @Test
     fun deviceInfoButtonCheck() = runComposeUiTest {
         val devices = listOf(
-            NearByDevice(name = "Md Abdul", isConnected = true, deviceAddress = "1234"),
+            NearByDevice(name = "Md Abdul", isConnected = true, id = "1234"),
         )
         setContent {
             NearByDevicesRoute(

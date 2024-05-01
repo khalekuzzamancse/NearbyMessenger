@@ -52,6 +52,19 @@ fun PermissionIfNeeded() {
             //For notification
             Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.POST_NOTIFICATIONS,
+            //For NSD
+            //Access fine is already wanted
+            /**
+             Since ACCESS_FINE_LOCATION, BLUETOOTH_ADVERTISE, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, and READ_EXTERNAL_STORAGE
+              are considered to be dangerous system permissions, in addition to adding them to your manifest,
+              you must request these permissions at runtime, as described in Requesting Permissions.
+             If the user does not grant all required permissions, the Nearby Connections API will
+              refuse to allow your app to start advertising or discovering.
+             */
+            Manifest.permission.BLUETOOTH_ADVERTISE,
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
         )
     )
 

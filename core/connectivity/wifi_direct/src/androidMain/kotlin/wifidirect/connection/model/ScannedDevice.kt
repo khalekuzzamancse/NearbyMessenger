@@ -1,8 +1,6 @@
 package wifidirect.connection.model
 
 import android.net.wifi.p2p.WifiP2pDevice
-import android.net.wifi.p2p.WifiP2pDeviceList
-import android.net.wifi.p2p.WifiP2pGroup
 
 //if it is the group owner then will get the client list
 //otherwise the list is empty though is it is connected

@@ -19,7 +19,7 @@ class DeviceDetailsTestAndroid {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun disConnectedDeviceInfoTest() = runComposeUiTest {
-        val device = NearByDevice(name = "Md Abdul", isConnected = false, deviceAddress = "1234")
+        val device = NearByDevice(name = "Md Abdul", isConnected = false, id = "1234")
         setContent {
             DeviceDetails(
                 device = device
@@ -35,7 +35,7 @@ class DeviceDetailsTestAndroid {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun dismissDialog() = runComposeUiTest {
-        val device = NearByDevice(name = "Md Abdul", isConnected = false, deviceAddress = "1234")
+        val device = NearByDevice(name = "Md Abdul", isConnected = false, id = "1234")
         var showDialog by mutableStateOf(true)
 
         setContent {

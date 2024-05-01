@@ -63,10 +63,13 @@ dependencies {
     implementation(compose.materialIconsExtended)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.windowSize)
+
+
     //
     implementation(project(":feature:navigation"))
     //
-    implementation(project(":core:wifi_direct"))
+    implementation(project(":core:connectivity:wifi_direct"))
+    implementation(project(":feature:nearby_api_chat_service",))
     implementation(project(":core:permission_n_notification"))
 //
     implementation("androidx.core:core-splashscreen:1.0.1")
