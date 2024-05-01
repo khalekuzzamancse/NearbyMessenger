@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import chatbynearbyapi.chat.ConversationScreen
 import chatbynearbyapi.chat.DataCommunicatorImpl
 import chatbynearbyapi.devices.DeviceListViewModel
-import chatbynearbyapi.devices.NearByDeviceScreen
 import chatui.viewmodel.ChatViewModel
 
 @Composable
@@ -27,7 +25,7 @@ fun NearByAPIChatServiceNavGraph(
 
     JoinAsDialog { role = it }
     role?.let { endpointRole ->
-        _NearByAPIChatServiceNavGraph(
+        _NavGraph(
             thisDeviceName,
             endpointRole,
             onNewMessageNotificationRequest,
@@ -40,7 +38,7 @@ fun NearByAPIChatServiceNavGraph(
 
 @Suppress("ComposableNaming")
 @Composable
-private fun _NearByAPIChatServiceNavGraph(
+private fun _NavGraph(
     thisDeviceName: String,
     role: NetworkRole,
     onNewMessageNotificationRequest: (sender: String) -> Unit,
@@ -70,15 +68,17 @@ private fun _NearByAPIChatServiceNavGraph(
         startDestination = Destination.Home.toString()
     ) {
         composable(route = Destination.Home.toString()) {
-            NearByDeviceScreen(
-                modifier = Modifier,
-                viewModel = deviceListViewModel,
+            HomeScreen(
                 thisDeviceName = thisDeviceName,
-                onConversionOpen = {},
+                deviceListViewModel =deviceListViewModel,
+                chatViewModel = chatViewModel,
+                chatScreenTitle = "Group Chat",
                 onGroupConversationRequest = {
-                    navController.navigate( Destination.Conversation.toString())
+                    navController.navigate(Destination.Conversation.toString())
                 }
+
             )
+
         }
         composable(
             route = Destination.Conversation.toString(),

@@ -9,13 +9,12 @@ import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.Strategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import nearbyapi.component.common.ConnectionAcceptor
 import nearbyapi.component.common.ConnectionLifeCycleCallbackImpl
-import nearbyapi.component.common.data_communicator.DataCommunicatorImpl
 import nearbyapi.component.common.Message
+import nearbyapi.component.common.data_communicator.DataCommunicatorImpl
 import nearbyapi.component.common.endpoint.EndpointList
 import kotlin.coroutines.resume
 
@@ -33,6 +32,7 @@ class AdvertiserImpl internal constructor(
     private val payloadCallback=dataCommunicator.payloadCallback
 
     override val receivedMessage=dataCommunicator.receivedMessage
+
 
     /**
      * - This value is required for creating a new Android service.

@@ -1,22 +1,21 @@
 package chatbynearbyapi.devices
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Devices
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 import peers.ui.devices.NearByDevice
 import peers.ui.misc.SnackBarDecorator
 import peers.ui.route.NearByDevicesRoute
 
+@SuppressLint("ComposableNaming")
 @Composable
-fun NearByDeviceScreen(
+internal fun _NearByDeviceScreen(
     modifier: Modifier,
     viewModel: DeviceListViewModel,
     thisDeviceName: String,
@@ -34,9 +33,7 @@ fun NearByDeviceScreen(
             modifier = modifier.padding(scaffoldPadding),
             thisDeviceName = thisDeviceName,
             devices = viewModel.nearbyDevices.collectAsState(emptyList()).value,
-            wifiEnabled = true,//TODO :Fix it later
-            showProgressbar = false,//= true,//TODO :Fix it later
-            isScanning = true,
+            isScanning = viewModel.isScanning.collectAsState().value,
             onDisconnectRequest = {
 
             },
@@ -48,11 +45,12 @@ fun NearByDeviceScreen(
             },
             onScanDeviceRequest = {
                 coroutineScope.launch {
-                    viewModel.scan()
+                  viewModel.scan()
                 }
             },
-            onWifiStatusChangeRequest = {},
-            onGroupConversationRequest = onGroupConversationRequest
+            onGroupConversationRequest = onGroupConversationRequest,
+            headerTitle = "NearBy Devices",
+            headerIcon = Icons.Filled.Devices
         )
     }
 }

@@ -9,12 +9,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DataUsage
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.WifiFind
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,13 +21,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * @param title is for the header title such as for Wifi direct can be used "Wifi Direct Deices",
+ * for Bluetooth can be used "Bluetooth Devices"
+ * @param icon the logo for the header,for wifi devices use Wifi related icon,for Bluetooth devices use
+ * bluetooth related icon
+ */
 @Composable
-internal fun WifiDirectDevicesHeader(
+ fun DevicesHeaderSection(
     modifier: Modifier,
+    title:String,
+    icon:ImageVector,
     isScanning: Boolean,
     onScanDeviceRequest: () -> Unit,
 ) {
@@ -39,7 +45,7 @@ internal fun WifiDirectDevicesHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        _Title(modifier = Modifier)
+        _Title(modifier = Modifier,icon,title)
         _RotatingScanIcon(Modifier, isScanning = isScanning, onClick = onScanDeviceRequest)
     }
 
@@ -48,16 +54,18 @@ internal fun WifiDirectDevicesHeader(
 @Composable
 private fun _Title(
     modifier: Modifier = Modifier,
+    icon: ImageVector,
+    title: String,
 ) {
     Row(modifier = modifier) {
         Icon(
-            imageVector = Icons.Default.WifiFind,
-            contentDescription = "Wifi direct device icon",
+            imageVector = icon,
+            contentDescription = " device icon",
             tint = MaterialTheme.colorScheme.tertiary// because not  clickable
         )
         Spacer(Modifier.width(4.dp))
         Text(
-            text = "Wifi-Direct Devices",
+            text = title,
             fontSize = 18.sp
             //Not clickable ,so do not need to bold
             // ,not importance as conversation,just works like bill board on a shop

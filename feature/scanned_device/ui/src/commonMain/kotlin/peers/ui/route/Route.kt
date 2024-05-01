@@ -1,23 +1,18 @@
 package peers.ui.route
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import peers.ui.devices.ConnectionStatus
 import peers.ui.devices.NearByDevice
@@ -64,11 +59,10 @@ fun NearByDevicesRoute(
     modifier: Modifier = Modifier,
     thisDeviceName: String,
     devices: List<NearByDevice>,
-    wifiEnabled: Boolean,
-    showProgressbar: Boolean,
-    isScanning: Boolean=true,
+    isScanning: Boolean,
+    headerTitle:String,//property not state
+    headerIcon:ImageVector,////property not state
     onScanDeviceRequest: () -> Unit,
-    onWifiStatusChangeRequest: () -> Unit,
     onConnectionRequest: (NearByDevice) -> Unit,
     onDisconnectRequest: (NearByDevice) -> Unit,
     onConversionScreenOpenRequest: (NearByDevice) -> Unit,
@@ -91,14 +85,14 @@ fun NearByDevicesRoute(
         Spacer(Modifier.height(8.dp))
         HorizontalDivider()
         Spacer(Modifier.height(8.dp))
-        WifiDirectDevicesHeader(Modifier.fillMaxWidth(), isScanning,onScanDeviceRequest)
-        if (showProgressbar) {
-            _OnLoadingContent(
-                modifier = Modifier
-                    .semantics { contentDescription = "Route on Loading" }
-                    .testTag("OnLoadingContent")
-            )
-        } else {
+        DevicesHeaderSection(
+            modifier = Modifier.fillMaxWidth(),
+            title = headerTitle,
+            icon = headerIcon,
+            isScanning = isScanning,
+            onScanDeviceRequest = onScanDeviceRequest
+        )
+
             Column {
                 Spacer(Modifier.height(4.dp))
                 HorizontalDivider(Modifier)
@@ -113,7 +107,6 @@ fun NearByDevicesRoute(
                 )
             }
 
-        }
 
 
     }
@@ -121,28 +114,3 @@ fun NearByDevicesRoute(
 
 }
 
-@Composable
-private fun _OnLoadingContent(
-    modifier: Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    )
-    {
-        _CircularProgressBar()
-    }
-
-}
-
-
-
-@Composable
-private fun _CircularProgressBar(size: Dp = 64.dp) {
-    CircularProgressIndicator(
-        modifier = Modifier.width(size),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        trackColor = MaterialTheme.colorScheme.secondary,
-    )
-}

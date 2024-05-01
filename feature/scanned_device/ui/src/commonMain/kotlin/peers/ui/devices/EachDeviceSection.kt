@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.TabletAndroid
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
@@ -56,7 +57,7 @@ internal fun EachDevice(
             )
         } else {
             Icon(
-                imageVector = Icons.Default.WifiOff,
+                imageVector = Icons.Default.TabletAndroid,
                 contentDescription = "Not connected icon",
                 tint = MaterialTheme.colorScheme.primary//importance because the whole group is clickable
             )

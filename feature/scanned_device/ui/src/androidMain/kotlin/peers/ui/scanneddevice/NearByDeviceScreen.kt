@@ -3,6 +3,9 @@ package peers.ui.scanneddevice
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeviceUnknown
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,7 +23,6 @@ fun NearByDeviceScreen(
     modifier: Modifier,
     thisDeviceName:String,
     viewModel: DeviceListViewModel,
-    wifiEnabled: Boolean,
     onGroupFormed: (DevicesConnectionInfo) -> Unit,
     onConversionOpen: (NearByDevice) -> Unit,
     onGroupConversationRequest:()->Unit,
@@ -54,8 +56,6 @@ fun NearByDeviceScreen(
                     connectionStatus = if (it.isConnected)ConnectionStatus.Connected else ConnectionStatus.NotConnected
                 )
             },
-            wifiEnabled = viewModel.isNetworkOn.collectAsState(true).value,
-            showProgressbar = viewModel.isDeviceScanning.collectAsState(true).value,
             onDisconnectRequest = {
                 viewModel.disconnectAll()
             },
@@ -65,15 +65,16 @@ fun NearByDeviceScreen(
             onConversionScreenOpenRequest = {
                 onConversionOpen(it)
             },
+            isScanning = true,
             onScanDeviceRequest = {
-                if (wifiEnabled)
+
                     viewModel.scanDevices()
             },
-            onWifiStatusChangeRequest = viewModel::onNetworkStatusChangeRequest,
-            onGroupConversationRequest = onGroupConversationRequest
+            onGroupConversationRequest = onGroupConversationRequest,
+            headerIcon = Icons.Default.DeviceUnknown,
+            headerTitle = "No Title"
         )
         LaunchedEffect(Unit) {
-            if (wifiEnabled)
                 viewModel.scanDevices()
         }
     }
