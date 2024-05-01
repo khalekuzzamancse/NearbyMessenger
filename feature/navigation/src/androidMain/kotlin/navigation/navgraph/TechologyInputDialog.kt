@@ -2,6 +2,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -9,47 +11,55 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import navigation.navgraph.Technology
 
 internal data class TechnologyInfo(
     val technology: Technology,
     val description: String
 )
 
-internal enum class Technology {
-    WifiDirect, WifiHotspot, Bluetooth, NearByAPI
-}
 
 internal val technologyDetails = listOf(
     TechnologyInfo(
         Technology.NearByAPI,
-        "Allows communication over short distances without needing device pairing."
+        "Uses combination of Bluetooth,Bluetooth Lite and Wifi technologies"
     ),
     TechnologyInfo(
         Technology.WifiDirect,
-        "Establishes a peer-to-peer connection without needing internet access."
+        "Uses Wifi-Direct technology.Data can be transfer faster"
     ),
     TechnologyInfo(
         Technology.WifiHotspot,
-        "Turns your device into a hotspot, sharing your internet connection with others."
+        "Uses Wifi technology.Slower than Wifi-Direct"
     ),
-    TechnologyInfo(Technology.Bluetooth, "Pairs devices over short distances using low energy."),
+    TechnologyInfo(
+        Technology.Bluetooth,
+        "Uses Blueetooth and BLE"
+    ),
 
-)
+    )
 
 
 @Composable
-internal fun TechnologyInputDialog(
+fun TechnologyInputDialog(
     onTechnologySelected: (Technology) -> Unit
 ) {
-    Dialog(onDismissRequest = {}) {
+    Dialog(
+        onDismissRequest = {},
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+                .semantics {
+                    contentDescription = "Tech input dialog"
+                }
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
                 Text("Select a Technology", style = MaterialTheme.typography.headlineSmall)
                 technologyDetails.forEach { techInfo ->
                     TechnologyCard(techInfo, onTechnologySelected)

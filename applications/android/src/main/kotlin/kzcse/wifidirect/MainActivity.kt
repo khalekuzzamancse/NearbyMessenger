@@ -1,5 +1,6 @@
 package kzcse.wifidirect
 
+import TechnologyInputDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -7,46 +8,52 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import core.notification.StandardNotificationBuilder
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
 import navigation.navgraph.RootNavGraph
-import wifidirect.WifiDirectFactory
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
-    private var showDialog by mutableStateOf(false)
-
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         userNameManager = UserNameManager(this)
-        showDialog = userNameManager.userName.isEmpty()
 
         setContent {
-            val wifiEnabled = WifiDirectFactory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
+            val viewModel = viewModel {
+                AppViewModel()
+            }
+            if (userNameManager.userName.isEmpty()) {
+                viewModel.showNameInputDialoge()
+            }
             ConnectivitySamplesNetworkingTheme {
-                if (showDialog) {
+                if (viewModel.showUserNameDialog) {
                     UserNameDialog(userNameManager = userNameManager) {
-                        showDialog = false
+                        viewModel.onNameInputCompleted()
                         log(userNameManager.userName)
                     }
                 } else {
-                    RootNavGraph(
-                        thisDeviceUserName = userNameManager.userName,
-                        wifiEnabled =wifiEnabled ,
-                        onNewMessageNotificationRequest =::createNotification,
-                        onExitRequest = ::finish
-                    )
-
+                    val technologyNotSelected = viewModel.selectedTech == null
+                    if (technologyNotSelected) {
+                        TechnologyInputDialog {
+                            viewModel.onTechSelected(it)
+                        }
+                    }
+                    viewModel.selectedTech?.let { technology ->
+                        RootNavGraph(
+                            thisDeviceUserName = userNameManager.userName,
+                            wifiEnabled = viewModel.wifiEnabled.collectAsState().value,
+                            onNewMessageNotificationRequest = ::createNotification,
+                            technology = technology,
+                            onExitRequest = ::finish
+                        )
+                    }
                 }
             }
             PermissionIfNeeded()

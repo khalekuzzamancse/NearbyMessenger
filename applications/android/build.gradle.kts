@@ -64,7 +64,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.windowSize)
 
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     //
     implementation(project(":feature:navigation"))
     implementation(project(":core:connectivity:wifi_direct"))//For starting broadcast on application class and read wifi  status
