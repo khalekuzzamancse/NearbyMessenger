@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/core/connectivity" />
             <option value="$PROJECT_DIR$/core/connectivity/nearby_connection_api" />
             <option value="$PROJECT_DIR$/core/connectivity/wifi_direct" />
+            <option value="$PROJECT_DIR$/core/connectivity/wifi_direct_2" />
             <option value="$PROJECT_DIR$/core/connectivity/wifi_hotspot" />
             <option value="$PROJECT_DIR$/core/database" />
             <option value="$PROJECT_DIR$/core/permission_n_notification" />

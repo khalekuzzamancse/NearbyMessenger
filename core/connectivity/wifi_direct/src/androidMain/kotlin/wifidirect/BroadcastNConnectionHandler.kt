@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import wifidirect.broadcast.WifiDirectBroadcastManager
+import wifidirect.broadcast.WifiDirectBroadcastReceiver
 import wifidirect.connection.ConnectionManager
 
 
@@ -26,7 +26,6 @@ class BroadcastNConnectionHandler(
 ) {
 
     private val connectionManager = ConnectionManager(context)
-    val connectionInfo = connectionManager.connectionInfo
     val wifiDirectConnectionInfo=connectionManager.wifiDirectConnectionInfo
     fun getThisDeviceInfo()=connectionManager.getThisDeviceInfo()
 
@@ -47,7 +46,7 @@ class BroadcastNConnectionHandler(
     }
 
 
-    private val broadcastManager = WifiDirectBroadcastManager(
+    private val broadcastManager = WifiDirectBroadcastReceiver(
         context = context,
         onStateChangeAction = {
             Log.d(TAG, "onStateChange")
@@ -85,6 +84,12 @@ class BroadcastNConnectionHandler(
 
     fun scanDevice() = connectionManager.startScanning()
     fun connectTo(address: String) = connectionManager.connectWith(address)
-
+    @Suppress("Unused")
+    private fun log(message: String, methodName: String? = null) {
+        val tag = "${this@BroadcastNConnectionHandler::class.simpleName}Log:"
+        val method = if (methodName == null) "" else "$methodName()'s "
+        val msg = "$method:-> $message"
+        Log.d(tag, msg)
+    }
 }
 

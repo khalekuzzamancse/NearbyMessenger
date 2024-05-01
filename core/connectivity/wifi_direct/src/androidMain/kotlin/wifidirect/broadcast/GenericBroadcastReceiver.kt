@@ -3,11 +3,12 @@ package wifidirect.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 
-/*
-This is re usable
+/**
+ * - A generic broadcast receiver simply requires you to provide a list of relevant intents,
+ * and it will handle the broadcasting process for you
  */
-
 internal class GenericBroadcastReceiver(
     private val interestedActions: List<BroadcastReceiverAction>
 ) : BroadcastReceiver() {
@@ -25,9 +26,13 @@ internal class GenericBroadcastReceiver(
             }
         }
     }
+    @Suppress("Unused")
+    private fun log(message: String, methodName: String? = null) {
+        val tag = "${this@GenericBroadcastReceiver::class.simpleName}Log:"
+        val method = if (methodName == null) "" else "$methodName()'s "
+        val msg = "$method:-> $message"
+        Log.d(tag, msg)
+    }
 }
 
-class BroadcastReceiverAction(
-    val action: String,
-    val handler: (Intent) -> Unit = {}
-)
+

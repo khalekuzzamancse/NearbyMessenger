@@ -12,9 +12,9 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        WifiDirectFactory.create(this)
-        WifiDirectFactory.broadcastNConnectionHandler.registerBroadcast()
-        WifiDirectFactory.broadcastNConnectionHandler.updateConnectedDeviceInfo()
+//        WifiDirectFactory.create(this)
+//        WifiDirectFactory.broadcastNConnectionHandler.registerBroadcast()
+//        WifiDirectFactory.broadcastNConnectionHandler.updateConnectedDeviceInfo()
 
     }
 
@@ -22,7 +22,7 @@ class MyApp : Application() {
 
 
     override fun onTerminate() {
-        WifiDirectFactory.broadcastNConnectionHandler.disconnectAll()
+      //  WifiDirectFactory.broadcastNConnectionHandler.disconnectAll()
         super.onTerminate()
     }
     @Suppress("Unused")
