@@ -6,20 +6,24 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import chatbynearbyapi.navigation.NearByAPIChatServiceNavGraph
 import core.notification.StandardNotificationBuilder
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
+import navigation.navgraph.RootNavGraph
+import wifidirect.WifiDirectFactory
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
     private var showDialog by mutableStateOf(false)
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,7 @@ class MainActivity : ComponentActivity() {
         showDialog = userNameManager.userName.isEmpty()
 
         setContent {
+            val wifiEnabled = WifiDirectFactory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
             ConnectivitySamplesNetworkingTheme {
                 if (showDialog) {
                     UserNameDialog(userNameManager = userNameManager) {
@@ -35,20 +40,12 @@ class MainActivity : ComponentActivity() {
                         log(userNameManager.userName)
                     }
                 } else {
-                    NearByAPIChatServiceNavGraph(
-                        thisDeviceName = userNameManager.userName,
-                        onExitRequest = {},
-                        onNewMessageNotificationRequest = {}
+                    RootNavGraph(
+                        thisDeviceUserName = userNameManager.userName,
+                        wifiEnabled =wifiEnabled ,
+                        onNewMessageNotificationRequest =::createNotification,
+                        onExitRequest = ::finish
                     )
-
-////                    val wifiEnabled = Factory.broadcastNConnectionHandler.isWifiEnabled.collectAsState().value
-//                    val wifiEnabled = true
-//                    NavGraph(
-//                        thisDeviceUserName = userNameManager.userName,
-//                        wifiEnabled = wifiEnabled,
-//                        onNewMessageNotificationRequest = ::createNotification,
-//                        onExitRequest = ::finish
-//                    )
 
                 }
             }

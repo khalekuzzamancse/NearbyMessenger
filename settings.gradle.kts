@@ -25,6 +25,7 @@ val featureModules= listOf(":feature",
     ":feature:scanned_device",":feature:scanned_device:data",":feature:scanned_device:domain",":feature:scanned_device:ui",":feature:scanned_device:di",
     ":feature:chat",":feature:chat:data",":feature:chat:domain",":feature:chat:ui",":feature:chat:di",
     ":feature:nearby_api_chat_service",
+    ":feature:wifi_direct_chat_service",
     ":feature:navigation",
     )
 include(applicationsModules+coreModules+featureModules)

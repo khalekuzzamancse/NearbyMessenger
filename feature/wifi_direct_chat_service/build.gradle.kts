@@ -37,8 +37,10 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
-                implementation(project(":feature:nearby_api_chat_service",))
-                implementation(project(":feature:wifi_direct_chat_service"))
+                implementation(project(":feature:scanned_device:ui"))//For Scanned device UI
+                implementation(project(":feature:chat:ui")) //For chat UI and Add chat to database
+                implementation(project(":core:connectivity:wifi_direct")) //For Device list and connect with  wifi direct
+                implementation(project(":core:socket:role_factory")) //For data communcation after connect via wifi direct
 
             }
         }
@@ -83,7 +85,7 @@ kotlin {
 
 }
 android {
-    namespace = "navigation"
+    namespace = "chatbywifidirect"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

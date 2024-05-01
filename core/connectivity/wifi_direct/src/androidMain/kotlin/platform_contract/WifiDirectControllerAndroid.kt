@@ -1,4 +1,4 @@
-package peers.data
+package platform_contract
 
 import android.os.Build
 import kotlinx.coroutines.CoroutineScope
@@ -9,15 +9,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import wifidirect.WifiDirectFactory
+import wifidirect.connection.model.Device
 import wifidirect.misc.ConnectionController
 import wifidirect.model.ConnectionInfoModel
 import wifidirect.model.ScannedDeviceModel
 import wifidirect.model.ThisDeviceInfoModel
-import wifidirect.WifiDirectFactory
-import wifidirect.connection.model.Device
 
 @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
-class WifiDirectController : ConnectionController {
+class WifiDirectControllerAndroid : ConnectionController {
+
     private val wifiManager = WifiDirectFactory.broadcastNConnectionHandler
     private val _wifiEnabled = MutableStateFlow(false)
 

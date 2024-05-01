@@ -1,4 +1,4 @@
-package peers.ui.scanneddevice
+package chatbywifidirect.devices
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -14,20 +14,15 @@ import wifidirect.misc.ConnectionController
  * * Using the Delegation Design pattern
  */
 
-class DeviceListViewModel(
-    private val controller:ConnectionController,
+internal class DeviceListViewModel(
+    private val controller: ConnectionController
 ) : ViewModel() {
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val message = _errorMessage.asStateFlow()
     private val _isScanning = MutableStateFlow(false)
     val isDeviceScanning = _isScanning
-
     val connectionInfo = controller.connectionInfoModel
-    val isNetworkOn = controller.isNetworkOn
-
-
-    fun onNetworkStatusChangeRequest() = controller.onStatusChangeRequest()
-
     val nearbyDevices = controller.nearbyDevices
 
     fun scanDevices() {

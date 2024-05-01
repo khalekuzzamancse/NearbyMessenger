@@ -1,4 +1,4 @@
-package navigation
+package chatbywifidirect.chat
 
 import chatui.viewmodel.DataCommunicator
 import chatui.viewmodel.ReceivedMessage

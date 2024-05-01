@@ -67,11 +67,8 @@ dependencies {
 
     //
     implementation(project(":feature:navigation"))
-    //
-    implementation(project(":core:connectivity:wifi_direct"))
-    implementation(project(":feature:nearby_api_chat_service",))
+    implementation(project(":core:connectivity:wifi_direct"))//For starting broadcast on application class and read wifi  status
     implementation(project(":core:permission_n_notification"))
-//
     implementation("androidx.core:core-splashscreen:1.0.1")
 
 }

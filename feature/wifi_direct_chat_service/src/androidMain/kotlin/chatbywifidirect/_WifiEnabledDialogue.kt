@@ -1,4 +1,4 @@
-package navigation
+package chatbywifidirect
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

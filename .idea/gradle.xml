@@ -37,6 +37,7 @@
             <option value="$PROJECT_DIR$/feature/scanned_device/di" />
             <option value="$PROJECT_DIR$/feature/scanned_device/domain" />
             <option value="$PROJECT_DIR$/feature/scanned_device/ui" />
+            <option value="$PROJECT_DIR$/feature/wifi_direct_chat_service" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

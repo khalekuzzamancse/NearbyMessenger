@@ -1,4 +1,4 @@
-package navigation.navgraph
+package chatbywifidirect.chat
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

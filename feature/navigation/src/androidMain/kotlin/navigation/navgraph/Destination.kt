@@ -1,5 +1,5 @@
 package navigation.navgraph
 
 internal enum class Destination {
-   Home,Conversation
+   Home,ChatByWifiDirect,ChatByNearByAPI,UnderConstruction
 }

@@ -4,7 +4,7 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import wifidirect.Factory
+import wifidirect.WifiDirectFactory
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -12,9 +12,9 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Factory.create(this)
-        Factory.broadcastNConnectionHandler.registerBroadcast()
-        Factory.broadcastNConnectionHandler.updateConnectedDeviceInfo()
+        WifiDirectFactory.create(this)
+        WifiDirectFactory.broadcastNConnectionHandler.registerBroadcast()
+        WifiDirectFactory.broadcastNConnectionHandler.updateConnectedDeviceInfo()
 
     }
 
@@ -22,7 +22,7 @@ class MyApp : Application() {
 
 
     override fun onTerminate() {
-        Factory.broadcastNConnectionHandler.disconnectAll()
+        WifiDirectFactory.broadcastNConnectionHandler.disconnectAll()
         super.onTerminate()
     }
     @Suppress("Unused")
