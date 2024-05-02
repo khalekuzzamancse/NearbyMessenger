@@ -1,3 +1,8 @@
+Resouces
+https://developer.android.com/reference/android/net/wifi/p2p/WifiP2pManager
+https://developer.android.com/develop/connectivity/wifi/wifi-direct
+
+
 connect(),createGroup(),startDiscovery() ,,these are async call becuase it consist of
 network call,so the method to their action successfully or not,to know that we have to 
 give a ActionListener call back,so that via this callback ,we will  notified that

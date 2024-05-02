@@ -23,8 +23,7 @@ internal class DeviceListViewModel(
     private val broadcastReceiver = wifi_direct2.WifiDirectFactory.broadcastReceiver
     private val _errorMessage = MutableStateFlow<String?>(null)
     val message = _errorMessage.asStateFlow()
-    private val _isScanning = MutableStateFlow(false)
-    val isDeviceScanning = _isScanning
+    val isDeviceScanning = broadcastReceiver.isDiscovering
     val connectionInfo = broadcastReceiver.connectionInfo
     val nearbyDevices = broadcastReceiver.peers.map { peers ->
         peers.map {
@@ -41,9 +40,10 @@ internal class DeviceListViewModel(
         }
 
     }
+
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            broadcastReceiver.peers.collect{
+            broadcastReceiver.peers.collect {
                 log("perres:$it.toString()")
             }
         }
@@ -51,13 +51,8 @@ internal class DeviceListViewModel(
 
     fun scanDevices() {
         CoroutineScope(Dispatchers.Default).launch {
-            _isScanning.update { true } //Right now,Do not know how to know currently scanning or not from the framework
             val result = broadcastReceiver.startDiscovery()
-            if (result.isSuccess) {
-                delay(30_000)//30 sec
-                _isScanning.update { false }
-            }
-            else if (result.isFailure){
+            if (result.isFailure) {
                 updateErrorMessage("Failed to start scan")
             }
         }
@@ -66,19 +61,20 @@ internal class DeviceListViewModel(
 
     fun connectTo(address: String) {
         CoroutineScope(Dispatchers.Default).launch {
-            val res=broadcastReceiver.initiateConnection(address)
-            if (res.isFailure){
+            val res = broadcastReceiver.initiateConnection(address)
+            if (res.isFailure) {
                 updateErrorMessage("Connection Initiation failed")
             }
         }
     }
+
     fun disconnectAll() {
-      CoroutineScope(Dispatchers.Default).launch {
-         val res= broadcastReceiver.disconnectRequest()
-          if (res.isFailure){
-              updateErrorMessage("Failed to disconnect")
-          }
-      }
+        CoroutineScope(Dispatchers.Default).launch {
+            val res = broadcastReceiver.disconnectRequest()
+            if (res.isFailure) {
+                updateErrorMessage("Failed to disconnect")
+            }
+        }
     }
 
     //TODO:Utils----------------------    TODO:Utils----------------------------TODO:Utils

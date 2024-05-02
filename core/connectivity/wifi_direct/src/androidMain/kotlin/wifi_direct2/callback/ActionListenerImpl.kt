@@ -16,6 +16,14 @@ class ActionListenerImpl(
     override fun onSuccess()=_onSuccess()
 
     override fun onFailure(code: Int) {
-       _onFailure(Throwable("Reason codeL:$code"))
+       _onFailure(code._Throwable())
     }
+    @Suppress("FunctionName")
+    private fun Int._Throwable()=when(this){
+            WifiP2pManager.P2P_UNSUPPORTED -> Throwable("Your device does not support P2P")
+            WifiP2pManager.BUSY -> Throwable(" framework is busy and unable to service the request")
+            WifiP2pManager.ERROR -> Throwable("failed due to an internal error")
+            else -> Throwable("Unknown error")
+        }
+
 }

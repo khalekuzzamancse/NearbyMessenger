@@ -3,6 +3,7 @@ package wifi_direct2
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.MacAddress
 import android.net.NetworkInfo
 import android.net.wifi.WpsInfo
 import android.net.wifi.p2p.WifiP2pConfig
@@ -46,6 +47,11 @@ class WifiDirectBroadcastReceiver(
     private val _connectionInfo = MutableStateFlow<ConnectionInfo?>(null)
     val connectionInfo = _connectionInfo.asStateFlow()
 
+    private val _isDiscovering = MutableStateFlow(false)
+    val isDiscovering = _isDiscovering.asStateFlow()
+
+    //
+
 
     /**
      * - In order to successful find the devices,all devices need to start discovery process
@@ -70,14 +76,13 @@ class WifiDirectBroadcastReceiver(
     }
 
 
-
     /**
      * - It will just initiate the connection,and return if the initiation is success or not
      * - The device is connected successfully or not will be notified via  broadcast on the [ConnectionInfoListenerImpl]
      * @param deviceAdd is the deviceAddress
      *
      */
-     suspend fun initiateConnection(deviceAdd: String): Result<Unit> {
+    suspend fun initiateConnection(deviceAdd: String): Result<Unit> {
         val config = WifiP2pConfig().apply {
             deviceAddress = deviceAdd
             wps.setup = WpsInfo.PBC
@@ -94,9 +99,35 @@ class WifiDirectBroadcastReceiver(
             ))
         }
     }
-    suspend fun disconnectRequest():Result<Unit>{
+
+    suspend fun disconnectRequest(): Result<Unit> {
+        return removeGroup()
+    }
+
+    /**
+     * - Will remove the entire group so all client  will be disconnected
+     * - TODO: To disconnect a particular client use the [removeClient]
+     */
+    private suspend fun removeGroup(): Result<Unit> {
         return suspendCancellableCoroutine { continuation ->
-            manager.removeGroup(channel,ActionListenerImpl(
+            manager.removeGroup(channel, ActionListenerImpl(
+                _onSuccess = {
+                    // Connection attempt succeeded; notification will come from the BroadcastReceiver so Ignore for now
+                    continuation.resume(Result.success(Unit))
+                },
+                _onFailure = {
+                    continuation.resume(Result.failure(it))
+                }
+            ))
+        }
+    }
+
+    /**
+     * TODO : Refactor it later,if want to disconnect only a single client
+     */
+    private suspend fun removeClient(peerAddress: MacAddress): Result<Unit> {
+        return suspendCancellableCoroutine { continuation ->
+            manager.removeClient(channel, peerAddress, ActionListenerImpl(
                 _onSuccess = {
                     // Connection attempt succeeded; notification will come from the BroadcastReceiver so Ignore for now
                     continuation.resume(Result.success(Unit))
@@ -179,6 +210,14 @@ class WifiDirectBroadcastReceiver(
             }
 
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
+                /*
+                    starting with Android 10 (API level 29), the WIFI_P2P_CONNECTION_CHANGED_ACTION broadcast is no longer sticky. This change means:
+                      Non-Sticky Behavior: When your app registers to receive this broadcast, it will not receive the last broadcasted intent
+                      immediately upon registration if it hasn't captured it live.
+                       to get the current connection state or to check if a connection is established, you should use methods provided by the WifiP2pManager API like requestConnectionInfo() which needs
+                       to be called explicitly to obtain the current connection information.
+                 */
+
                 // Connection state changed! We should probably do something about that.
                 val networkInfo: NetworkInfo? =
                     intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO)!!
@@ -191,6 +230,24 @@ class WifiDirectBroadcastReceiver(
 
             }
 
+            WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION -> {
+                /*
+                 Broadcast intent action indicating that peer discovery has either started or stopped. One extra EXTRA_DISCOVERY_STATE
+                indicates whether discovery has started or stopped.
+                 Note that discovery will be stopped during a connection setup. If the application tries to re-initiate discovery during this time,
+                  it can fail.
+                 */
+                val code = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1)
+                _isDiscovering.update {
+                    when (code) {
+                        WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED -> true
+                        WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED -> false
+                        else -> false
+                    }
+                }
+                log("IsDiscovering: $code")
+            }
+
             WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION -> {
                 //Update this device info such as
                 val thisDevice =
@@ -200,26 +257,23 @@ class WifiDirectBroadcastReceiver(
     }
 
 
-
     //TODO :Helper Methods ---- Helper Methods ---- Helper Methods---- Helper Methods ---- Helper Methods
     //TODO :Helper Methods ---- Helper Methods ---- Helper Methods---- Helper Methods ---- Helper Methods
-
-
 
 
     private fun _updatePeers(p2pDevices: List<WifiP2pDevice>) {
         _peers.update {
             p2pDevices.map {
-                it._toDiscoverPeer()
+                it._toPeer()
             }
         }
     }
 
 
-    private fun WifiP2pDevice._toDiscoverPeer() = Peer(
+    private fun WifiP2pDevice._toPeer() = Peer(
         deviceName = deviceName,
         deviceAddress = deviceAddress,
-        connectionStatus =status._toConnectionStatus(),
+        connectionStatus = status._toConnectionStatus(),
         isGroupOwner = isGroupOwner
     )
 
