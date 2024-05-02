@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="nsd-desktop">
-    <output-path>$PROJECT_DIR$/core/connectivity/nsd/build/libs</output-path>
-    <root id="archive" name="nsd-desktop.jar">
-      <element id="module-output" name="NearByMessenger.core.connectivity.nsd.desktopMain" />
-    </root>
-  </artifact>
-</component>
