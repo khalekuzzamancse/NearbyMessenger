@@ -5,23 +5,40 @@ import android.content.Context
 import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
 import wifi_direct2.WifiDirectFactory
+import wifi_direct2.WifiDirectIntentFilters
 
 
 class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val manager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
-        val channel = manager.initialize(this, mainLooper, null)
-        WifiDirectFactory.setBroadcastReceiver(manager, channel)
+    }
 
-
+    /**
+     * - only register if user select the Wifi Direct technology for chat
+     */
+    companion object {
+        fun registerForWifiDirectBroadcast(context: Context) {
+            val manager = context.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
+            val channel = manager.initialize(context, context.mainLooper, null)
+            WifiDirectFactory.setBroadcastReceiver(manager, channel)
+            context.registerReceiver(
+                WifiDirectFactory.broadcastReceiver, WifiDirectIntentFilters.filters,
+                RECEIVER_NOT_EXPORTED //TODO:Refactor later,can causes bug in android >10
+            )
+        }
     }
 
 
     override fun onTerminate() {
-        //  WifiDirectFactory.broadcastNConnectionHandler.disconnectAll()
         super.onTerminate()
+        try {
+            //if broadcast receiver has created
+            unregisterReceiver(WifiDirectFactory.broadcastReceiver)
+        } catch (_: Exception) {
+
+        }
+
     }
 
     @Suppress("Unused")

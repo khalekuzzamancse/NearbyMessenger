@@ -24,6 +24,8 @@ object WifiDirectIntentFilters {
 
         // Indicates this device's details have changed such has this device name,..
         addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
+        //to know the device is correctly discovering or not
+        addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION)
 
     }
 
