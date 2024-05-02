@@ -37,11 +37,10 @@ class DataCommunicatorImpl(
     fun onGroupFormed(info: DevicesConnectionInfo) {
         try {
             if (info.isConnected) {
-                val ownerName = info.groupOwnerName ?: "GroupUserWithNULLName"
                 communicator = Communicator(
                     //if the device is the group owner the server will run here...that why the group owner id is null
                     groupOwnerIP = if(info.isGroupOwner)null else info.groupOwnerIP,
-                    deviceName = if (info.isGroupOwner) ownerName else "client1",
+                    deviceName = if (info.isGroupOwner) "ownerName" else "client1",
                     //TODO : for more than two device,must use a separate name for each client,
                     onNewMessageReceived = onNewMessageReceived
                 )

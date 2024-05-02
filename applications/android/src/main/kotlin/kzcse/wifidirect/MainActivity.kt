@@ -1,32 +1,25 @@
 package kzcse.wifidirect
 
-import android.content.Context
-import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.notification.StandardNotificationBuilder
-import kotlinx.coroutines.launch
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
 import navigation.TechnologyInputDialog
 import navigation.navgraph.RootNavGraph
 import wifi_direct2.WifiDirectBroadcastReceiver
+import wifi_direct2.WifiDirectFactory
 import wifi_direct2.WifiDirectIntentFilters
 
 
@@ -39,7 +32,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         userNameManager = UserNameManager(this)
-        receiver = createWifiDirectBroadCastReceiver()
+        receiver =  WifiDirectFactory.broadcastReceiver
 
         setContent {
             val scope = rememberCoroutineScope()
@@ -54,44 +47,27 @@ class MainActivity : ComponentActivity() {
                     log("ConnectionIfo:$it")
                 }
             }
-//            val viewModel = viewModel {
-//                AppViewModel()
-//            }
-//            if (userNameManager.userName.isEmpty()) {
-//                viewModel.showNameInputDialoge()
-//            }
-            ConnectivitySamplesNetworkingTheme {
-
-                Column {
-                    Button(onClick = {
-                        scope.launch {
-                            val result = receiver.startDiscovery()
-                            log("Scan:$result")
-                        }
-                    }) {
-                        Text(text = "Scan")
-                    }
-                    receiver.peers.collectAsState(initial = emptyList()).value.forEach {
-                        Text(
-                            text = it.deviceName,
-                            modifier = Modifier.clickable {
-                                scope.launch {
-                                    val result =  receiver.initiateConnection(it.deviceAddress)
-                                    log("ConnectionInitiated:$result")
-                                }
-
-                            },
-                        )
-                    }
+            LaunchedEffect(Unit) {
+                receiver.isP2pEnabled.collect {
+                    if (it)
+                        receiver.startDiscovery()//There is a bug on android 12>sometimes it failed to find device,
+                    ///turing on wifi off and on works,that is why when wifi or p2p is enable we start a scan automatically
+                    log("ConnectionIfo:$it")
                 }
-
-
-//                _RootNavGraph(
-//                    viewModel = viewModel,
-//                    userNameManager = userNameManager,
-//                    onNewMessageNotificationRequest = ::createNotification,
-//                    onExitRequest = ::finish
-//                )
+            }
+            val viewModel = viewModel {
+                AppViewModel()
+            }
+            if (userNameManager.userName.isEmpty()) {
+                viewModel.showNameInputDialoge()
+            }
+            ConnectivitySamplesNetworkingTheme {
+                _RootNavGraph(
+                    viewModel = viewModel,
+                    userNameManager = userNameManager,
+                    onNewMessageNotificationRequest = ::createNotification,
+                    onExitRequest = ::finish
+                )
             }
             PermissionIfNeeded()
         }
@@ -125,11 +101,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun createWifiDirectBroadCastReceiver(): WifiDirectBroadcastReceiver {
-        val manager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
-        val channel = manager.initialize(this, mainLooper, null)
-        return WifiDirectBroadcastReceiver(manager, channel)
-    }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

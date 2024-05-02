@@ -1,30 +1,29 @@
 package kzcse.wifidirect
 
 import android.app.Application
-import android.os.Build
+import android.content.Context
+import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
-import androidx.annotation.RequiresApi
-import wifidirect.WifiDirectFactory
+import wifi_direct2.WifiDirectFactory
 
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-//        WifiDirectFactory.create(this)
-//        WifiDirectFactory.broadcastNConnectionHandler.registerBroadcast()
-//        WifiDirectFactory.broadcastNConnectionHandler.updateConnectedDeviceInfo()
+        val manager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
+        val channel = manager.initialize(this, mainLooper, null)
+        WifiDirectFactory.setBroadcastReceiver(manager, channel)
+
 
     }
-
-
 
 
     override fun onTerminate() {
-      //  WifiDirectFactory.broadcastNConnectionHandler.disconnectAll()
+        //  WifiDirectFactory.broadcastNConnectionHandler.disconnectAll()
         super.onTerminate()
     }
+
     @Suppress("Unused")
     private fun log(message: String, methodName: String? = null) {
         val tag = "${this@MyApp::class.simpleName}Log:"

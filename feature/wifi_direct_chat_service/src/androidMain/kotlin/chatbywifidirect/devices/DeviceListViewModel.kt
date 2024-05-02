@@ -6,51 +6,87 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import wifidirect.misc.ConnectionController
+import peers.ui.devices.ConnectionStatus
+import peers.ui.devices.ScannnedDevice
+import wifi_direct2.model.PeerStatus
 
 /**
  * * Using the Delegation Design pattern
  */
 
 internal class DeviceListViewModel(
-    private val controller: ConnectionController
-) : ViewModel() {
 
+) : ViewModel() {
+    private val broadcastReceiver = wifi_direct2.WifiDirectFactory.broadcastReceiver
     private val _errorMessage = MutableStateFlow<String?>(null)
     val message = _errorMessage.asStateFlow()
     private val _isScanning = MutableStateFlow(false)
     val isDeviceScanning = _isScanning
-    val connectionInfo = controller.connectionInfoModel
-    val nearbyDevices = controller.nearbyDevices
-
-    fun scanDevices() {
-        CoroutineScope(Dispatchers.Default).launch {
-            _isScanning.update { true }
-            repeat(8) {
-                controller.scanDevices()
-                delay(250)
-            }
-            //TODO: There is Bug ,that is why Scanning multiple times,to avoid multiple
-            _isScanning.update { false }
-            updateErrorMessageAboutScannedDevice()
+    val connectionInfo = broadcastReceiver.connectionInfo
+    val nearbyDevices = broadcastReceiver.peers.map { peers ->
+        peers.map {
+            ScannnedDevice(
+                name = it.deviceName,
+                id = it.deviceAddress,
+                connectionStatus = when (it.connectionStatus) {
+                    PeerStatus.Connected -> ConnectionStatus.Connected
+                    PeerStatus.Invited -> ConnectionStatus.Connecting
+                    else -> ConnectionStatus.NotConnected
+                }
+            )
 
         }
 
     }
-
-    fun connectTo(address: String) = controller.connectTo(address)
-    fun disconnectAll() = controller.disconnectAll()
-
-    //TODO:Utils----------------------    TODO:Utils----------------------------TODO:Utils
-    //TODO:Utils----------------------    TODO:Utils----------------------------TODO:Utils
-
-    private fun updateErrorMessageAboutScannedDevice() {
+    init {
         CoroutineScope(Dispatchers.Default).launch {
-            val scannedDevice = controller.getNearByDevices()
-            if (scannedDevice.isEmpty())
-                _errorMessage.update { "No Device found,Rescan both your and participants device.Make device are sure connected via same wifi" }
+            broadcastReceiver.peers.collect{
+                log("perres:$it.toString()")
+            }
+        }
+    }
+
+    fun scanDevices() {
+        CoroutineScope(Dispatchers.Default).launch {
+            _isScanning.update { true } //Right now,Do not know how to know currently scanning or not from the framework
+            val result = broadcastReceiver.startDiscovery()
+            if (result.isSuccess) {
+                delay(30_000)//30 sec
+                _isScanning.update { false }
+            }
+            else if (result.isFailure){
+                updateErrorMessage("Failed to start scan")
+            }
+        }
+
+    }
+
+    fun connectTo(address: String) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val res=broadcastReceiver.initiateConnection(address)
+            if (res.isFailure){
+                updateErrorMessage("Connection Initiation failed")
+            }
+        }
+    }
+    fun disconnectAll() {
+      CoroutineScope(Dispatchers.Default).launch {
+         val res= broadcastReceiver.disconnectRequest()
+          if (res.isFailure){
+              updateErrorMessage("Failed to disconnect")
+          }
+      }
+    }
+
+    //TODO:Utils----------------------    TODO:Utils----------------------------TODO:Utils
+    //TODO:Utils----------------------    TODO:Utils----------------------------TODO:Utils
+
+    private fun updateErrorMessage(message: String) {
+        CoroutineScope(Dispatchers.Default).launch {
+            _errorMessage.update { message }
             delay(3_000)
             _errorMessage.update { null }
         }

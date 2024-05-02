@@ -70,6 +70,6 @@ dependencies {
     implementation(project(":core:connectivity:wifi_direct"))//For starting broadcast on application class and read wifi  status
     implementation(project(":core:permission_n_notification"))
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation(project(":core:connectivity:wifi_direct_2"))
+    implementation(project(":core:connectivity:wifi_direct"))
 
 }

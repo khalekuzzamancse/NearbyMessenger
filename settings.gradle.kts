@@ -16,13 +16,13 @@ dependencyResolutionManagement {
 val applicationsModules= listOf(":applications","applications:android",":applications:desktop")
 val coreModules= listOf(
     ":core",
-    ":core:connectivity", ":core:connectivity:wifi_direct", ":core:connectivity:wifi_hotspot", ":core:connectivity:nearby_connection_api",":core:connectivity:wifi_direct_2",
+    ":core:connectivity", ":core:connectivity:wifi_hotspot", ":core:connectivity:nearby_connection_api",":core:connectivity:wifi_direct",
     ":core:socket",":core:socket:server",":core:socket:client",":core:socket:protocol",":core:socket:role_factory",
     ":core:database",
     ":core:permission_n_notification",
 )
 val featureModules= listOf(":feature",
-    ":feature:scanned_device",":feature:scanned_device:data",":feature:scanned_device:domain",":feature:scanned_device:ui",":feature:scanned_device:di",
+    ":feature:scanned_device",
     ":feature:chat",":feature:chat:data",":feature:chat:domain",":feature:chat:ui",":feature:chat:di",
     ":feature:nearby_api_chat_service",
     ":feature:wifi_direct_chat_service",

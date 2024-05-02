@@ -19,6 +19,8 @@ kotlin {
             dependencies {
                 implementation(libs.test.androidxUiJunit)
                 debugImplementation(libs.test.androidxUiManifest)
+//                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.5")
+//                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
             }
         }
 
@@ -37,10 +39,8 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
-                implementation(project(":feature:scanned_device"))
-                implementation(project(":feature:chat:ui"))
-                implementation(project(":core:connectivity:nearby_connection_api"))
-
+                implementation(project(":core:connectivity:wifi_direct"))
+             
             }
         }
         val commonTest by getting{
@@ -56,14 +56,12 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.core)
-                implementation(libs.androidx.navigation.compose)
                 //for view model
                 val lifecycleVersion = "2.7.0"
                 // ViewModel
                 implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
                 // ViewModel utilities for Compose
                 implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
-                implementation(libs.androidx.navigation.compose)
             }
         }
 
@@ -84,7 +82,7 @@ kotlin {
 
 }
 android {
-    namespace = "chatbynearbyapi"
+    namespace = "peers.ui"
     compileSdk = 34
     defaultConfig {
         minSdk = 27

@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
-import peers.ui.devices.NearByDevice
+import peers.ui.devices.ScannnedDevice
 import peers.ui.misc.SnackBarDecorator
 import peers.ui.route.NearByDevicesRoute
 
@@ -19,7 +19,7 @@ internal fun _NearByDeviceScreen(
     modifier: Modifier,
     viewModel: DeviceListViewModel,
     thisDeviceName: String,
-    onConversionOpen: (NearByDevice) -> Unit,
+    onConversionOpen: (ScannnedDevice) -> Unit,
     onGroupConversationRequest: () -> Unit,
 ) {
 

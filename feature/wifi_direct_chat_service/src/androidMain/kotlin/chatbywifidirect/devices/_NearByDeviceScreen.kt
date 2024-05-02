@@ -7,32 +7,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import peers.ui.devices.ConnectionStatus
-import peers.ui.devices.NearByDevice
+import peers.ui.devices.ScannnedDevice
 import peers.ui.misc.DevicesConnectionInfo
 import peers.ui.misc.SnackBarDecorator
 import peers.ui.route.NearByDevicesRoute
-
+@Suppress("ComposableNaming")
 @Composable
 internal fun _NearByDeviceScreen(
     modifier: Modifier,
     thisDeviceName:String,
     viewModel: DeviceListViewModel,
     onGroupFormed: (DevicesConnectionInfo) -> Unit,
-    onConversionOpen: (NearByDevice) -> Unit,
+    onConversionOpen: (ScannnedDevice) -> Unit,
     onGroupConversationRequest:()->Unit,
 ) {
     val snackBarMessage = viewModel.message.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.connectionInfo.collect { info ->
-            val ownerIP = info.groupOwnerIP
-            if (ownerIP != null) {
+            if (info != null) {
+                val ownerIP =info.groupOwnerIp
                 onGroupFormed(
                     DevicesConnectionInfo(
                         groupOwnerIP = ownerIP,
-                        isGroupOwner = info.isGroupOwner,
-                        isConnected = info.isConnected,
-                        groupOwnerName = info.groupOwnerName
+                        isGroupOwner = info.isThisDeviceGroupOwner,
+                        isConnected = true,
+                        //TODO: since group is formed so connected(for client),check for the group owner,is it connected or not with the client
                     )
                 )
             }
@@ -44,13 +43,7 @@ internal fun _NearByDeviceScreen(
         NearByDevicesRoute(
             modifier = modifier.padding(scaffoldPadding),
             thisDeviceName=thisDeviceName,
-            devices = viewModel.nearbyDevices.collectAsState(emptyList()).value.map {
-                NearByDevice(
-                    name = it.name,
-                    id = it.address,
-                    connectionStatus = if (it.isConnected)ConnectionStatus.Connected else ConnectionStatus.NotConnected
-                )
-            },
+            devices = viewModel.nearbyDevices.collectAsState(emptyList()).value,
             onDisconnectRequest = {
                 viewModel.disconnectAll()
             },
