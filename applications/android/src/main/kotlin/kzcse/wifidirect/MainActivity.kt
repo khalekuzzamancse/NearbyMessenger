@@ -26,7 +26,7 @@ import wifi_direct2.WifiDirectIntentFilters
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
     private lateinit var receiver: WifiDirectBroadcastReceiver
-
+//this is ew
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
