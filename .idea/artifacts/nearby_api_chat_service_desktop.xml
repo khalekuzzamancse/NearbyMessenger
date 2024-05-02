@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="nearby_api_chat_service-desktop">
     <output-path>$PROJECT_DIR$/feature/nearby_api_chat_service/build/libs</output-path>
-    <root id="archive" name="nearby_api_chat_service-desktop.jar">
-      <element id="module-output" name="NearByMessenger.feature.nearby_api_chat_service.desktopMain" />
-    </root>
+    <root id="archive" name="nearby_api_chat_service-desktop.jar" />
   </artifact>
 </component>
