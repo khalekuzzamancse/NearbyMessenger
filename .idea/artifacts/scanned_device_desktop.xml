@@ -1,6 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="scanned_device-desktop">
-    <output-path>$PROJECT_DIR$/feature/scanned_device/build/libs</output-path>
-    <root id="archive" name="scanned_device-desktop.jar" />
-  </artifact>
-</component>

@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="socket-desktop">
-    <output-path>$PROJECT_DIR$/core/socket/build/libs</output-path>
-    <root id="archive" name="socket-desktop.jar">
-      <element id="module-output" name="BlueFiMessenger.core.socket.desktopMain" />
-    </root>
-  </artifact>
-</component>

@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="protocol-desktop">
-    <output-path>$PROJECT_DIR$/core/socket/protocol/build/libs</output-path>
-    <root id="archive" name="protocol-desktop.jar">
-      <element id="module-output" name="NearByMessenger.core.socket.protocol.desktopMain" />
-    </root>
-  </artifact>
-</component>

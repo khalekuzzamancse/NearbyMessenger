@@ -1,1 +1,0 @@
-- In order to enter the chat screen,the chat screen need to  know the name of the participants
