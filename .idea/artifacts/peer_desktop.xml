@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="peer-desktop">
+    <output-path>$PROJECT_DIR$/core/socket/peer/build/libs</output-path>
+    <root id="archive" name="peer-desktop.jar">
+      <element id="module-output" name="BlueFiMessenger.core.socket.peer.desktopMain" />
+    </root>
+  </artifact>
+</component>
