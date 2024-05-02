@@ -37,9 +37,10 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
-                implementation(project(":feature:nearby_api_chat_service",))
-                implementation(project(":feature:wifi_direct_chat_service"))
-
+                implementation(project(":feature:scanned_device:ui"))
+                implementation(project(":feature:chat:ui"))
+                implementation(project(":core:connectivity:wifi_direct"))
+                implementation(project(":core:socket:role_factory"))
             }
         }
         val commonTest by getting{

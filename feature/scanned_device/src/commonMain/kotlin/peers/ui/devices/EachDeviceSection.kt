@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.TabletAndroid
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,7 +32,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun EachDevice(
-    device: ScannnedDevice,
+    device: NearByDevice,
     onConnectClick: () -> Unit = {},
     onDeviceInfoClick: () -> Unit = {},
     onDisconnectRequest: () -> Unit = {},
