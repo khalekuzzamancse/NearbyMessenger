@@ -37,7 +37,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.windowSize)
                 //
-                implementation(project(":feature:scanned_device"))
+                implementation(project(":feature:scanned_device:ui"))
                 implementation(project(":feature:chat:ui"))
                 implementation(project(":core:connectivity:nearby_connection_api"))
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import peers.ui.devices.ConnectionStatus
-import peers.ui.devices.ScannnedDevice
+import peers.ui.devices.NearByDevice
 import peers.ui.devices.NearByDevices
 
 //@Suppress("Unused")
@@ -58,14 +58,14 @@ import peers.ui.devices.NearByDevices
 fun NearByDevicesRoute(
     modifier: Modifier = Modifier,
     thisDeviceName: String,
-    devices: List<ScannnedDevice>,
+    devices: List<NearByDevice>,
     isScanning: Boolean,
     headerTitle:String,//property not state
     headerIcon:ImageVector,////property not state
     onScanDeviceRequest: () -> Unit,
-    onConnectionRequest: (ScannnedDevice) -> Unit,
-    onDisconnectRequest: (ScannnedDevice) -> Unit,
-    onConversionScreenOpenRequest: (ScannnedDevice) -> Unit,
+    onConnectionRequest: (NearByDevice) -> Unit,
+    onDisconnectRequest: (NearByDevice) -> Unit,
+    onConversionScreenOpenRequest: (NearByDevice) -> Unit,
     onGroupConversationRequest: () -> Unit,
 ) {
     Column(

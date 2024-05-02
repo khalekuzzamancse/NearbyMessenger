@@ -17,7 +17,7 @@ import nearbyapi.component.common.endpoint.EndPointStatus
 import nearbyapi.endpoint_role.EndPointType
 import nearbyapi.endpoint_role.NearByEndpointBuilder
 import peers.ui.devices.ConnectionStatus
-import peers.ui.devices.ScannnedDevice
+import peers.ui.devices.NearByDevice
 
 
 /**
@@ -106,9 +106,9 @@ class DeviceListViewModel(
 
     //TODO :Helper method --- Helper method --- Helper method --- Helper method ---
 
-    private fun EndPointInfo.toNearByDeviceOrNull(): ScannnedDevice? {
+    private fun EndPointInfo.toNearByDeviceOrNull(): NearByDevice? {
         return try {
-            ScannnedDevice(
+            NearByDevice(
                 name = name,
                 id = id,
                 connectionStatus = status.toConnectionStatus()

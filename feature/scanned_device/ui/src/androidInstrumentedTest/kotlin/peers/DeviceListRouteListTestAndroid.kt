@@ -11,7 +11,7 @@ import peers.ui.devices.NearByDevice
 import peers.ui.route.NearByDevicesRoute
 import kotlin.test.Test
 
-class DeviceListRouteListTest {
+class DeviceListRouteListTestAndroid {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun scanButtonTesting() = runComposeUiTest {

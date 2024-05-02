@@ -40,7 +40,8 @@ kotlin {
                 implementation(libs.windowSize)
                 //
                 implementation(project(":core:connectivity:wifi_direct"))
-             
+                implementation(project(":feature:scanned_device:domain"))
+                implementation(project(":feature:scanned_device:di"))
             }
         }
         val commonTest by getting{

@@ -64,12 +64,14 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.windowSize)
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
     //
     implementation(project(":feature:navigation"))
-    implementation(project(":core:connectivity:wifi_direct"))//For starting broadcast on application class and read wifi  status
-    implementation(project(":core:permission_n_notification"))
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    //
     implementation(project(":core:connectivity:wifi_direct"))
+    implementation(project(":feature:nearby_api_chat_service",))
+    implementation(project(":core:permission_n_notification"))
+//
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }

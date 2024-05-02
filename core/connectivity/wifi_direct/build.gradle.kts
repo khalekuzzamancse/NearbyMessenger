@@ -73,7 +73,7 @@ kotlin {
 
 }
 android {
-    namespace = "wifi_direct2"
+    namespace = "wifi_direct"
     compileSdk = 34
     defaultConfig {
         minSdk = 27
