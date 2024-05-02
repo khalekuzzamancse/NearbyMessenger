@@ -1,4 +1,4 @@
-package navigation.navgraph
+package chatbywifidirect.navigation.route
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -19,9 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import chatbywifidirect.chat.ConversationScreen
+import chatbywifidirect.devices.DeviceListViewModel
 import chatui.viewmodel.ChatViewModel
 import peers.ui.misc.DevicesConnectionInfo
-import peers.ui.scanneddevice.DeviceListViewModel
 import peers.ui.scanneddevice.NearByDeviceScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
