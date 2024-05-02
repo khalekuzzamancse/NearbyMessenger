@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
             PermissionIfNeeded()
         }
     }
-
+//
     private fun createNotification(senderName: String) {
         StandardNotificationBuilder(this@MainActivity)
             .notify(title = "New Message", message = "from $senderName")
