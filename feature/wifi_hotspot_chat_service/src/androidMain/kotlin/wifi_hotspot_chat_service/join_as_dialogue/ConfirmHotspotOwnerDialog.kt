@@ -4,16 +4,22 @@ import android.content.Intent
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -26,11 +32,11 @@ import wifi_hotspot_chat_service.misc.SnackBarDecorator
 
 @Composable
 internal fun ConfirmHotspotOwnerDialog(
-    onNavigationRequest:()->Unit,
+    onNavigationRequest: () -> Unit,
 ) {
 
-    val controller=remember {HotspotDialogController()}
-    val scope=rememberCoroutineScope()
+    val controller = remember { HotspotDialogController() }
+    val scope = rememberCoroutineScope()
     val startActivityIntent = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -38,49 +44,64 @@ internal fun ConfirmHotspotOwnerDialog(
 
     }
     LaunchedEffect(Unit) {
-        controller.shouldLaunchSettings.collect {launchSetting->
-            if (launchSetting){
+        controller.shouldLaunchSettings.collect { launchSetting ->
+            if (launchSetting) {
                 startActivityIntent.launch(Intent(Settings.ACTION_WIFI_SETTINGS))
             }
         }
     }
+    val hostState = remember { SnackbarHostState() }
 
-    SnackBarDecorator(controller.errorMessage.collectAsState().value) {
-        AlertDialog(
-            modifier = Modifier.padding(it),
-            onDismissRequest = { },
-            title = { Text("Confirm ") },
-            text = { Text(_getHotspotDialogDescription()) },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        scope.launch {
-                          val shouldNavigate= controller.verifyHotspotOwner()
-                            if (shouldNavigate)
-                                onNavigationRequest()
-                        }
-
-                    }
-                ) {
-                    Text("Yes")
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = {
-                   scope.launch {
-                    val shouldNavigate=   controller.verifyHotspotConsumer()
-                       if (shouldNavigate)
-                           onNavigationRequest()
-                   }
-                    }
-                ) {
-                    Text("No")
-                }
-            },
-            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
-        )
+    val errorMessage = controller.errorMessage.collectAsState().value
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null)
+            hostState.showSnackbar(message = errorMessage, duration = SnackbarDuration.Long)
     }
+
+
+    AlertDialog(
+        modifier = Modifier,
+        onDismissRequest = { },
+        title = { Text("Confirm ") },
+        text = {
+            Box(
+            ) {
+                Text(_getHotspotDialogDescription())
+                //Show snack bar on top of the dialog so that the message is visible to user
+                SnackbarHost(hostState = hostState, Modifier.align(Alignment.BottomCenter))
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    scope.launch {
+                        val shouldNavigate = controller.verifyHotspotOwner()
+                        if (shouldNavigate)
+                            onNavigationRequest()
+                    }
+
+                }
+            ) {
+                Text("Yes")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = {
+                    scope.launch {
+                        val shouldNavigate = controller.verifyHotspotConsumer()
+                        if (shouldNavigate)
+                            onNavigationRequest()
+                    }
+                }
+            ) {
+                Text("No")
+            }
+        },
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+    )
+
+
 }
 
 @Composable
