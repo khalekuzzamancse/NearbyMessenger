@@ -34,6 +34,7 @@
             <option value="$PROJECT_DIR$/feature/nearby_api_chat_service" />
             <option value="$PROJECT_DIR$/feature/scanned_device" />
             <option value="$PROJECT_DIR$/feature/wifi_direct_chat_service" />
+            <option value="$PROJECT_DIR$/feature/wifi_hotspot_chat_service" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

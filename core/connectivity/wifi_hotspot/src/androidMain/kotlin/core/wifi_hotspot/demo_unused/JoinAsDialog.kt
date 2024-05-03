@@ -1,4 +1,4 @@
-package core.wifi_hotspot
+package core.wifi_hotspot.demo_unused
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +25,7 @@ sealed interface NetworkRole {
 @Composable
 fun JoinAsDialog(onDismissRequest: () -> Unit = {}, onJoinAs: (NetworkRole) -> Unit) {
     val openDialog = remember { mutableStateOf(true) }
-    var ipAddress by remember { mutableStateOf("192.168.89.4") }
+    var ipAddress by remember { mutableStateOf("192.168.12.252") }
     var port by remember { mutableStateOf("12345") }
     if (openDialog.value) {
         AlertDialog(

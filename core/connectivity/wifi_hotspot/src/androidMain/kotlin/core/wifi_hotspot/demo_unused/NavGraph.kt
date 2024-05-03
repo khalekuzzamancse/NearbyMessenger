@@ -1,4 +1,4 @@
-package core.wifi_hotspot
+package core.wifi_hotspot.demo_unused
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,8 +16,8 @@ fun NavGraphWifiHotSpot() {
         JoinAsDialog(
             onJoinAs = {
                 when(it){
-                    NetworkRole.Server-> viewModel.startServer()
-                    is NetworkRole.Client->{
+                    NetworkRole.Server -> viewModel.startServer()
+                    is NetworkRole.Client ->{
                         viewModel.startClient(it.serverIP,it.serverPort)
                     }
                 }

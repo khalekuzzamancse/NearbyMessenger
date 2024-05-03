@@ -9,31 +9,41 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.notification.StandardNotificationBuilder
+import core.wifi_hotspot.WiFiHotspotFactory
+import kotlinx.coroutines.launch
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
 import navigation.Technology
 import navigation.TechnologyInputDialog
 import navigation.navgraph.RootNavGraph
+import wifi_direct2.WifiDirectFactory
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         userNameManager = UserNameManager(this)
+
+
+
         setContent {
             val viewModel = viewModel {
                 AppViewModel()
             }
-            if (userNameManager.userName.isEmpty()) {
+            if (userNameManager.userName.isEmpty())
                 viewModel.showNameInputDialoge()
-            }
+
             ConnectivitySamplesNetworkingTheme {
                 _RootNavGraph(
                     viewModel = viewModel,
@@ -46,6 +56,7 @@ class MainActivity : ComponentActivity() {
             PermissionIfNeeded()
         }
     }
+
 
     private fun createNotification(senderName: String) {
         StandardNotificationBuilder(this@MainActivity)
@@ -78,6 +89,7 @@ private fun _RootNavGraph(
     onExitRequest: () -> Unit,
 
     ) {
+
     if (viewModel.showUserNameDialog) {
         UserNameDialog(userNameManager = userNameManager) {
             viewModel.onNameInputCompleted()
@@ -86,9 +98,12 @@ private fun _RootNavGraph(
         val technologyNotSelected = viewModel.selectedTech == null
         if (technologyNotSelected) {
             TechnologyInputDialog { technology ->
-                if (technology == Technology.WifiDirect) {
+                when (technology) {
                     //register for wifi direct technology if use selected wifi direct
-                    MyApp.registerForWifiDirectBroadcast(appContext)
+                    Technology.WifiDirect -> MyApp.registerForWifiDirectBroadcast(appContext)
+                    Technology.WifiHotspot ->MyApp.registerForWifiHotspotBroadcast(appContext)
+
+                    else -> {}
                 }
                 viewModel.onTechSelected(technology)
             }

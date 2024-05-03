@@ -7,7 +7,10 @@ import chatui.message.ChatMessage
 import chatui.message.MessageFieldController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -24,6 +27,8 @@ class ChatViewModel(
 
     private val repository = DependencyFactory.getChatRepository()
     internal val controller = MessageFieldController()
+    private val _errorMessage= MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
 //    private val _conversation = MutableStateFlow<List<ChatMessage>>(emptyList())
 //    val conversations = _conversation.asStateFlow()
 
@@ -62,7 +67,6 @@ class ChatViewModel(
             }
         }
     }
-
     suspend fun sendMessage() {
         val message = createMessageFromInputBoxText()
         val result = dataCommunicator.sendMessage(message)
@@ -75,8 +79,14 @@ class ChatViewModel(
             repository.addToDatabase(message.toModel())
             controller.clearInputField()
         }else{
-            log("$result")
+            val error=result.exceptionOrNull()
+            if (error is java.net.ConnectException)
+                updateErrorMessage("Please check you are connected to right Hotspot")
+            else{
+                updateErrorMessage(result.exceptionOrNull()?.message ?:"Unknown Error")
+            }
         }
+        log("$result")
     }
 
     private fun createMessageFromInputBoxText() = SendAbleMessage(
@@ -101,6 +111,13 @@ class ChatViewModel(
         deviceRole = TextMessageModelRole.Sender
     )
 
+    private fun  updateErrorMessage(message: String){
+        CoroutineScope(Dispatchers.Default).launch {
+            _errorMessage.value=message
+            delay(3000)
+          _errorMessage.value=null
+        }
+    }
     @Suppress("Unused")
     private fun log(message: String, methodName: String? = null) {
         val tag = "${this@ChatViewModel::class.simpleName}Log:"

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="wifi_hotspot_chat_service-desktop">
+    <output-path>$PROJECT_DIR$/feature/wifi_hotspot_chat_service/build/libs</output-path>
+    <root id="archive" name="wifi_hotspot_chat_service-desktop.jar">
+      <element id="module-output" name="NearByMessenger.feature.wifi_hotspot_chat_service.desktopMain" />
+    </root>
+  </artifact>
+</component>

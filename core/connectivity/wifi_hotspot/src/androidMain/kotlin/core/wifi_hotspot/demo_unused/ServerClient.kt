@@ -1,4 +1,4 @@
-package core.wifi_hotspot
+package core.wifi_hotspot.demo_unused
 
 import java.io.DataInputStream
 import java.io.DataOutputStream

@@ -12,6 +12,8 @@ import chatbynearbyapi.navigation.NearByAPIChatServiceNavGraph
 import chatbywifidirect.navigation.WifiDirectChatServiceNavGraph
 import navigation.Technology
 import navigation.theme.Theme
+import wifi_hotspot_chat_service.navigation.WifiHotspotChatServiceNavGraph
+
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -55,6 +57,14 @@ private fun _NavGraph(
         }
         Technology.WifiDirect->{
             WifiDirectChatServiceNavGraph(
+                thisDeviceUserName = thisDeviceUserName,
+                wifiEnabled = wifiEnabled,
+                onNewMessageNotificationRequest = onNewMessageNotificationRequest,
+                onExitRequest = onExitRequest
+            )
+        }
+        Technology.WifiHotspot-> {
+            WifiHotspotChatServiceNavGraph(
                 thisDeviceUserName = thisDeviceUserName,
                 wifiEnabled = wifiEnabled,
                 onNewMessageNotificationRequest = onNewMessageNotificationRequest,
