@@ -22,7 +22,7 @@ internal fun _NearByDeviceScreen(
     modifier: Modifier,
     thisDeviceName: String,
     viewModel: DeviceListViewModel,
-    onGroupFormed: (DevicesConnectionInfo) -> Unit,
+    onConnected: (DevicesConnectionInfo) -> Unit,
     onConversionOpen: (ScannnedDevice) -> Unit,
     onGroupConversationRequest: () -> Unit,
 ) {
@@ -43,7 +43,7 @@ internal fun _NearByDeviceScreen(
     LaunchedEffect(Unit) {
         viewModel.nearbyDevices.collect {hotSpotOwner ->
             if (hotSpotOwner==null){
-                onGroupFormed(
+                onConnected(
                     DevicesConnectionInfo(
                         groupOwnerIP = null,//this device is the group owner
                         isConnected = true,
@@ -52,7 +52,7 @@ internal fun _NearByDeviceScreen(
                 )
             }
             else{
-                onGroupFormed(
+                onConnected(
                     DevicesConnectionInfo(
                         groupOwnerIP = hotSpotOwner.id,
                         isConnected = true,

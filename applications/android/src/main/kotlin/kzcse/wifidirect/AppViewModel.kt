@@ -7,8 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import navigation.Technology
-import wifi_direct2.WifiDirectFactory
+import navigation.tech_select_dialouge.Technology
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class AppViewModel:ViewModel() {

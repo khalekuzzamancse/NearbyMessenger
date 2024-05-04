@@ -1,20 +1,15 @@
 package wifi_hotspot_chat_service.navigation
 
 import android.os.Build
-import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import core.wifi_hotspot.WiFiHotspotFactory
-import kotlinx.coroutines.launch
 import wifi_hotspot_chat_service.chat.ConversationScreen
 import wifi_hotspot_chat_service.join_as_dialogue.ConfirmHotspotOwnerDialog
 import wifi_hotspot_chat_service.misc.WifiDialog
@@ -93,7 +88,7 @@ fun WifiHotspotChatServiceNavGraph(
                 chatViewModel = mainViewModel.createChatViewModel(),
                 chatScreenTitle = "Group Chat",
                 wifiEnabled=wifiEnabled,
-                onGroupFormed = mainViewModel::onGroupFormed,
+                onGroupFormed = mainViewModel::onConnected,
                 onGroupConversationRequest = {
                     navController.navigate(Destination.Conversation.toString())
                 }

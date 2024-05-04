@@ -10,7 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import chatbynearbyapi.navigation.NearByAPIChatServiceNavGraph
 import chatbywifidirect.navigation.WifiDirectChatServiceNavGraph
-import navigation.Technology
+import navigation.tech_select_dialouge.Technology
+import navigation.tech_select_dialouge.TechInputRoute
 import navigation.theme.Theme
 import wifi_hotspot_chat_service.navigation.WifiHotspotChatServiceNavGraph
 

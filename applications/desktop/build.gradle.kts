@@ -16,8 +16,14 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation(compose.desktop.currentOs)
-                implementation(project(":feature:chat:ui"))
-                implementation(project(":core:socket:role_factory"))
+
+                implementation(compose.ui)
+                implementation(compose.material3)
+                implementation(compose.animation)
+                implementation(compose.animationGraphics)
+                implementation(compose.materialIconsExtended)
+                implementation(libs.windowSize)
+                implementation(project(":feature:navigation"))
 
             }
         }

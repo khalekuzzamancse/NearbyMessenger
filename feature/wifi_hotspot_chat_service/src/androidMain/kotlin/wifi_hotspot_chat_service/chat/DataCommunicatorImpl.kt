@@ -1,6 +1,5 @@
 package wifi_hotspot_chat_service.chat
 
-import androidx.lifecycle.lifecycleScope
 import chatui.viewmodel.DataCommunicator
 import chatui.viewmodel.ReceivedMessage
 import chatui.viewmodel.SendAbleMessage
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import peers.ui.misc.DevicesConnectionInfo
 import socket.peer.Communicator
@@ -37,7 +35,7 @@ class DataCommunicatorImpl(
     }
 
     private var communicator: Communicator? = null
-    fun onGroupFormed(info: DevicesConnectionInfo) {
+    fun onConnected(info: DevicesConnectionInfo) {
         try {
             if (info.isConnected) {
                 communicator = Communicator(

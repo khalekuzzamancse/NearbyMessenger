@@ -43,7 +43,7 @@ internal fun HomeScreen(
             _NearByDeviceScreen(
                 modifier = Modifier,
                 viewModel = deviceListViewModel,
-                onGroupFormed = onGroupFormed,
+                onConnected = onGroupFormed,
                 thisDeviceName = thisDeviceName,
                 onConversionOpen = {},
                 onGroupConversationRequest =onGroupConversationRequest
@@ -59,7 +59,7 @@ internal fun HomeScreen(
                     chatViewModel = chatViewModel,
                     chatScreenTitle = chatScreenTitle,
                     wifiEnabled = wifiEnabled,
-                    onGroupFormed = onGroupFormed,
+                    onConnected = onGroupFormed,
                     onGroupConversationRequest = onGroupConversationRequest
                 )
 
@@ -79,7 +79,7 @@ private fun _DeviceListNConversationScreen(
     chatViewModel: ChatViewModel,
     chatScreenTitle: String,
     wifiEnabled: Boolean,
-    onGroupFormed: (DevicesConnectionInfo) -> Unit,
+    onConnected: (DevicesConnectionInfo) -> Unit,
     onGroupConversationRequest: () -> Unit,
 ) {
 
@@ -92,7 +92,7 @@ private fun _DeviceListNConversationScreen(
             _NearByDeviceScreen(
                 modifier = Modifier,
                 viewModel = deviceListViewModel,
-                onGroupFormed = onGroupFormed,
+                onConnected = onConnected,
                 thisDeviceName = thisDeviceName,
                 onConversionOpen = {},
                 onGroupConversationRequest = {

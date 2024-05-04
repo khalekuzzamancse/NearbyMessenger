@@ -9,20 +9,15 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import core.notification.StandardNotificationBuilder
-import core.wifi_hotspot.WiFiHotspotFactory
-import kotlinx.coroutines.launch
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
-import navigation.Technology
-import navigation.TechnologyInputDialog
 import navigation.navgraph.RootNavGraph
-import wifi_direct2.WifiDirectFactory
+import navigation.tech_select_dialouge.TechInputRoute
+import navigation.tech_select_dialouge.Technology
 
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +40,8 @@ class MainActivity : ComponentActivity() {
                 viewModel.showNameInputDialoge()
 
             ConnectivitySamplesNetworkingTheme {
+
+
                 _RootNavGraph(
                     viewModel = viewModel,
                     userNameManager = userNameManager,
@@ -97,7 +94,8 @@ private fun _RootNavGraph(
     } else {
         val technologyNotSelected = viewModel.selectedTech == null
         if (technologyNotSelected) {
-            TechnologyInputDialog { technology ->
+            TechInputRoute { technology ->
+                println("TechnologySelected: $technology")
                 when (technology) {
                     //register for wifi direct technology if use selected wifi direct
                     Technology.WifiDirect -> MyApp.registerForWifiDirectBroadcast(appContext)

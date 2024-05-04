@@ -16,9 +16,7 @@ import peers.ui.devices.ScannnedDevice
  * * Using the Delegation Design pattern
  */
 
-internal class DeviceListViewModel(
-
-) : ViewModel() {
+internal class DeviceListViewModel : ViewModel() {
     private val broadcastReceiver = WiFiHotspotFactory.receiver
     private val _errorMessage = MutableStateFlow<String?>(null)
     val message = _errorMessage.asStateFlow()
@@ -39,19 +37,11 @@ internal class DeviceListViewModel(
         } else null
 
     }
-    init {
-
-
-    }
 
 
     fun scanDevices() {
-
         CoroutineScope(Dispatchers.Default).launch {
             updateErrorMessage("Scan unavailable because of Security reason,use System Setting app instead")
-            _isDeviceScanning.update { true }
-            delay(1000)
-            _isDeviceScanning.update { false }
         }
 
     }
