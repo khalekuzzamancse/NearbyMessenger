@@ -1,5 +1,6 @@
 package chatbynearbyapi.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,11 +57,13 @@ private fun _NavGraph(
         )
     }
 
-//    BackHandler {
-//        navController.popBackStack()
-//        if (navController.currentBackStackEntry == null)
-//            onExitRequest()
-//    }
+    BackHandler {
+        navController.popBackStack()
+        if (navController.currentBackStackEntry == null)
+        {
+            onExitRequest()
+        }
+    }
 
     NavHost(
         navController = navController,

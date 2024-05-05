@@ -46,31 +46,31 @@ internal object FeatureRepository {
     private fun createNearByAPIsDetails(): Details {
         return Details(
             techUsed = listOf(
-                AnnotatedString("Communicate with NearBy devices regardless of underlying technologies")
+                AnnotatedString("Communicates with nearby devices regardless of the underlying technology")
             ),
             userManual = listOf(
                 AnnotatedString("Ensure your device's Bluetooth is turned on"),
                 AnnotatedString("Ensure your device's Wi-Fi is turned on"),
-                AnnotatedString("Turn off the  Wi-Fi hotspot if active")
+                AnnotatedString("Turn off Wi-Fi hotspot if it is active"),
+                AnnotatedString("Among all devices, one will act as the Advertiser and the remaining will be Discoverers")
+
             )
         )
-
     }
-
 
     private fun createWiFiDirectDetails(): Details {
         return Details(
             techUsed = listOf(
-                AnnotatedString("Can communicate without being connected to any network such as a Router or Hotspot"),
-                AnnotatedString("Data transmission rate is faster than Wi-Fi Hotspot"),
-                AnnotatedString("Not all devices have built-in support for it")
+                AnnotatedString("Enables communication without a network connection such as a router or hotspot"),
+                AnnotatedString("Offers faster data transmission rates than Wi-Fi hotspot"),
+                AnnotatedString("Not all devices support this feature")
             ),
             userManual = listOf(
                 AnnotatedString("Start scanning for devices"),
-                AnnotatedString("If a one-time scan does not find any devices, continue scanning until devices are found"),
-                AnnotatedString("When your device appears to your friend's device and vice versa, start the connection process"),
-                AnnotatedString("If unexpected bugs occur or connection cannot be established, relaunch the application and try again"),
-                AnnotatedString("Multiple devices can be connected simultaneously")
+                AnnotatedString("If the initial scan does not find any devices, continue scanning until devices are detected"),
+                AnnotatedString("Once your device becomes visible to your friend's device and vice versa, initiate the connection process"),
+                AnnotatedString("If you encounter any unexpected issues or cannot establish a connection, restart the application and try again"),
+                AnnotatedString("Supports connections with multiple devices simultaneously")
             )
         )
     }
@@ -78,15 +78,15 @@ internal object FeatureRepository {
     private fun createHotSpotDetails(): Details {
         return Details(
             techUsed = listOf(
-                AnnotatedString("Data transmission rate is slower than Wi-Fi Direct")
+                AnnotatedString("Data transmission rate is slower compared to Wi-Fi Direct")
             ),
             userManual = listOf(
-                AnnotatedString("If you are not the Hotspot owner, ensure you are connected to the Hotspot"),
-                AnnotatedString("If unexpected bugs occur or connection cannot be established, relaunch the application and try again"),
-                AnnotatedString("Multiple devices can be connected simultaneously")
+                AnnotatedString("If you are not the hotspot owner, ensure you are connected to the hotspot"),
+                AnnotatedString("If unexpected issues arise or a connection cannot be established, restart the application and try again"),
+                AnnotatedString("Allows connection with multiple devices simultaneously")
             )
         )
+    }
 
-}
 
 }

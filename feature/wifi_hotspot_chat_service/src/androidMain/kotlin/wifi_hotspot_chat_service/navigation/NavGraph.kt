@@ -1,6 +1,7 @@
 package wifi_hotspot_chat_service.navigation
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,10 +28,11 @@ fun WifiHotspotChatServiceNavGraph(
     onNewMessageNotificationRequest:(sender:String)->Unit,
     onExitRequest: () -> Unit,
 ){
+
     val mainViewModel = viewModel { MainViewModel(thisDeviceUserName) }
     if (mainViewModel.showJoinAsDialog.collectAsState().value){
         ConfirmHotspotOwnerDialog(
-            onNavigationRequest = mainViewModel::onNavigateRequest
+            onNavigationRequest = mainViewModel::onNavigateRequest,
         )
 
     }else{
@@ -70,11 +72,11 @@ fun WifiHotspotChatServiceNavGraph(
 
 
 
-//    BackHandler {
-//        navController.popBackStack()
-//        if (navController.currentBackStackEntry == null)
-//            onExitRequest()
-//    }
+    BackHandler {
+        navController.popBackStack()
+        if (navController.currentBackStackEntry == null)
+            onExitRequest()
+    }
 
     NavHost(
         navController = navController,

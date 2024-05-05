@@ -46,16 +46,13 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     MyApp.createBluetoothController(this@MainActivity)
                 }
-                BluetoothChatServiceNavGraph()
-
-
-//                _RootNavGraph(
-//                    viewModel = viewModel,
-//                    userNameManager = userNameManager,
-//                    onNewMessageNotificationRequest = ::createNotification,
-//                    onExitRequest = ::finish,
-//                    appContext = applicationContext
-//                )
+                _RootNavGraph(
+                    viewModel = viewModel,
+                    userNameManager = userNameManager,
+                    onNewMessageNotificationRequest = ::createNotification,
+                    onExitRequest = ::finish,
+                    appContext = applicationContext
+                )
             }
             PermissionIfNeeded()
         }

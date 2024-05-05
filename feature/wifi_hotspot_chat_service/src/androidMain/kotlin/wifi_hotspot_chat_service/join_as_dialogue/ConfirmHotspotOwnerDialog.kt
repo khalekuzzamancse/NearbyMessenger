@@ -2,6 +2,7 @@ package wifi_hotspot_chat_service.join_as_dialogue
 
 import android.content.Intent
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import wifi_hotspot_chat_service.misc.SnackBarDecorator
 internal fun ConfirmHotspotOwnerDialog(
     onNavigationRequest: () -> Unit,
 ) {
+
 
     val controller = remember { HotspotDialogController() }
     val scope = rememberCoroutineScope()

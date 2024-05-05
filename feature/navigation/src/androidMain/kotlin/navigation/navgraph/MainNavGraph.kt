@@ -69,7 +69,10 @@ private fun _NavGraph(
                 thisDeviceUserName = thisDeviceUserName,
                 wifiEnabled = wifiEnabled,
                 onNewMessageNotificationRequest = onNewMessageNotificationRequest,
-                onExitRequest = onExitRequest
+                onExitRequest = {
+                    onExitRequest()
+                    println("MainNavGraph: onExitRequest")
+                }
             )
         }
         else-> _NotImplemented()

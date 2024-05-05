@@ -81,7 +81,7 @@ fun TechnologyOverview(
         val bullet = "•"
         overview.forEach { line ->
             Text(
-                text = bullet + line,
+                text = "$bullet $line",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Justify
             )
@@ -107,7 +107,7 @@ fun UserGuidelines(
         val bullet = "•"
         userGuide.forEach { line ->
             Text(
-                text = bullet + line,
+                text = "$bullet $line",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Justify
             )
