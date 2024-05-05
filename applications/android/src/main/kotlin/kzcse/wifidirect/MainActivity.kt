@@ -8,9 +8,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import blueetooth.BluetoothFactory
+import blueetooth_chat_service.BluetoothChatServiceNavGraph
 import core.notification.StandardNotificationBuilder
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
@@ -40,15 +43,19 @@ class MainActivity : ComponentActivity() {
                 viewModel.showNameInputDialoge()
 
             ConnectivitySamplesNetworkingTheme {
+                LaunchedEffect(Unit) {
+                    MyApp.createBluetoothController(this@MainActivity)
+                }
+                BluetoothChatServiceNavGraph()
 
 
-                _RootNavGraph(
-                    viewModel = viewModel,
-                    userNameManager = userNameManager,
-                    onNewMessageNotificationRequest = ::createNotification,
-                    onExitRequest = ::finish,
-                    appContext = applicationContext
-                )
+//                _RootNavGraph(
+//                    viewModel = viewModel,
+//                    userNameManager = userNameManager,
+//                    onNewMessageNotificationRequest = ::createNotification,
+//                    onExitRequest = ::finish,
+//                    appContext = applicationContext
+//                )
             }
             PermissionIfNeeded()
         }
@@ -99,7 +106,7 @@ private fun _RootNavGraph(
                 when (technology) {
                     //register for wifi direct technology if use selected wifi direct
                     Technology.WifiDirect -> MyApp.registerForWifiDirectBroadcast(appContext)
-                    Technology.WifiHotspot ->MyApp.registerForWifiHotspotBroadcast(appContext)
+                    Technology.WifiHotspot -> MyApp.registerForWifiHotspotBroadcast(appContext)
 
                     else -> {}
                 }

@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 @Composable
-fun NavGraphWifiHotSpot() {
+ fun NavGraphWifiHotSpot() {
     var showDialog by remember { mutableStateOf(true) }
     val viewModel= remember {
         ServerClient()

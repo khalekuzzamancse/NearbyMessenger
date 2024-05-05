@@ -17,13 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 
 
-sealed interface NetworkRole {
+internal sealed interface NetworkRole {
    data object Server: NetworkRole
     data class Client(val serverIP:String,val serverPort:Int): NetworkRole
 }
 
 @Composable
-fun JoinAsDialog(onDismissRequest: () -> Unit = {}, onJoinAs: (NetworkRole) -> Unit) {
+internal fun JoinAsDialog(onDismissRequest: () -> Unit = {}, onJoinAs: (NetworkRole) -> Unit) {
     val openDialog = remember { mutableStateOf(true) }
     var ipAddress by remember { mutableStateOf("192.168.12.252") }
     var port by remember { mutableStateOf("12345") }

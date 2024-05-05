@@ -1,11 +1,13 @@
 package kzcse.wifidirect
 
 import android.app.Application
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
+import blueetooth.BluetoothFactory
 import core.wifi_hotspot.WiFiHotspotFactory
 import wifi_direct2.WifiDirectFactory
 import wifi_direct2.WifiDirectIntentFilters
@@ -39,6 +41,10 @@ class MyApp : Application() {
                 WiFiHotspotFactory.receiver, WiFiHotspotFactory.intentFilters,
                 RECEIVER_EXPORTED
             ) //TODO:Refactor later,can causes bug in android >10
+        }
+        fun createBluetoothController(context: Context) {
+            val bluetoothManager: BluetoothManager = context.getSystemService(BluetoothManager::class.java)
+            BluetoothFactory.createBluetoothController(bluetoothManager)
         }
     }
 

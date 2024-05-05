@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
-class ServerClient {
+internal class ServerClient {
     private val port = 12345
     private lateinit var serverSocket: ServerSocket
 
