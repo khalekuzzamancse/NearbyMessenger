@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -12,8 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import blueetooth.BluetoothFactory
-import blueetooth_chat_service.BluetoothChatServiceNavGraph
 import core.notification.StandardNotificationBuilder
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
@@ -40,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 AppViewModel()
             }
             if (userNameManager.userName.isEmpty())
-                viewModel.showNameInputDialoge()
+                viewModel.showNameInputDialog()
 
             ConnectivitySamplesNetworkingTheme {
                 LaunchedEffect(Unit) {
@@ -98,17 +97,20 @@ private fun _RootNavGraph(
     } else {
         val technologyNotSelected = viewModel.selectedTech == null
         if (technologyNotSelected) {
-            TechInputRoute { technology ->
-                println("TechnologySelected: $technology")
-                when (technology) {
-                    //register for wifi direct technology if use selected wifi direct
-                    Technology.WifiDirect -> MyApp.registerForWifiDirectBroadcast(appContext)
-                    Technology.WifiHotspot -> MyApp.registerForWifiHotspotBroadcast(appContext)
 
-                    else -> {}
+            TechInputRoute(
+                onTechSelected = { technology ->
+                    println("TechnologySelected: $technology")
+                    when (technology) {
+                        //register for wifi direct technology if use selected wifi direct
+                        Technology.WifiDirect -> MyApp.registerForWifiDirectBroadcast(appContext)
+                        Technology.WifiHotspot -> MyApp.registerForWifiHotspotBroadcast(appContext)
+
+                        else -> {}
+                    }
+                    viewModel.onTechSelected(technology)
                 }
-                viewModel.onTechSelected(technology)
-            }
+            )
         }
         viewModel.selectedTech?.let { technology ->
             RootNavGraph(
@@ -116,7 +118,8 @@ private fun _RootNavGraph(
                 wifiEnabled = viewModel.wifiEnabled.collectAsState().value,
                 onNewMessageNotificationRequest = onNewMessageNotificationRequest,
                 technology = technology,
-                onExitRequest = onExitRequest
+                onExitRequest = onExitRequest,
+                onTechSelectRequest = viewModel::onTechAgainTechSelectRequest
             )
         }
     }

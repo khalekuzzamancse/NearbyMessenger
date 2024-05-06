@@ -18,16 +18,23 @@ class AppViewModel:ViewModel() {
 
     /** Wifi direct,Hotspot and NearbyAPI causes problem if they active together
      * that is why giving single time choice to choose a technology*/
+
+
      var selectedTech by mutableStateOf<Technology?>(null)
         private set
 
     val wifiEnabled= MutableStateFlow(true)//TODO: refactor later
-    fun showNameInputDialoge(){
+    fun showNameInputDialog(){
         showUserNameDialog=true
     }
     fun  onTechSelected(technology: Technology){
         selectedTech=technology
     }
+    fun onTechAgainTechSelectRequest(){
+        selectedTech=null
+    }
+
+
     fun onNameInputCompleted(){
         showUserNameDialog=false
     }

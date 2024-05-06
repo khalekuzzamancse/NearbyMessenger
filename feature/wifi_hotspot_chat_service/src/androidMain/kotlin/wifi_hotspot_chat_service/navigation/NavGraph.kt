@@ -13,7 +13,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import wifi_hotspot_chat_service.chat.ConversationScreen
 import wifi_hotspot_chat_service.join_as_dialogue.ConfirmHotspotOwnerDialog
-import wifi_hotspot_chat_service.misc.WifiDialog
 import wifi_hotspot_chat_service.navigation.route.Destination
 import wifi_hotspot_chat_service.navigation.route.HomeScreen
 import wifi_hotspot_chat_service.navigation.route.MainViewModel
@@ -27,12 +26,14 @@ fun WifiHotspotChatServiceNavGraph(
     wifiEnabled: Boolean,
     onNewMessageNotificationRequest:(sender:String)->Unit,
     onExitRequest: () -> Unit,
+    onGoBackRequestWithoutStartingChat: () -> Unit,
 ){
 
     val mainViewModel = viewModel { MainViewModel(thisDeviceUserName) }
     if (mainViewModel.showJoinAsDialog.collectAsState().value){
         ConfirmHotspotOwnerDialog(
             onNavigationRequest = mainViewModel::onNavigateRequest,
+            onDismiss = onGoBackRequestWithoutStartingChat
         )
 
     }else{
@@ -56,9 +57,7 @@ fun WifiHotspotChatServiceNavGraph(
     onNewMessageNotificationRequest:(sender:String)->Unit,
     onExitRequest: () -> Unit,
 ) {
-    if (!wifiEnabled) {
-        WifiDialog()
-    }
+
     val navController: NavHostController = rememberNavController()
 
 

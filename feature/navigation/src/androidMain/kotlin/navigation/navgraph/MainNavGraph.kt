@@ -23,6 +23,7 @@ fun RootNavGraph(
     wifiEnabled: Boolean,
     technology: Technology,
     onNewMessageNotificationRequest: (sender: String) -> Unit,
+    onTechSelectRequest: () -> Unit,
     onExitRequest: () -> Unit,
 ) {
     Theme {
@@ -31,7 +32,8 @@ fun RootNavGraph(
             wifiEnabled = wifiEnabled,
             technology=technology,
             onNewMessageNotificationRequest = onNewMessageNotificationRequest,
-            onExitRequest = onExitRequest
+            onExitRequest = onExitRequest,
+            onTechSelectRequest = onTechSelectRequest
         )
     }
 
@@ -45,7 +47,9 @@ private fun _NavGraph(
     wifiEnabled: Boolean,
     technology: Technology,
     onNewMessageNotificationRequest: (sender: String) -> Unit,
+    onTechSelectRequest: () -> Unit,
     onExitRequest: () -> Unit,
+
 ) {
     when(technology){
         Technology.NearByAPI->{
@@ -72,7 +76,8 @@ private fun _NavGraph(
                 onExitRequest = {
                     onExitRequest()
                     println("MainNavGraph: onExitRequest")
-                }
+                },
+                onGoBackRequestWithoutStartingChat=onTechSelectRequest
             )
         }
         else-> _NotImplemented()

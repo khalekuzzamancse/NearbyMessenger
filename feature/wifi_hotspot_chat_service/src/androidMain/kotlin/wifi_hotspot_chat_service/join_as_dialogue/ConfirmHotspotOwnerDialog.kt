@@ -2,12 +2,9 @@ package wifi_hotspot_chat_service.join_as_dialogue
 
 import android.content.Intent
 import android.provider.Settings
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -29,10 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.launch
-import wifi_hotspot_chat_service.misc.SnackBarDecorator
 
 @Composable
 internal fun ConfirmHotspotOwnerDialog(
+    onDismiss:() -> Unit,
     onNavigationRequest: () -> Unit,
 ) {
 
@@ -63,11 +60,10 @@ internal fun ConfirmHotspotOwnerDialog(
 
     AlertDialog(
         modifier = Modifier,
-        onDismissRequest = { },
+        onDismissRequest = onDismiss,
         title = { Text("Confirm ") },
         text = {
-            Box(
-            ) {
+            Box {
                 Text(_getHotspotDialogDescription())
                 //Show snack bar on top of the dialog so that the message is visible to user
                 SnackbarHost(hostState = hostState, Modifier.align(Alignment.BottomCenter))
