@@ -14,13 +14,15 @@ import androidx.compose.ui.Modifier
 
 /**
  * @param onTechSelected will be used,if any item is selected that means it details is opened,
- * so if user click the back button then take the action according to that
+ *@param backHandler will be called when back button is pressed,onBackButtonPress will return true if
+ * it is consumed the back press by closing the details,
  */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun TechInputRoute(
     modifier: Modifier = Modifier,
-    onTechSelected: (Technology) -> Unit ,
+    onTechSelected: (Technology) -> Unit,
+    backHandler: @Composable (onBackButtonPress: () -> Boolean) -> Unit,
 ) {
     val windowSize = calculateWindowSizeClass().widthSizeClass
     val compact = WindowWidthSizeClass.Compact
@@ -28,6 +30,12 @@ fun TechInputRoute(
     val expanded = WindowWidthSizeClass.Expanded
     var selectedTechIndex by remember { mutableStateOf<Int?>(null) }//initially no index selected
     val features = FeatureRepository.getFeatures()
+    backHandler {
+        val isDetailsOpened = selectedTechIndex != null
+        if (isDetailsOpened)
+            selectedTechIndex = null
+        isDetailsOpened
+    }
 
 
     AnimatedContent(

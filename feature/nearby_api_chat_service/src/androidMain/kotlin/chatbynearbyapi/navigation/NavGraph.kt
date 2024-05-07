@@ -20,11 +20,18 @@ import chatui.viewmodel.ChatViewModel
 fun NearByAPIChatServiceNavGraph(
     thisDeviceName: String,
     onNewMessageNotificationRequest: (sender: String) -> Unit,
+    onGoBackRequestWithoutStartingChat: () -> Unit,
     onExitRequest: () -> Unit,
 ) {
     var role by remember { mutableStateOf<NetworkRole?>(null) }
 
-    JoinAsDialog { role = it }
+    if (role == null)//is no role selected yet
+    {
+        JoinAsDialog(
+            onDismissRequest = onGoBackRequestWithoutStartingChat
+        ) { role = it }
+    }
+
     role?.let { endpointRole ->
         _NavGraph(
             thisDeviceName,

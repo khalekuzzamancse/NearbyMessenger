@@ -33,7 +33,6 @@ class MainActivity : ComponentActivity() {
         userNameManager = UserNameManager(this)
 
 
-
         setContent {
             val viewModel = viewModel {
                 AppViewModel()
@@ -95,9 +94,8 @@ private fun _RootNavGraph(
             viewModel.onNameInputCompleted()
         }
     } else {
-        val technologyNotSelected = viewModel.selectedTech == null
+      val technologyNotSelected = viewModel.selectedTech == null
         if (technologyNotSelected) {
-
             TechInputRoute(
                 onTechSelected = { technology ->
                     println("TechnologySelected: $technology")
@@ -109,6 +107,19 @@ private fun _RootNavGraph(
                         else -> {}
                     }
                     viewModel.onTechSelected(technology)
+                },
+                backHandler = {onBackPressed ->
+                        //overriding backhander will prevent it parent to notify that back button is
+                        //pressed as a result the parent nav controller may not notify that back button is pressed
+                        //as a result the parent nav controller may unable to pop destination automatically
+                        BackHandler(
+                            onBack = {
+                                val isConsumed = onBackPressed()
+                                if (!isConsumed) {
+                                    onExitRequest()
+                                }
+                            },
+                        )
                 }
             )
         }
@@ -117,11 +128,11 @@ private fun _RootNavGraph(
                 thisDeviceUserName = userNameManager.userName,
                 wifiEnabled = viewModel.wifiEnabled.collectAsState().value,
                 onNewMessageNotificationRequest = onNewMessageNotificationRequest,
-                technology = technology,
+                technology =technology,
                 onExitRequest = onExitRequest,
                 onTechSelectRequest = viewModel::onTechAgainTechSelectRequest
             )
-        }
+       }
     }
 
 }
