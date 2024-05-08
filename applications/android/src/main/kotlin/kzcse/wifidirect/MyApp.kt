@@ -19,6 +19,7 @@ class MyApp : Application() {
         super.onCreate()
     }
 
+
     /**
      * - only register if user select the Wifi Direct technology for chat
      */
@@ -45,6 +46,7 @@ class MyApp : Application() {
         fun createBluetoothController(context: Context) {
             val bluetoothManager: BluetoothManager = context.getSystemService(BluetoothManager::class.java)
             BluetoothFactory.createBluetoothController(bluetoothManager)
+
         }
     }
 

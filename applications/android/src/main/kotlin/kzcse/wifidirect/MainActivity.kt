@@ -9,7 +9,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,13 +16,17 @@ import core.notification.StandardNotificationBuilder
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
+
 import navigation.navgraph.RootNavGraph
 import navigation.tech_select_dialouge.TechInputRoute
 import navigation.tech_select_dialouge.Technology
 
 
+
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
+
+
 
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -31,6 +34,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         userNameManager = UserNameManager(this)
+
+
 
 
         setContent {
@@ -96,6 +101,7 @@ private fun _RootNavGraph(
     } else {
       val technologyNotSelected = viewModel.selectedTech == null
         if (technologyNotSelected) {
+
             TechInputRoute(
                 onTechSelected = { technology ->
                     println("TechnologySelected: $technology")
@@ -122,6 +128,7 @@ private fun _RootNavGraph(
                         )
                 }
             )
+
         }
         viewModel.selectedTech?.let { technology ->
             RootNavGraph(
