@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="bluetooth_chat_service-desktop">
     <output-path>$PROJECT_DIR$/feature/bluetooth_chat_service/build/libs</output-path>
-    <root id="archive" name="bluetooth_chat_service-desktop.jar">
-      <element id="module-output" name="NearByMessenger.feature.bluetooth_chat_service.desktopMain" />
-    </root>
+    <root id="archive" name="bluetooth_chat_service-desktop.jar" />
   </artifact>
 </component>

@@ -15,8 +15,8 @@ android {
         //do not change this later,already sign in certificate generated,and in plays tore this already uploaded,if changed then update will not work
         minSdk = 27
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
