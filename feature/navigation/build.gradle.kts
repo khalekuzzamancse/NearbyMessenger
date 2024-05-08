@@ -39,6 +39,7 @@ kotlin {
                 //
                 implementation(project(":feature:nearby_api_chat_service",))
                 implementation(project(":feature:wifi_direct_chat_service"))
+                implementation(project(":feature:wifi_hotspot_chat_service"))
 
             }
         }

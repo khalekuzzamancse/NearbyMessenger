@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/applications/desktop" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/connectivity" />
+            <option value="$PROJECT_DIR$/core/connectivity/bluetooth" />
             <option value="$PROJECT_DIR$/core/connectivity/nearby_connection_api" />
             <option value="$PROJECT_DIR$/core/connectivity/wifi_direct" />
             <option value="$PROJECT_DIR$/core/connectivity/wifi_hotspot" />
@@ -25,6 +26,7 @@
             <option value="$PROJECT_DIR$/core/socket/role_factory" />
             <option value="$PROJECT_DIR$/core/socket/server" />
             <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/bluetooth_chat_service" />
             <option value="$PROJECT_DIR$/feature/chat" />
             <option value="$PROJECT_DIR$/feature/chat/data" />
             <option value="$PROJECT_DIR$/feature/chat/di" />
@@ -34,6 +36,7 @@
             <option value="$PROJECT_DIR$/feature/nearby_api_chat_service" />
             <option value="$PROJECT_DIR$/feature/scanned_device" />
             <option value="$PROJECT_DIR$/feature/wifi_direct_chat_service" />
+            <option value="$PROJECT_DIR$/feature/wifi_hotspot_chat_service" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

@@ -1,11 +1,11 @@
-package core.wifi_hotspot
+package core.wifi_hotspot.demo_unused
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
-class ServerClient {
+internal class ServerClient {
     private val port = 12345
     private lateinit var serverSocket: ServerSocket
 

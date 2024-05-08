@@ -60,9 +60,22 @@ fun ConversionScreenPreview() {
         onSpeechToTextRequest = {},
     )
 }
-
 @Composable
 fun ConversionRoute(
+    modifier: Modifier = Modifier,
+    viewModel: ChatViewModel,
+){
+    SnackBarDecorator(viewModel.errorMessage.collectAsState().value) {
+        _ConversionRoute(
+            modifier = Modifier.padding(it),
+            viewModel = viewModel
+        )
+    }
+
+}
+
+@Composable
+fun _ConversionRoute(
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel,
 ) {

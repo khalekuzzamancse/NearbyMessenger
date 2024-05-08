@@ -7,8 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import navigation.Technology
-import wifi_direct2.WifiDirectFactory
+import navigation.tech_select_dialouge.Technology
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class AppViewModel:ViewModel() {
@@ -19,16 +18,23 @@ class AppViewModel:ViewModel() {
 
     /** Wifi direct,Hotspot and NearbyAPI causes problem if they active together
      * that is why giving single time choice to choose a technology*/
+
+
      var selectedTech by mutableStateOf<Technology?>(null)
         private set
 
     val wifiEnabled= MutableStateFlow(true)//TODO: refactor later
-    fun showNameInputDialoge(){
+    fun showNameInputDialog(){
         showUserNameDialog=true
     }
     fun  onTechSelected(technology: Technology){
         selectedTech=technology
     }
+    fun onTechAgainTechSelectRequest(){
+        selectedTech=null
+    }
+
+
     fun onNameInputCompleted(){
         showUserNameDialog=false
     }

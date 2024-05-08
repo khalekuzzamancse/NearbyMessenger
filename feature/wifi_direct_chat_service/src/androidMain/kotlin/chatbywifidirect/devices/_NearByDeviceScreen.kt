@@ -28,8 +28,7 @@ internal fun _NearByDeviceScreen(
                 val ownerIP =info.groupOwnerIp
                 onGroupFormed(
                     DevicesConnectionInfo(
-                        groupOwnerIP = ownerIP,
-                        isGroupOwner = info.isThisDeviceGroupOwner,
+                        groupOwnerIP = if(info.isThisDeviceGroupOwner)null else ownerIP,
                         isConnected = true,
                         //TODO: since group is formed so connected(for client),check for the group owner,is it connected or not with the client
                     )

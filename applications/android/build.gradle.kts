@@ -15,8 +15,8 @@ android {
         //do not change this later,already sign in certificate generated,and in plays tore this already uploaded,if changed then update will not work
         minSdk = 27
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -68,8 +68,11 @@ dependencies {
     //
     implementation(project(":feature:navigation"))
     implementation(project(":core:connectivity:wifi_direct"))//For starting broadcast on application class and read wifi  status
+    implementation(project(":core:connectivity:wifi_hotspot"))//For starting broadcast on application class and read wifi  hotspot and scan devices
+    implementation(project(":core:connectivity:bluetooth"))//For starting broadcast on application class and read bluetooth status
     implementation(project(":core:permission_n_notification"))
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation(project(":core:connectivity:wifi_direct"))
+    implementation(project(":feature:bluetooth_chat_service"))
 
 }

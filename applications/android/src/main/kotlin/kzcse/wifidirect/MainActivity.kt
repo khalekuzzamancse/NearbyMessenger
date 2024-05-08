@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -15,26 +16,39 @@ import core.notification.StandardNotificationBuilder
 import kzcse.wifidirect.deviceInfo.UserNameDialog
 import kzcse.wifidirect.deviceInfo.UserNameManager
 import kzcse.wifidirect.ui.theme.ConnectivitySamplesNetworkingTheme
-import navigation.Technology
-import navigation.TechnologyInputDialog
+
 import navigation.navgraph.RootNavGraph
+import navigation.tech_select_dialouge.TechInputRoute
+import navigation.tech_select_dialouge.Technology
+
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var userNameManager: UserNameManager
+
+
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         userNameManager = UserNameManager(this)
+
+
+
+
         setContent {
             val viewModel = viewModel {
                 AppViewModel()
             }
-            if (userNameManager.userName.isEmpty()) {
-                viewModel.showNameInputDialoge()
-            }
+            if (userNameManager.userName.isEmpty())
+                viewModel.showNameInputDialog()
+
             ConnectivitySamplesNetworkingTheme {
+                LaunchedEffect(Unit) {
+                    MyApp.createBluetoothController(this@MainActivity)
+                }
                 _RootNavGraph(
                     viewModel = viewModel,
                     userNameManager = userNameManager,
@@ -46,6 +60,7 @@ class MainActivity : ComponentActivity() {
             PermissionIfNeeded()
         }
     }
+
 
     private fun createNotification(senderName: String) {
         StandardNotificationBuilder(this@MainActivity)
@@ -78,30 +93,53 @@ private fun _RootNavGraph(
     onExitRequest: () -> Unit,
 
     ) {
+
     if (viewModel.showUserNameDialog) {
         UserNameDialog(userNameManager = userNameManager) {
             viewModel.onNameInputCompleted()
         }
     } else {
-        val technologyNotSelected = viewModel.selectedTech == null
+      val technologyNotSelected = viewModel.selectedTech == null
         if (technologyNotSelected) {
-            TechnologyInputDialog { technology ->
-                if (technology == Technology.WifiDirect) {
-                    //register for wifi direct technology if use selected wifi direct
-                    MyApp.registerForWifiDirectBroadcast(appContext)
+
+            TechInputRoute(
+                onTechSelected = { technology ->
+                    println("TechnologySelected: $technology")
+                    when (technology) {
+                        //register for wifi direct technology if use selected wifi direct
+                        Technology.WifiDirect -> MyApp.registerForWifiDirectBroadcast(appContext)
+                        Technology.WifiHotspot -> MyApp.registerForWifiHotspotBroadcast(appContext)
+
+                        else -> {}
+                    }
+                    viewModel.onTechSelected(technology)
+                },
+                backHandler = {onBackPressed ->
+                        //overriding backhander will prevent it parent to notify that back button is
+                        //pressed as a result the parent nav controller may not notify that back button is pressed
+                        //as a result the parent nav controller may unable to pop destination automatically
+                        BackHandler(
+                            onBack = {
+                                val isConsumed = onBackPressed()
+                                if (!isConsumed) {
+                                    onExitRequest()
+                                }
+                            },
+                        )
                 }
-                viewModel.onTechSelected(technology)
-            }
+            )
+
         }
         viewModel.selectedTech?.let { technology ->
             RootNavGraph(
                 thisDeviceUserName = userNameManager.userName,
                 wifiEnabled = viewModel.wifiEnabled.collectAsState().value,
                 onNewMessageNotificationRequest = onNewMessageNotificationRequest,
-                technology = technology,
-                onExitRequest = onExitRequest
+                technology =technology,
+                onExitRequest = onExitRequest,
+                onTechSelectRequest = viewModel::onTechAgainTechSelectRequest
             )
-        }
+       }
     }
 
 }

@@ -1,5 +1,6 @@
 package chatbynearbyapi.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,11 +20,18 @@ import chatui.viewmodel.ChatViewModel
 fun NearByAPIChatServiceNavGraph(
     thisDeviceName: String,
     onNewMessageNotificationRequest: (sender: String) -> Unit,
+    onGoBackRequestWithoutStartingChat: () -> Unit,
     onExitRequest: () -> Unit,
 ) {
     var role by remember { mutableStateOf<NetworkRole?>(null) }
 
-    JoinAsDialog { role = it }
+    if (role == null)//is no role selected yet
+    {
+        JoinAsDialog(
+            onDismissRequest = onGoBackRequestWithoutStartingChat
+        ) { role = it }
+    }
+
     role?.let { endpointRole ->
         _NavGraph(
             thisDeviceName,
@@ -56,11 +64,13 @@ private fun _NavGraph(
         )
     }
 
-//    BackHandler {
-//        navController.popBackStack()
-//        if (navController.currentBackStackEntry == null)
-//            onExitRequest()
-//    }
+    BackHandler {
+        navController.popBackStack()
+        if (navController.currentBackStackEntry == null)
+        {
+            onExitRequest()
+        }
+    }
 
     NavHost(
         navController = navController,
